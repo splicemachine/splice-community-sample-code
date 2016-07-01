@@ -1,0 +1,122 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.splicemachine</groupId>
+	<artifactId>splice-tutorial-machine-learning</artifactId>
+	<version>2.0</version>
+	<name>splice-tutorial-machine-learning</name>
+	<description>Contains the sample code for machine-learning operations</description>
+
+	<repositories>
+		<repository>
+    			<id>splicemachine</id>
+    			<url>http://nexus.splicemachine.com/nexus/content/groups/developers</url>
+  		</repository>
+		<repository>
+			<id>github-releases</id>
+			<url>http://oss.sonatype.org/content/repositories/github-releases/</url>
+		</repository>
+		<repository>
+			<id>clojars.org</id>
+			<url>http://clojars.org/repo</url>
+		</repository>
+	</repositories>
+
+	<!-- splice_machine-assembly-2.0.1.11-SNAPSHOT-mapr5.1.0_complete.jar -->
+	<properties>
+		<java.version>1.7</java.version>
+		<splice_machine.version>2.0.1.11-SNAPSHOT</splice_machine.version>
+		<envClassifier>mapr5.1.0</envClassifier>
+        <envHbase>hbase1.0.0</envHbase>
+        <hadoop.version>2.7.0-mapr-1602</hadoop.version>
+        <hadoop.tools.version>1.0.3-mapr-5.1.0</hadoop.tools.version>
+        <hbase.version>1.1.1-mapr-1602</hbase.version>
+        <hive.version>0.13.0-mapr-1602</hive.version>
+        <zookeeper.version>3.4.5-mapr-1503</zookeeper.version>
+        <spark-assembly-id>spark-assembly-hadoop2.7.0-mapr-1602</spark-assembly-id>
+        <spark.version>1.6.1</spark.version>
+        <kafka.version>0.8.2.1</kafka.version>
+	</properties>
+
+
+
+	<dependencies>
+		<dependency>
+			<groupId>com.splicemachine</groupId>
+			<artifactId>splice_machine</artifactId>
+			<version>${splice_machine.version}</version>
+        </dependency>
+        <!-- Contains the SpliceSpark that is needed -->
+		<dependency>
+			<groupId>com.splicemachine</groupId>
+			<artifactId>hbase_sql-${envClassifier}</artifactId>
+			<version>${splice_machine.version}</version>
+        </dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- The configuration of the maven-jar plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.1</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<configuration>
+					<outputDirectory>target/classes/lib/</outputDirectory>
+				</configuration>
+			</plugin>
+     		<plugin>
+        			<groupId>org.apache.maven.plugins</groupId>
+        			<artifactId>maven-shade-plugin</artifactId>
+        			<version>1.5</version>
+        			<executions>
+          			<execution>
+            			<phase>package</phase>
+            			<goals>
+              			<goal>shade</goal>
+            			</goals>
+        	  		</execution>
+        		</executions>
+      		</plugin>		
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[2.0,)</versionRange>
+									</pluginExecutionFilter>
+									<action>
+										<execute />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+	
+</project>
