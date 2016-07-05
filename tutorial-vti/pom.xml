@@ -1,0 +1,127 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.splicemachine</groupId>
+	<artifactId>splice-tutorial-vti</artifactId>
+	<version>2.0</version>
+	<name>splice-tutorial-vti</name>
+	<description>Contains the sample code for creating a custom virtual table interface</description>
+
+	<repositories>
+		<repository>
+    			<id>splicemachine</id>
+    			<url>http://nexus.splicemachine.com/nexus/content/groups/developers</url>
+  		</repository>
+		<repository>
+			<id>github-releases</id>
+			<url>http://oss.sonatype.org/content/repositories/github-releases/</url>
+		</repository>
+		<repository>
+			<id>clojars.org</id>
+			<url>http://clojars.org/repo</url>
+		</repository>
+	</repositories>
+
+	<!-- splice_machine-assembly-2.0.1.11-SNAPSHOT-mapr5.1.0_complete.jar -->
+	<properties>
+		<java.version>1.7</java.version>
+		<splice_machine.version>2.0.1.16-SNAPSHOT</splice_machine.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>com.splicemachine</groupId>
+			<artifactId>splice_machine</artifactId>
+			<version>${splice_machine.version}</version>
+        </dependency>
+        <!-- Contains the SpliceSpark that is needed -->
+		<dependency>
+			<groupId>com.splicemachine</groupId>
+			<artifactId>db-engine</artifactId>
+			<version>${splice_machine.version}</version>
+        </dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<!-- Java Version -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+				<source>${java.version}</source>
+				<target>${java.version}</target>
+        </configuration>
+			</plugin>
+			<!-- The configuration of the maven-jar plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.1</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        			<artifactId>maven-shade-plugin</artifactId>
+        			<version>2.4.3</version>
+        			<executions>
+          			<execution>
+            			<phase>package</phase>
+            			<goals>
+              			<goal>shade</goal>
+            			</goals>
+            			<configuration>
+            			 <artifactSet>
+            			 <!-- 
+                <excludes>
+                  <exclude>classworlds:classworlds</exclude>
+                  <exclude>junit:junit</exclude>
+                  <exclude>jmock:*</exclude>
+                  <exclude>*:xml-apis</exclude>
+                  <exclude>org.apache.maven:lib:tests</exclude>
+                  <exclude>log4j:log4j:jar:</exclude>
+                </excludes>
+                 -->
+                 <includes>
+                 	<include>com.splicemachine:db-engine</include>
+                 </includes>
+              </artifactSet>
+			            </configuration>
+        	  		</execution>
+        		</executions>
+      		</plugin>	
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[2.0,)</versionRange>
+									</pluginExecutionFilter>
+									<action>
+										<execute />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+	
+</project>
