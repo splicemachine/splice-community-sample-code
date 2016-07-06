@@ -25,6 +25,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -40,18 +41,47 @@ public class SensorMessageVTI  implements DatasetProvider, VTICosting{
     
     private static final Logger LOG = Logger.getLogger(SensorMessageVTI.class);
 
-    private List<String> records;
+    private List<String> records = null;
     private ObjectMapper mapper = new ObjectMapper();
     
     protected OperationContext operationContext;
-    
+
+    /*temporary - Jira - DB-5472.
     public SensorMessageVTI (List<String> pRecords) {
         this.records = pRecords;
     }
-       
+    */
+
+    /**
+     * This function is a temporary workaround until the CAST exception
+     * is fixed - Jira - DB-5472.
+     * 
+     * @param pConcatenatedRecords
+     */
+    public SensorMessageVTI (String pConcatenatedRecords) {
+        if(pConcatenatedRecords != null) {
+            String[] aRecords = pConcatenatedRecords.split("\n");        
+            this.records = Arrays.asList(aRecords);  
+        }
+    }
+    
+    /* Temporary Jira - DB-5472.
     public static DatasetProvider getSensorMessageVTI(List<String> pRecords) {
         return new SensorMessageVTI(pRecords);
     }
+    */
+
+    /**
+     * This function is a temporary workaround until the CAST exception in 
+     * Jira - DB-5472 is fixed.
+     * 
+     * @param pRecords
+     * @return
+     */
+    public static DatasetProvider getSensorMessageVTI(String pConcatenatedRecords) {        
+        return new SensorMessageVTI(pConcatenatedRecords);
+    }
+    
     
     @Override
     public DataSet<LocatedRow> getDataSet(SpliceOperation op, DataSetProcessor dsp, ExecRow execRow) throws StandardException {
@@ -64,7 +94,8 @@ public class SensorMessageVTI  implements DatasetProvider, VTICosting{
             
             int numRcds = this.records == null ? 0 : this.records.size();
             
-            if(numRcds > 0 ) {            
+            if(numRcds > 0 ) {        
+                LOG.info("Records to process:" + numRcds);
                 //Loop through each record convert to a SensorObject
                 //and then set the values
                 for(String jsonString : records) {  
