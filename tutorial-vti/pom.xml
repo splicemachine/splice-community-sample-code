@@ -39,6 +39,18 @@
 			<artifactId>db-engine</artifactId>
 			<version>${splice_machine.version}</version>
         </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+		<!-- Needed just for running: mvn -DskipTests exec:java -DreadQueue -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.1</version>
+		</dependency>    
+
 	</dependencies>
 	<build>
 		<plugins>
@@ -66,36 +78,6 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<plugin>
-        		<groupId>org.apache.maven.plugins</groupId>
-        			<artifactId>maven-shade-plugin</artifactId>
-        			<version>2.4.3</version>
-        			<executions>
-          			<execution>
-            			<phase>package</phase>
-            			<goals>
-              			<goal>shade</goal>
-            			</goals>
-            			<configuration>
-            			 <artifactSet>
-            			 <!-- 
-                <excludes>
-                  <exclude>classworlds:classworlds</exclude>
-                  <exclude>junit:junit</exclude>
-                  <exclude>jmock:*</exclude>
-                  <exclude>*:xml-apis</exclude>
-                  <exclude>org.apache.maven:lib:tests</exclude>
-                  <exclude>log4j:log4j:jar:</exclude>
-                </excludes>
-                 -->
-                 <includes>
-                 	<include>com.splicemachine:db-engine</include>
-                 </includes>
-              </artifactSet>
-			            </configuration>
-        	  		</execution>
-        		</executions>
-      		</plugin>	
 		</plugins>
 		<pluginManagement>
 			<plugins>

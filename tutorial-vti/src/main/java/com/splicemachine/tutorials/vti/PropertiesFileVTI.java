@@ -25,6 +25,8 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 /**
  * The purpose of this de
  * 
@@ -32,6 +34,10 @@ import java.util.Properties;
  *
  */
 public class PropertiesFileVTI  implements DatasetProvider, VTICosting{
+    
+    private static final Logger LOG = Logger.getLogger(PropertiesFileVTI.class);
+
+
 
     private String fileName;
     
@@ -67,11 +73,9 @@ public class PropertiesFileVTI  implements DatasetProvider, VTICosting{
                 items.add(new LocatedRow(valueRow));
               }
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("File not found: " + this.fileName, e);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("Unexpected IO Exception: " + this.fileName, e);
         } finally {
             operationContext.popScope();
         }
