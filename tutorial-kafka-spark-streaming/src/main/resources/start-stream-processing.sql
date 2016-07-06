@@ -1,0 +1,1 @@
+call iot.processSensorStreamVTI('localhost:5181','test','sensor_messages',1);
