@@ -42,6 +42,10 @@ public class PropertiesFileVTI  implements DatasetProvider, VTICosting{
     private String fileName;
     
     protected OperationContext operationContext;
+
+    public PropertiesFileVTI () {
+
+    }
     
     public PropertiesFileVTI (String pfileName) {
         this.fileName = pfileName;
