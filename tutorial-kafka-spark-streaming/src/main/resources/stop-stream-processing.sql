@@ -1,1 +1,1 @@
-call iot.stopSensorStream();
+call iot.stopSensorStreamVTI();
