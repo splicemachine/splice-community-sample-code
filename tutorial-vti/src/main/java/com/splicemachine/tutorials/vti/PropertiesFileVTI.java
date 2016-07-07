@@ -28,33 +28,61 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 /**
- * The purpose of this de
+ * The is an example of a custom VTI that can be executed using a table
+ * function as well as a full method name.
+ * 
+ * The VTICosting is the interface that the query optimizer uses to determine
+ * the cost of executing the table function.
  * 
  * @author erindriggers
  *
  */
 public class PropertiesFileVTI  implements DatasetProvider, VTICosting{
     
+    //Used for logging
     private static final Logger LOG = Logger.getLogger(PropertiesFileVTI.class);
 
-
-
+    //Instance variable that will store the name of the properties file that is being read
     private String fileName;
     
+    //Provide external context which can be carried with the operation
     protected OperationContext operationContext;
 
+    /**
+     * This empty constructor is required if you want to access this VTI
+     * using a Table Function
+     */
     public PropertiesFileVTI () {
 
     }
     
+    /**
+     * This is the signature used by invoking the VTI using the class name.
+     * 
+     * @param pfileName
+     */
     public PropertiesFileVTI (String pfileName) {
         this.fileName = pfileName;
     }
-       
+    
+    /** 
+     * This static constructor is called by the VTI - Table Function
+     * 
+     * @param fileName
+     * @return
+     */
     public static DatasetProvider getPropertiesFileVTI(String fileName) {
         return new PropertiesFileVTI(fileName);
     }
     
+    /**
+     * Method is called by the VTIOperation process to get the resultset to be returned.
+     * 
+     * op - Reference to the operation at the top of the stack
+     * dsp - The mechanism for constructing the execution tree
+     * execRow - 
+     * 
+     */
     @Override
     public DataSet<LocatedRow> getDataSet(SpliceOperation op, DataSetProcessor dsp, ExecRow execRow) throws StandardException {
         operationContext = dsp.createOperationContext(op);
@@ -86,17 +114,29 @@ public class PropertiesFileVTI  implements DatasetProvider, VTICosting{
         return new ControlDataSet<>(items);
     }
 
+    /**
+     * The estimated cost to instantiate and iterate through the Table 
+     * Function.
+     */
     @Override
     public double getEstimatedCostPerInstantiation(VTIEnvironment arg0)
             throws SQLException {
         return 0;
     }
 
+    /**
+     * The estimated number of rows returned by the Table Function in a 
+     * single instantiation.
+     */
     @Override
     public double getEstimatedRowCount(VTIEnvironment arg0) throws SQLException {
         return 0;
     }
 
+    /**
+     * Whether or not the Table Function can be instantiated multiple times 
+     * within a single query execution.
+     */
     @Override
     public boolean supportsMultipleInstantiations(VTIEnvironment arg0)
             throws SQLException {
@@ -104,18 +144,20 @@ public class PropertiesFileVTI  implements DatasetProvider, VTICosting{
     }
 
     @Override
-    public ResultSetMetaData getMetaData() throws SQLException {
-        return metadata;
-    }
-
-    @Override
     public OperationContext getOperationContext() {
         return this.operationContext;
     }
     
-    /*
+    /**
+     * Dynamic MetaData used to dynamically bind a function.
+     * 
      * Metadata
      */
+    @Override
+    public ResultSetMetaData getMetaData() throws SQLException {
+        return metadata;
+    }
+    
     private static final ResultColumnDescriptor[] columnInfo = {
         EmbedResultSetMetaData.getResultColumnDescriptor("KEY1", Types.VARCHAR, false, 200),
         EmbedResultSetMetaData.getResultColumnDescriptor("VALUE", Types.VARCHAR, false, 200),

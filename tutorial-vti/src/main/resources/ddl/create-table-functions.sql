@@ -1,5 +1,4 @@
-
-CREATE FUNCTION propertiesFile2(propertyFilename VARCHAR(200))
+CREATE FUNCTION propertiesFile(propertyFilename VARCHAR(200))
    RETURNS TABLE
      (
      	KEY_NAME varchar(100),
