@@ -57,7 +57,7 @@ public class SparkStreamingMQTT implements Externalizable {
     public static void main(String[] args) {
         
         SparkStreamingMQTT standalone = new SparkStreamingMQTT();
-        standalone.processMQTT(args[0], args[1]);
+        standalone.processMQTT(args[0], args[1], Integer.parseInt(args[2]));
         
         
     }
@@ -70,7 +70,7 @@ public class SparkStreamingMQTT implements Externalizable {
      * @param topicList
      * @param numThreads
      */
-    public void processMQTT(final String broker, final String topic) {
+    public void processMQTT(final String broker, final String topic, final int numSeconds) {
 
 
         System.out.println("************ SparkStreamingMQTTOutside.processMQTT start");
@@ -80,7 +80,7 @@ public class SparkStreamingMQTT implements Externalizable {
        //1. Create the spark streaming context with a 1 second batch size
         SparkConf sparkConf = new SparkConf().setAppName("MQTT");
         // Create the context with a 1 second batch size
-        jssc = new JavaStreamingContext(sparkConf, Durations.seconds(1));
+        jssc = new JavaStreamingContext(sparkConf, Durations.seconds(numSeconds));
         jssc.checkpoint(checkpointDirectory);
 
         System.out.println("************ SparkStreamingMQTTOutside.processMQTT about to read the MQTTUtils.createStream");

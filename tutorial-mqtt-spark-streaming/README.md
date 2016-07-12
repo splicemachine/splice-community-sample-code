@@ -14,8 +14,8 @@ In this tutorial we are  demonostrating ow
 After completing the steps under How to Deploy the Tutorial Code, do the following:
 
 + Make sure mosquitto is started.  See [Start mosquitto](#mosquittoStart) below.
-+ Start the spark streaming script: run-mqtt-spark-streaming.sh.  The first parameter is the address for the mqtt broker.  The second is the topic name
-+ sudo -su mapr ./run-mqtt-spark-streaming.sh tcp://srv61:1883 /testing
++ Start the spark streaming script: run-mqtt-spark-streaming.sh.  The first parameter is the address for the mqtt broker, The second is the topic name and the third is the number of seconds each stream should run
++ sudo -su mapr ./run-mqtt-spark-streaming.sh tcp://srv61:1883 /testing 10
 + Start putting messages on the queue.  Follow the instructions under [How to put messages on the queue](#mosquittoPublisher)
 
 
