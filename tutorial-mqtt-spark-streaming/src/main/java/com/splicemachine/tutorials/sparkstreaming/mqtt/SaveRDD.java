@@ -16,6 +16,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.util.List;
 
+/**
+ * This is an example of spark streaming function that 
+ * inserts data into Splice Machine using a VTI.
+ * 
+ * @author Erin Driggers
+ *
+ */
 
 public class SaveRDD implements Function<JavaRDD<String>, Void>, Externalizable{
 
@@ -32,14 +39,23 @@ public class SaveRDD implements Function<JavaRDD<String>, Void>, Externalizable{
             int numRcds = rfidMessages.size();
             
             if(numRcds > 0) {
-                Connection con = DriverManager.getConnection("jdbc:splice://localhost:1527/splicedb;user=splice;password=admin");
-                
-                String vtiStatement = "INSERT INTO IOT.RFID " +
-                        "select s.* from new com.splicemachine.tutorials.mqtt.RFIDMessageVTI(?) s (" + RFIDMessage.getTableDefinition() + ")";
-                
-                PreparedStatement ps = con.prepareStatement(vtiStatement);
-                ps.setObject(1,rfidMessages);
-                ps.execute();
+                try {
+                    Connection con = DriverManager.getConnection("jdbc:splice://localhost:1527/splicedb;user=splice;password=admin");
+                    
+                    //Syntax for using a class instance in a VTI, this could also be a table function
+                    String vtiStatement = "INSERT INTO IOT.RFID " +
+                            "select s.* from new com.splicemachine.tutorials.sparkstreaming.mqtt.RFIDMessageVTI(?) s (" + RFIDMessage.getTableDefinition() + ")";
+                    
+                    PreparedStatement ps = con.prepareStatement(vtiStatement);
+                    ps.setObject(1,rfidMessages);
+                    ps.execute();
+                } catch (Exception e) {
+                    //It is important to catch the exceptions as log messages because it is difficult
+                    //to trace what is happening otherwise
+                    LOG.error("Exception saving MQTT records to the database" + e.getMessage(), e);
+                } finally {
+                    LOG.info("Complete insert into IOT.RFID");
+                }
             }
                        
         } 

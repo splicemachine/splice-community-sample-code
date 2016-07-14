@@ -12,6 +12,13 @@ import com.splicemachine.db.iapi.types.SQLTimestamp;
 import com.splicemachine.db.iapi.types.SQLVarchar;
 import com.splicemachine.db.impl.sql.execute.ValueRow;
 
+/**
+ * This is a POJO that represents
+ * a SENSOR_MESSAGE message.  
+ *
+ * Created by Erin Driggers
+ */
+
 public class SensorMessage {
     
     private String id;
@@ -51,6 +58,10 @@ public class SensorMessage {
     public void setRecordedTime(Timestamp recordedTime) {
         this.recordedTime = recordedTime;
     }
+    
+    /**
+     * Builds a string with the values of the instance variables 
+     */
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("id=["+this.getId() +"]\n");
@@ -60,16 +71,13 @@ public class SensorMessage {
         sb.append("recordedTime=["+this.getRecordedTime() +"]\n");
         return sb.toString();
     }
-    
-    public void addParametersToPreparedStatement(PreparedStatement stmt) throws SQLException {
-        
-        stmt.setString(1,this.getId());
-        stmt.setString(2,this.getLocation());
-        stmt.setDouble(3,this.getTemperature());
-        stmt.setDouble(4,this.getHumidity());
-        stmt.setTimestamp(5,this.getRecordedTime());
-    }
-    
+
+    /**
+     * Utility function to build an prepared insert statement
+     * @param con
+     * @return
+     * @throws SQLException
+     */
     public static PreparedStatement getPreparedStatement(Connection con) throws SQLException {
         StringBuilder sb = new StringBuilder();
         sb.append("insert into iot.SENSOR_MESSAGES values(");
@@ -83,7 +91,11 @@ public class SensorMessage {
         sb.append(")");
         return con.prepareStatement(sb.toString());
     }
-    
+
+    /**
+     * Table definition to use when using a VTI that is an instance of a class
+     * @return
+     */
     public static String getTableDefinition() {
         return 
         "id varchar(20), " +
@@ -93,16 +105,14 @@ public class SensorMessage {
         "recordedtime timestamp ";
     }
     
-    public String[] getDataAsStringArray() {
-        String[] rtnVal = new String[5];
-        rtnVal[0]="" + this.getId();
-        rtnVal[1]="" + this.getLocation();
-        rtnVal[2]="" + this.getTemperature();
-        rtnVal[3]="" + this.getHumidity();
-        rtnVal[4]="" + this.getRecordedTime();
-        return rtnVal;
-    }
 
+    /**
+     * Used by the VTI to build a Splice Machine compatible resultset
+     * 
+     * @return
+     * @throws SQLException
+     * @throws StandardException
+     */
     public ValueRow getRow() throws SQLException, StandardException {       
         ValueRow valueRow = new ValueRow(5);
         valueRow.setColumn(1,new SQLVarchar(this.getId()));

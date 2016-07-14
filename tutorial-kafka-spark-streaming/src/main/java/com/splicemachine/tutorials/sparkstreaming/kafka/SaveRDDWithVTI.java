@@ -4,14 +4,10 @@ import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function;
 
-
-import scala.Tuple2;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -19,7 +15,7 @@ import java.util.List;
 
 
 /**
- * Created by jleach on 5/19/16.
+ * Created by Erin Driggers
  */
 public class SaveRDDWithVTI implements Function<JavaRDD<String>, Void>, Externalizable{
 
@@ -28,7 +24,7 @@ public class SaveRDDWithVTI implements Function<JavaRDD<String>, Void>, External
 
     @Override
     public Void call(JavaRDD<String> sensorMessagesRdd) throws Exception {
-        LOG.info("In call for SaveRDDWithVTI");   
+  
         if(sensorMessagesRdd!=null && sensorMessagesRdd.count() > 0) {
             LOG.info("Data to process:");   
             

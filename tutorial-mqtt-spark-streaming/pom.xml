@@ -25,37 +25,13 @@
 	</prerequisites>
 	
 	<!-- Properties that can easily and quickly be updated on a per project basis instead of updating the values below -->
-<!--	
-	<properties>
-		<java.version>1.7</java.version>
-		<splice_machine.version>2.0.1.11-SNAPSHOT</splice_machine.version>
-		<envClassifier>cdh5.4.10</envClassifier>
-        <envHbase>hbase1.0.0</envHbase>
-        <hadoop.version>2.6.0-${envClassifier}</hadoop.version>
-        <hadoop.tools.version>2.6.0-mr1-${envClassifier}</hadoop.tools.version>
-        <hbase.version>1.0.0-${envClassifier}</hbase.version>
-        <hive.version>1.1.0-${envClassifier}</hive.version>
-        <zookeeper.version>3.4.5-${envClassifier}</zookeeper.version>
-        <spark-assembly-id>spark-assembly-hadoop2.6.0-${envClassifier}</spark-assembly-id>
-        <spark.version>1.6.1</spark.version>
-        <kafka.version>0.8.2.0-kafka-1.2.0</kafka.version>
-	</properties>
--->	
 
 	<!-- splice_machine-assembly-2.0.1.11-SNAPSHOT-mapr5.1.0_complete.jar -->
 	<properties>
 		<java.version>1.7</java.version>
 		<splice_machine.version>2.0.1.17-SNAPSHOT</splice_machine.version>
-		<envClassifier>mapr5.1.0</envClassifier>
-        <envHbase>hbase1.0.0</envHbase>
-        <hadoop.version>2.7.0-mapr-1602</hadoop.version>
-        <hadoop.tools.version>1.0.3-mapr-5.1.0</hadoop.tools.version>
-        <hbase.version>1.1.1-mapr-1602</hbase.version>
-        <hive.version>0.13.0-mapr-1602</hive.version>
-        <zookeeper.version>3.4.5-mapr-1503</zookeeper.version>
         <spark-assembly-id>spark-assembly-hadoop2.7.0-mapr-1602</spark-assembly-id>
         <spark.version>1.6.1</spark.version>
-        <kafka.version>0.8.2.1</kafka.version>
 	</properties>
 
 
@@ -99,13 +75,6 @@
 			<version>${splice_machine.version}</version>
         </dependency>
         <!-- Contains the SpliceSpark that is needed -->
-<!-- 
-		<dependency>
-			<groupId>com.splicemachine</groupId>
-			<artifactId>hbase_sql-${envClassifier}</artifactId>
-			<version>${splice_machine.version}</version>
-        </dependency>
- -->        
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>${spark-assembly-id}</artifactId>
@@ -149,13 +118,6 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.1</version>
 		</dependency>    
-<!-- 		
-        <dependency>
-            <groupId>org.apache.zookeeper</groupId>
-            <artifactId>zookeeper</artifactId>
-            <version>${zookeeper.version}</version>
-        </dependency>	
- -->        	
         <!-- Used for parsing CSV to object conversion -->
         <dependency>
 		    <groupId>net.sf.supercsv</groupId>

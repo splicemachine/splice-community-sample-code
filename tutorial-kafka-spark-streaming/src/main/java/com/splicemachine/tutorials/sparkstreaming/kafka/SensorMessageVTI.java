@@ -31,9 +31,12 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 /**
- * The purpose of this de
+ * This is an example of a VTI that reads in a list of strings
+ * where each string is in a JSON format, it converts it into an 
+ * RFIDMessage object and returns the list in a Splice Machine
+ * compatible format.
  * 
- * @author erindriggers
+ * @author Erin Driggers
  *
  */
 public class SensorMessageVTI  implements DatasetProvider, VTICosting{

@@ -8,6 +8,14 @@ import com.splicemachine.db.iapi.types.SQLTimestamp;
 import com.splicemachine.db.iapi.types.SQLVarchar;
 import com.splicemachine.db.impl.sql.execute.ValueRow;
 
+/**
+ * This is a POJO that represents
+ * an RFID message.  It is used in converting 
+ * incoming messages from a CSV entry to an object
+ * 
+ * @author Erin Driggers
+ *
+ */
 public class RFIDMessage {
 
     private String assetNumber;
@@ -63,6 +71,9 @@ public class RFIDMessage {
         this.assetLocation = assetLocation;
     }
     
+    /**
+     * Builds a string with the values of the instance variables 
+     */
     public String toString() {
         return 
             "assetNumber=" + this.getAssetNumber() + "\n" +
@@ -72,6 +83,13 @@ public class RFIDMessage {
             "assetLocation=" + this.getAssetLocation() + "\n";
     }
     
+    /**
+     * Used by the VTI to build a Splice Machine compatible resultset
+     * 
+     * @return
+     * @throws SQLException
+     * @throws StandardException
+     */
     public ValueRow getRow() throws SQLException, StandardException {
         ValueRow valueRow = new ValueRow(5);
         valueRow.setColumn(1,new SQLVarchar(this.getAssetNumber()));
@@ -82,6 +100,10 @@ public class RFIDMessage {
         return valueRow;
     }
     
+    /**
+     * Table definition to use when using a VTI that is an instance of a class
+     * @return
+     */
     public static String getTableDefinition() {
         return
         "ASSET_NUMBER varchar(50), " +

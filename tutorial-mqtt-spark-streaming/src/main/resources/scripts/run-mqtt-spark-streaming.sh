@@ -9,7 +9,7 @@ export APPLICATION_JAR="/opt/splice/default/lib/splice-tutorial-mqtt-2.0.jar"
 #Comma delimited list of jars the application is dependent on
 export ADDITIONAL_JARS="/opt/splice/default/lib/spark-streaming-mqtt_2.10-1.6.1.jar,/opt/splice/default/lib/org.eclipse.paho.client.mqttv3-1.1.0.jar"
 
-EXAMPLE_CLASS="com.splicemachine.tutorials.streaming.mqtt.SparkStreamingMQTT"
+EXAMPLE_CLASS="com.splicemachine.tutorials.sparkstreaming.mqtt.SparkStreamingMQTT"
 
 exec "${SPARK_HOME}"/bin/spark-submit \
   --name TutorialMQTT \

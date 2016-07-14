@@ -77,13 +77,13 @@
 			<version>${splice_machine.version}</version>
         </dependency>
 
-<!--
+
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_2.10</artifactId>
             <version>${spark.version}</version>
         </dependency>
- -->     
+    
    
         <dependency>
             <groupId>org.apache.spark</groupId>
@@ -91,13 +91,13 @@
             <version>${spark.version}</version>
         </dependency>
 
-<!--         
+        
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka_2.10</artifactId>
             <version>${kafka.version}</version>
         </dependency>
- -->
+
         
         <dependency>
 			<groupId>org.apache.kafka</groupId>

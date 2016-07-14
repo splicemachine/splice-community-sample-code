@@ -29,9 +29,12 @@ import org.supercsv.io.CsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 
 /**
- * The purpose of this de
+ * This is an example of a VTI that reads in a list of strings
+ * where each string is a CSV format, it converts it into an 
+ * RFIDMessage object and returns the list in a Splice Machine
+ * compatible format.
  * 
- * @author erindriggers
+ * @author Erin Driggers
  *
  */
 public class RFIDMessageVTI  implements DatasetProvider, VTICosting{
@@ -57,6 +60,11 @@ public class RFIDMessageVTI  implements DatasetProvider, VTICosting{
         
     }
 
+    /**
+     * Sets the list of records to be proceed.
+     * 
+     * @param pRecords
+     */
     public RFIDMessageVTI (List<String> pRecords) {
         this.records = pRecords;
     }

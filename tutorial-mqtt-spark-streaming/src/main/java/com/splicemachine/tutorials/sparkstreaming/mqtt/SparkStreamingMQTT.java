@@ -39,6 +39,14 @@ import org.apache.spark.streaming.api.java.JavaStreamingContextFactory;
 import scala.Tuple2;
 
 
+/**
+ * This is an example of spark streaming job that 
+ * reads messages from an MQTT queue and inserts them
+ * into splice machine.
+ * 
+ * @author Erin Driggers
+ *
+ */
 
 public class SparkStreamingMQTT implements Externalizable {
         

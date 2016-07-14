@@ -31,6 +31,8 @@ import org.apache.log4j.Logger;
  * The is an example of a custom VTI that can be executed using a table
  * function as well as a full method name.
  * 
+ * The DatasetProvider is the mechanism for constructing the execution tree
+ * 
  * The VTICosting is the interface that the query optimizer uses to determine
  * the cost of executing the table function.
  * 

@@ -9,6 +9,9 @@ In this tutorial we are demonstrating how to read data from an MQTT queue, put t
 - SaveRDD.java - inserts the data into Splice Machine using the RFIDMessageVTI class
 - SparkStreamingMQTT.java - This is the spark streaming job that reads messages from the MQTT queue.
 
+##Scripts
+- /ddl/create-tables.sql - Create the table where RFID messages will be stored
+- /scripts/run-mqtt-spark-streaming.sh - Script for starting the Spark Streaming Job
 
 #How to Deploy the tutorial code
 - Compile and package the code: mvn clean compile package
@@ -32,16 +35,16 @@ After completing the steps under How to Deploy the Tutorial Code, do the followi
 Mosquitto (mosquitto.org) is an open source message broker that implements the MQTT protocol.
 
 ##Add Repostory to centos
-cd /etc/yum.repos.d
-wget xxx
-sudo yum update
+- cd /etc/yum.repos.d
+- wget xxx
+- sudo yum update
 
 ##Install mosquitto & mosquitto-clients
-sudo yum install mosquitto
-sudo yum install mosquitto-clients
+- sudo yum install mosquitto
+- sudo yum install mosquitto-clients
 
 ##Start mosquitto<a id="mosquittoStart"></a>
-sudo su /usr/sbin/mosquitto -d -c /etc/mosquitto/mosquitto.conf > /var/log/mosquitto.log 2>&1
+- sudo su /usr/sbin/mosquitto -d -c /etc/mosquitto/mosquitto.conf > /var/log/mosquitto.log 2>&1
 
 
 ##Start the client to listen for messages on the queue 
@@ -54,16 +57,8 @@ There is a java program that is setup to put messages on the queue.  This is the
 
 java -cp /opt/splice/default/lib/splice-tutorial-mqtt-2.0-SNAPSHOT.jar:/opt/splice/default/lib/org.eclipse.paho.client.mqttv3-1.1.0.jar com.splicemachine.tutorials.sparkstreaming.mqtt.MQTTPublisher tcp://localhost:1883 /testing 1000 R1
 
-###It puts messages like the following on the MQTT queue
+__NOTE__: The source code for this utility is under a different github project: tutorial-kafka-producer
 
-R1Asset0,Location0,2016-07-08 20:38:42.181
-R1Asset1,Location1,2016-07-08 20:38:42.243
-R1Asset2,Location2,2016-07-08 20:38:42.268
-R1Asset3,Location3,2016-07-08 20:38:42.285
-R1Asset4,Location4,2016-07-08 20:38:42.302
-R1Asset5,Location5,2016-07-08 20:38:42.319
-R1Asset6,Location6,2016-07-08 20:38:42.336
-R1Asset7,Location7,2016-07-08 20:38:42.352
-R1Asset8,Location8,2016-07-08 20:38:42.369
-R1Asset9,Location9,2016-07-08 20:38:42.395
 
+## Notes
+The current build process is setup to be compiled and executed on a MapR environment using a SNAPSHOT version of Splice Machine 2.0.  You will need to change the properties section in your pom.xml in order to compile and run it against other distributions.

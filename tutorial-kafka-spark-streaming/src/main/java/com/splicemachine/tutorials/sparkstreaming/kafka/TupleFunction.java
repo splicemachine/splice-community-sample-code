@@ -11,7 +11,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 /**
- * Created by jleach on 5/19/16.
+ * Created by Erin Driggers
  */
 public class TupleFunction implements Function<Tuple2<String, String>, String>, Externalizable{
 

@@ -40,9 +40,14 @@ public class KafkaTopicProducer {
         
     }
     
+    /**
+     * Sends messages to the Kafka queue.
+     * 
+     */
     public void generateMessages() {
         df.setRoundingMode(RoundingMode.CEILING);
         
+        //Define the properties for the Kafka Connection
         Properties props = new Properties();
         props.put("bootstrap.servers", server); //kafka server
         props.put("acks", "all");
@@ -54,43 +59,68 @@ public class KafkaTopicProducer {
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         
         
-        //Put messages on the queue
+        //Create a KafkaProducer using the Kafka Connection properties
         KafkaProducer<String, String> producer = new KafkaProducer<>(props);
         long nEvents = 0;
+        
+        //Loop through for the number of messages you want to put on the Queue
         for (nEvents = 0; nEvents < totalEvents; nEvents++) { 
             String id = "A_" + nEvents;
+            
+            //Build a String that contains JSON data
             String json = "{\"id\": \"" + id + "\"," +
                     "\"location\": \"" + getLocation() + "\"," +
                     "\"temperature\": " + formatDouble(getTemperature()) + "," +
                     "\"humidity\": " + formatDouble(getHumidity()) + "," +
                     "\"recordedTime\": \"" + sd.format(new Timestamp((new Date()).getTime())) + "\"}";
+            //Put the id and json string on the Kafka queue
             producer.send(new ProducerRecord<String, String>(topic, id, json));
         }
+        //Flush and close the queue
         producer.flush();
         producer.close();
+        //display the number of messages that aw
         System.out.println("messages pushed:" + nEvents);
-        
-
     }
     
+    /**
+     * Get a randomly generated temperature value
+     * @return
+     */
     public double getTemperature() {
         return 9.0 + (95.5 - 9.0) * r.nextDouble();
     }
     
+    /**
+     * Get a randomly generated humidy value
+     * @return
+     */
     public double getHumidity() {
         return 54.8 + (90.7 - 54.8) * r.nextDouble();
     }
     
+    /**
+     * Format the double to 2 decimal places
+     * @param dbl
+     * @return
+     */
     public String formatDouble(double dbl) {
         return df.format(dbl);
     }
     
+    /**
+     * Get a randomly generated value for location
+     * @return
+     */
     public String getLocation() {
         int max = locations.length;
         int randomNum = r.nextInt((max - 0)) + 0;
         return locations[randomNum];
     }
     
+    /**
+     * Static list of locations
+     */
     public static final String[] locations = {
         "Alachua",
         "Baker",
