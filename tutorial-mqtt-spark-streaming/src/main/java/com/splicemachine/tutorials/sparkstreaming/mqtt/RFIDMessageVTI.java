@@ -1,4 +1,4 @@
-package com.splicemachine.tutorials.mqtt;
+package com.splicemachine.tutorials.sparkstreaming.mqtt;
 
 import java.io.StringReader;
 
@@ -20,7 +20,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -58,40 +57,12 @@ public class RFIDMessageVTI  implements DatasetProvider, VTICosting{
         
     }
 
-    /*temporary - Jira - DB-5472.
     public RFIDMessageVTI (List<String> pRecords) {
         this.records = pRecords;
     }
-    */
 
-    /**
-     * This function is a temporary workaround until the CAST exception
-     * is fixed - Jira - DB-5472.
-     * 
-     * @param pConcatenatedRecords
-     */
-    public RFIDMessageVTI (String pConcatenatedRecords) {
-        if(pConcatenatedRecords != null) {
-            String[] aRecords = pConcatenatedRecords.split("\n");        
-            this.records = Arrays.asList(aRecords);  
-        }
-    }
-    
-    /* Temporary Jira - DB-5472.
     public static DatasetProvider getRFIDMessageVTI(List<String> pRecords) {
-        return new SensorMessageVTI(pRecords);
-    }
-    */
-
-    /**
-     * This function is a temporary workaround until the CAST exception in 
-     * Jira - DB-5472 is fixed.
-     * 
-     * @param pRecords
-     * @return
-     */
-    public static DatasetProvider getRFIDMessageVTI(String pConcatenatedRecords) {        
-        return new RFIDMessageVTI(pConcatenatedRecords);
+        return new RFIDMessageVTI(pRecords);
     }
     
     

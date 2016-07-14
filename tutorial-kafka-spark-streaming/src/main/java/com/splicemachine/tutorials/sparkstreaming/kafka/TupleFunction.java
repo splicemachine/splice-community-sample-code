@@ -1,4 +1,4 @@
-package com.splicemachine.tutorials.sparkstreaming;
+package com.splicemachine.tutorials.sparkstreaming.kafka;
 
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.function.Function;

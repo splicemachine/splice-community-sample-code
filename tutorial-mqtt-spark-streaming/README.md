@@ -1,13 +1,22 @@
 #Overview
-In this tutorial we are  demonostrating ow 
+In this tutorial we are demonstrating how to read data from an MQTT queue, put them in a spark stream and store the data in Splice Machine. MQTTPublisher places messages in csv format on the MQTT queue, a spark application reads the data from the queue converts it into an RFIDMessage and then saves it to Splice Machine using a VTI.
+
+#Code
+## Java
+- MQTTPublisher.java - This is a class which will put some csv messages on an MQTT queue.
+- RFIDMessage.java - POJO for converting from a csv string to an object to a database entry
+- RFIDMessageVTI.java - VTI for parsing an RFIDMessage
+- SaveRDD.java - inserts the data into Splice Machine using the RFIDMessageVTI class
+- SparkStreamingMQTT.java - This is the spark streaming job that reads messages from the MQTT queue.
+
 
 #How to Deploy the tutorial code
 - Compile and package the code: mvn clean compile package
-- Copy the ./target/splice-cs-mqtt-0.0.1-SNAPSHOT.jar to each server and place it in the /opt/splice/default/lib directory
+- Copy the ./target/splice-tutorial-mqtt-2.0.jar to each server and place it in the /opt/splice/default/lib directory
 - Copy spark-streaming-mqtt_2.10-1.6.1.jar to each server in the /opt/splice/default/lib directory
 - Copy org.eclipse.paho.client.mqttv3-1.1.0.jar to each server in the /opt/splice/default/lib directory
 - Restart Hbase
-- Create the target table in splice machine.  Run the SQL script create-table.sql
+- Create the target table in splice machine.  Run the SQL script create-tables.sql
 
 
 #How to run the tutorial code
@@ -41,20 +50,20 @@ You only want to do this for testing purposes.  When you are running the spark d
 - mosquitto_sub -h localhost -t /testing
 
 ##How to put messages on the queue<a id="mosquittoPublisher"></a>
-There is a java program that is setup to put messages on the queue.  This is the syntax for running the program.  The first parameter is the topic name, the second parameter is the Broker URL and the third parameter is the number of iterations to execute
+There is a java program that is setup to put messages on the queue.  This is the syntax for running the program.  The first parameter is the topic name, the second parameter is the Broker URL,  the third parameter is the number of iterations to execute and the fourth parameter is a prefix for the run
 
-java -cp /opt/splice/default/lib/splice-cs-mqtt-0.0.1-SNAPSHOT.jar:/opt/splice/default/lib/org.eclipse.paho.client.mqttv3-1.1.0.jar com.splicemachine.tutorials.mqtt.MQTTPublisher tcp://localhost:1883 /testing 1000
+java -cp /opt/splice/default/lib/splice-tutorial-mqtt-2.0-SNAPSHOT.jar:/opt/splice/default/lib/org.eclipse.paho.client.mqttv3-1.1.0.jar com.splicemachine.tutorials.sparkstreaming.mqtt.MQTTPublisher tcp://localhost:1883 /testing 1000 R1
 
 ###It puts messages like the following on the MQTT queue
 
-Asset0,Location0,2016-07-08 20:38:42.181
-Asset1,Location1,2016-07-08 20:38:42.243
-Asset2,Location2,2016-07-08 20:38:42.268
-Asset3,Location3,2016-07-08 20:38:42.285
-Asset4,Location4,2016-07-08 20:38:42.302
-Asset5,Location5,2016-07-08 20:38:42.319
-Asset6,Location6,2016-07-08 20:38:42.336
-Asset7,Location7,2016-07-08 20:38:42.352
-Asset8,Location8,2016-07-08 20:38:42.369
-Asset9,Location9,2016-07-08 20:38:42.395
+R1Asset0,Location0,2016-07-08 20:38:42.181
+R1Asset1,Location1,2016-07-08 20:38:42.243
+R1Asset2,Location2,2016-07-08 20:38:42.268
+R1Asset3,Location3,2016-07-08 20:38:42.285
+R1Asset4,Location4,2016-07-08 20:38:42.302
+R1Asset5,Location5,2016-07-08 20:38:42.319
+R1Asset6,Location6,2016-07-08 20:38:42.336
+R1Asset7,Location7,2016-07-08 20:38:42.352
+R1Asset8,Location8,2016-07-08 20:38:42.369
+R1Asset9,Location9,2016-07-08 20:38:42.395
 

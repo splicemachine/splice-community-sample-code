@@ -1,4 +1,4 @@
-package com.splicemachine.tutorials.mqtt;
+package com.splicemachine.tutorials.sparkstreaming.mqtt;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;

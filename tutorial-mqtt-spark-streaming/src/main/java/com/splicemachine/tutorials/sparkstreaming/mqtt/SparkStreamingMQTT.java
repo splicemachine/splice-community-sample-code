@@ -1,4 +1,4 @@
-package com.splicemachine.tutorials.mqtt;
+package com.splicemachine.tutorials.sparkstreaming.mqtt;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -26,7 +26,6 @@ import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
-import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaPairDStream;
 import org.apache.spark.streaming.api.java.JavaPairInputDStream;
@@ -55,49 +54,41 @@ public class SparkStreamingMQTT implements Externalizable {
     String checkpointDirectory = "/checkpoint/";
     
     public static void main(String[] args) {
-        
         SparkStreamingMQTT standalone = new SparkStreamingMQTT();
         standalone.processMQTT(args[0], args[1], Integer.parseInt(args[2]));
-        
-        
     }
     
     /**
-     * This will start the spark stream that is reading from the kafka queue
+     * This will start the spark stream that is reading from the MQTT queue
      * 
-     * @param zkQuorum
-     * @param group
-     * @param topicList
-     * @param numThreads
+     * @param broker - MQTT broker url
+     * @param topic - MQTT topic name
+     * @param numSeconds - Number of seconds between batch size
      */
     public void processMQTT(final String broker, final String topic, final int numSeconds) {
 
 
-        System.out.println("************ SparkStreamingMQTTOutside.processMQTT start");
+        LOG.info("************ SparkStreamingMQTTOutside.processMQTT start");
         
-        System.out.println("************ SparkStreamingMQTTOutside.processMQTT about to create JavaStreamingContext");
-
-       //1. Create the spark streaming context with a 1 second batch size
+       // Create the spark application and set the name to MQTT
         SparkConf sparkConf = new SparkConf().setAppName("MQTT");
-        // Create the context with a 1 second batch size
+        
+        // Create the spark streaming context with a 'numSeconds' second batch size
         jssc = new JavaStreamingContext(sparkConf, Durations.seconds(numSeconds));
         jssc.checkpoint(checkpointDirectory);
 
-        System.out.println("************ SparkStreamingMQTTOutside.processMQTT about to read the MQTTUtils.createStream");
-
+        LOG.info("************ SparkStreamingMQTTOutside.processMQTT about to read the MQTTUtils.createStream");
         //2. MQTTUtils to collect MQTT messages
         JavaReceiverInputDStream<String> messages = MQTTUtils.createStream(jssc, broker, topic);
         
-        System.out.println("************ SparkStreamingMQTTOutside.processMQTT about to do foreachRDD");
-        //Save
+        LOG.info("************ SparkStreamingMQTTOutside.processMQTT about to do foreachRDD");
+        //process the messages on the queue and save them to the database
         messages.foreachRDD(new SaveRDD());
 
         
-        System.out.println("************ SparkStreamingMQTTOutside.processMQTT prior to context.strt");
-
+        LOG.info("************ SparkStreamingMQTTOutside.processMQTT prior to context.strt");
         // Start the context
         jssc.start();
-
         jssc.awaitTermination();
     }
 

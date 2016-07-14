@@ -1,0 +1,74 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<!-- This is a pom.xml file for customer solutions.  The 
+		mvn clean install -Pcdh5.4.10 -DskipTests 
+	-->
+
+	<!-- Supported POM version -->
+	<modelVersion>4.0.0</modelVersion>
+	<!-- Unique amongst an organization - the dots are replaced by / for the directory structure.  This group will live under the directory $M2_REPO/com/splicemachine -->
+	<groupId>com.splicemachine</groupId>
+	<!-- Name that the project is known by.  This artifact will live under the directory $M2_REPO/com/splicemachine/splice-cs-kafka -->
+	<artifactId>splice-tutorial-kafka-producer</artifactId>
+	<!-- Current version.  Separates versions from each other.  This version will live under the directory $M2_REPO/com/splicemachine/splice-cs-kafka/0.0.1-SNAPSHOT  -->
+	<version>2.0</version>
+	<!-- How the project is packaged -->
+	<packaging>jar</packaging>
+	<!-- Refers to the name of the project -->
+	<name>Demo project for Kafka / Spark Streaming and Splice Machine</name>
+	
+	<!-- Describes the prerequisites in the build environment for this project -->
+	<prerequisites>
+		<maven>3.3.9</maven>
+	</prerequisites>
+	
+	<!-- Properties that can easily and quickly be updated on a per project basis instead of updating the values below -->
+
+	<!-- splice_machine-assembly-2.0.1.11-SNAPSHOT-mapr5.1.0_complete.jar -->
+	<properties>
+		<java.version>1.7</java.version>
+	</properties>
+
+	<!-- When using Maven, particularly in a corporate environment, connecting to the internet to download dependencies is not acceptable for security, 
+	speed or bandwidth reasons. For that reason, it is desirable to set up an internal repository to house a copy of artifacts, and to 
+	publish private artifacts to. -->
+	<!-- The repository property specifies the internal splicemachine repository -->
+	<repositories>
+		<repository>
+			<id>apache-repo</id>
+			<name>Apache Repository</name>
+			<url>https://repository.apache.org/content/repositories/releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>		
+	</repositories>
+	<dependencies>
+        <dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-clients</artifactId>
+			<version>0.9.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+	        <plugin>
+	          <groupId>org.apache.maven.plugins</groupId>
+	          <artifactId>maven-compiler-plugin</artifactId>
+	          <version>3.1</version>
+	          <configuration>
+	            <source>${java.version}</source>
+	            <target>${java.version}</target>
+	            <encoding>UTF-8</encoding>
+	            <maxmem>1024m</maxmem>
+	            <fork>true</fork>
+	          </configuration>
+	        </plugin>		
+		</plugins>
+	</build>	
+</project>

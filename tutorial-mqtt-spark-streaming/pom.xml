@@ -11,9 +11,9 @@
 	<!-- Unique amongst an organization - the dots are replaced by / for the directory structure.  This group will live under the directory $M2_REPO/com/splicemachine -->
 	<groupId>com.splicemachine</groupId>
 	<!-- Name that the project is known by.  This artifact will live under the directory $M2_REPO/com/splicemachine/splice-cs-kafka -->
-	<artifactId>splice-cs-mqtt</artifactId>
+	<artifactId>splice-tutorial-mqtt</artifactId>
 	<!-- Current version.  Separates versions from each other.  This version will live under the directory $M2_REPO/com/splicemachine/splice-cs-kafka/0.0.1-SNAPSHOT  -->
-	<version>0.0.1-SNAPSHOT</version>
+	<version>2.0</version>
 	<!-- How the project is packaged -->
 	<packaging>jar</packaging>
 	<!-- Refers to the name of the project -->
@@ -45,7 +45,7 @@
 	<!-- splice_machine-assembly-2.0.1.11-SNAPSHOT-mapr5.1.0_complete.jar -->
 	<properties>
 		<java.version>1.7</java.version>
-		<splice_machine.version>2.0.1.11-SNAPSHOT</splice_machine.version>
+		<splice_machine.version>2.0.1.17-SNAPSHOT</splice_machine.version>
 		<envClassifier>mapr5.1.0</envClassifier>
         <envHbase>hbase1.0.0</envHbase>
         <hadoop.version>2.7.0-mapr-1602</hadoop.version>
@@ -99,11 +99,13 @@
 			<version>${splice_machine.version}</version>
         </dependency>
         <!-- Contains the SpliceSpark that is needed -->
+<!-- 
 		<dependency>
 			<groupId>com.splicemachine</groupId>
 			<artifactId>hbase_sql-${envClassifier}</artifactId>
 			<version>${splice_machine.version}</version>
         </dependency>
+ -->        
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>${spark-assembly-id}</artifactId>
@@ -147,12 +149,13 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.1</version>
 		</dependency>    
-		<!-- Needed just for running: mvn -DskipTests exec:java -DreadQueue -->
+<!-- 		
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
             <version>${zookeeper.version}</version>
-        </dependency>		
+        </dependency>	
+ -->        	
         <!-- Used for parsing CSV to object conversion -->
         <dependency>
 		    <groupId>net.sf.supercsv</groupId>

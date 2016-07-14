@@ -1,4 +1,4 @@
-package com.splicemachine.tutorials.sparkstreaming.vti;
+package com.splicemachine.tutorials.sparkstreaming.kafka;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,7 +19,6 @@ import com.splicemachine.derby.stream.iapi.DataSetProcessor;
 import com.splicemachine.derby.stream.iapi.OperationContext;
 import com.splicemachine.derby.vti.iapi.DatasetProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.splicemachine.tutorials.sparkstreaming.SensorMessage;
 
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -46,43 +45,15 @@ public class SensorMessageVTI  implements DatasetProvider, VTICosting{
     
     protected OperationContext operationContext;
 
-    /*temporary - Jira - DB-5472.
+
     public SensorMessageVTI (List<String> pRecords) {
         this.records = pRecords;
     }
-    */
-
-    /**
-     * This function is a temporary workaround until the CAST exception
-     * is fixed - Jira - DB-5472.
-     * 
-     * @param pConcatenatedRecords
-     */
-    public SensorMessageVTI (String pConcatenatedRecords) {
-        if(pConcatenatedRecords != null) {
-            String[] aRecords = pConcatenatedRecords.split("\n");        
-            this.records = Arrays.asList(aRecords);  
-        }
-    }
     
-    /* Temporary Jira - DB-5472.
     public static DatasetProvider getSensorMessageVTI(List<String> pRecords) {
         return new SensorMessageVTI(pRecords);
     }
-    */
 
-    /**
-     * This function is a temporary workaround until the CAST exception in 
-     * Jira - DB-5472 is fixed.
-     * 
-     * @param pRecords
-     * @return
-     */
-    public static DatasetProvider getSensorMessageVTI(String pConcatenatedRecords) {        
-        return new SensorMessageVTI(pConcatenatedRecords);
-    }
-    
-    
     @Override
     public DataSet<LocatedRow> getDataSet(SpliceOperation op, DataSetProcessor dsp, ExecRow execRow) throws StandardException {
         operationContext = dsp.createOperationContext(op);
@@ -92,14 +63,17 @@ public class SensorMessageVTI  implements DatasetProvider, VTICosting{
         
         try {
             
+            LOG.error("in VTI:" + records);
+            
             int numRcds = this.records == null ? 0 : this.records.size();
             
             if(numRcds > 0 ) {        
-                LOG.info("Records to process:" + numRcds);
+                LOG.error("Records to process:" + numRcds);
                 //Loop through each record convert to a SensorObject
                 //and then set the values
                 for(String jsonString : records) {  
                     SensorMessage sensor = mapper.readValue(jsonString, SensorMessage.class);
+                    LOG.error("adding record:" + sensor.getId());
                     items.add(new LocatedRow(sensor.getRow()));
                 }
             }
@@ -111,23 +85,40 @@ public class SensorMessageVTI  implements DatasetProvider, VTICosting{
         return new ControlDataSet<>(items);
     }
 
+    /**
+     * The estimated cost to instantiate and iterate through the Table 
+     * Function.
+     */
     @Override
     public double getEstimatedCostPerInstantiation(VTIEnvironment arg0)
             throws SQLException {
         return 0;
     }
 
+    /**
+     * The estimated number of rows returned by the Table Function in a 
+     * single instantiation.
+     */
     @Override
     public double getEstimatedRowCount(VTIEnvironment arg0) throws SQLException {
         return 0;
     }
 
+    /**
+     * Whether or not the Table Function can be instantiated multiple times 
+     * within a single query execution.
+     */
     @Override
     public boolean supportsMultipleInstantiations(VTIEnvironment arg0)
             throws SQLException {
         return false;
     }
 
+    /**
+     * Dynamic MetaData used to dynamically bind a function.
+     * 
+     * Metadata
+     */
     @Override
     public ResultSetMetaData getMetaData() throws SQLException {
         throw new SQLException("not supported");
