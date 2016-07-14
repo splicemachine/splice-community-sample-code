@@ -52,6 +52,18 @@
 			<artifactId>hbase_sql-${envClassifier}</artifactId>
 			<version>${splice_machine.version}</version>
         </dependency>
+        <dependency>
+			<groupId>com.splicemachine</groupId>
+			<artifactId>db-engine</artifactId>
+			<version>${splice_machine.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.slf4j/jul-to-slf4j -->
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>jul-to-slf4j</artifactId>
+		    <version>1.7.21</version>
+		</dependency>
+        
 	</dependencies>
 
 	<build>
@@ -70,7 +82,16 @@
 					</archive>
 				</configuration>
 			</plugin>
-
+			<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.2</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+<!--  
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -79,18 +100,25 @@
 				</configuration>
 			</plugin>
      		<plugin>
-        			<groupId>org.apache.maven.plugins</groupId>
-        			<artifactId>maven-shade-plugin</artifactId>
-        			<version>1.5</version>
-        			<executions>
-          			<execution>
-            			<phase>package</phase>
-            			<goals>
-              			<goal>shade</goal>
-            			</goals>
-        	  		</execution>
-        		</executions>
-      		</plugin>		
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.4.3</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <includes>
+                  <include>com.splicemachine:db-engine</include>
+                </includes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>		
+      -->
 		</plugins>
 		<pluginManagement>
 			<plugins>
