@@ -46,27 +46,24 @@ import org.apache.log4j.Logger;
 
 /**
  * This is an example of a VTI that reads in a list of strings
- * where each string is in a JSON format, it converts it into an 
+ * where each string is in a JSON format, it converts it into an
  * RFIDMessage object and returns the list in a Splice Machine
  * compatible format.
- * 
- * @author Erin Driggers
  *
+ * @author Erin Driggers
  */
-public class SensorMessageVTI  implements DatasetProvider, VTICosting{
-    
-    private static final Logger LOG = Logger.getLogger(SensorMessageVTI.class);
+public class SensorMessageVTI implements DatasetProvider, VTICosting {
 
+    private static final Logger LOG = Logger.getLogger(SensorMessageVTI.class);
+    protected OperationContext operationContext;
     private List<String> records = null;
     private ObjectMapper mapper = new ObjectMapper();
-    
-    protected OperationContext operationContext;
 
 
-    public SensorMessageVTI (List<String> pRecords) {
+    public SensorMessageVTI(List<String> pRecords) {
         this.records = pRecords;
     }
-    
+
     public static DatasetProvider getSensorMessageVTI(List<String> pRecords) {
         return new SensorMessageVTI(pRecords);
     }
@@ -74,21 +71,21 @@ public class SensorMessageVTI  implements DatasetProvider, VTICosting{
     @Override
     public DataSet<LocatedRow> getDataSet(SpliceOperation op, DataSetProcessor dsp, ExecRow execRow) throws StandardException {
         operationContext = dsp.createOperationContext(op);
-        
+
         //Create an arraylist to store the key / value pairs
         ArrayList<LocatedRow> items = new ArrayList<LocatedRow>();
-        
+
         try {
-            
+
             LOG.error("in VTI:" + records);
-            
+
             int numRcds = this.records == null ? 0 : this.records.size();
-            
-            if(numRcds > 0 ) {        
+
+            if (numRcds > 0) {
                 LOG.error("Records to process:" + numRcds);
                 //Loop through each record convert to a SensorObject
                 //and then set the values
-                for(String jsonString : records) {  
+                for (String jsonString : records) {
                     SensorMessage sensor = mapper.readValue(jsonString, SensorMessage.class);
                     LOG.error("adding record:" + sensor.getId());
                     items.add(new LocatedRow(sensor.getRow()));
@@ -103,7 +100,7 @@ public class SensorMessageVTI  implements DatasetProvider, VTICosting{
     }
 
     /**
-     * The estimated cost to instantiate and iterate through the Table 
+     * The estimated cost to instantiate and iterate through the Table
      * Function.
      */
     @Override
@@ -113,7 +110,7 @@ public class SensorMessageVTI  implements DatasetProvider, VTICosting{
     }
 
     /**
-     * The estimated number of rows returned by the Table Function in a 
+     * The estimated number of rows returned by the Table Function in a
      * single instantiation.
      */
     @Override
@@ -122,7 +119,7 @@ public class SensorMessageVTI  implements DatasetProvider, VTICosting{
     }
 
     /**
-     * Whether or not the Table Function can be instantiated multiple times 
+     * Whether or not the Table Function can be instantiated multiple times
      * within a single query execution.
      */
     @Override
@@ -133,7 +130,7 @@ public class SensorMessageVTI  implements DatasetProvider, VTICosting{
 
     /**
      * Dynamic MetaData used to dynamically bind a function.
-     * 
+     * <p>
      * Metadata
      */
     @Override
@@ -145,6 +142,6 @@ public class SensorMessageVTI  implements DatasetProvider, VTICosting{
     public OperationContext getOperationContext() {
         return this.operationContext;
     }
-    
-    
+
+
 }

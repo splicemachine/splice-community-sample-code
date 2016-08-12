@@ -31,40 +31,40 @@ import java.util.List;
 /**
  * Created by Erin Driggers
  */
-public class SaveRDDWithVTI implements Function<JavaRDD<String>, Void>, Externalizable{
+public class SaveRDDWithVTI implements Function<JavaRDD<String>, Void>, Externalizable {
 
     private static final Logger LOG = Logger
             .getLogger(SaveRDDWithVTI.class);
 
     @Override
     public Void call(JavaRDD<String> sensorMessagesRdd) throws Exception {
-  
-        if(sensorMessagesRdd!=null && sensorMessagesRdd.count() > 0) {
-            LOG.info("Data to process:");   
-            
+
+        if (sensorMessagesRdd != null && sensorMessagesRdd.count() > 0) {
+            LOG.info("Data to process:");
+
             //Convert to list 
             List<String> sensorMessages = sensorMessagesRdd.collect();
             int numRcds = sensorMessages.size();
-            
-            if(numRcds > 0) {
-                LOG.info("numRcds:" + numRcds); 
+
+            if (numRcds > 0) {
+                LOG.info("numRcds:" + numRcds);
                 Connection con = DriverManager.getConnection("jdbc:splice://stl-colo-srv54:1527/splicedb;user=splice;password=admin");
-                
+
                 String vtiStatement = "INSERT INTO IOT.SENSOR_MESSAGES " +
                         "select s.* from new com.splicemachine.tutorials.sparkstreaming.kafka.SensorMessageVTI(?) s (" + SensorMessage.getTableDefinition() + ")";
-                
+
                 PreparedStatement ps = con.prepareStatement(vtiStatement);
-                
-                ps.setObject(1,sensorMessages);
+
+                ps.setObject(1, sensorMessages);
                 try {
                     ps.execute();
                 } catch (Exception e) {
-                    LOG.error("Exception inserting data:" + e.getMessage(), e); 
+                    LOG.error("Exception inserting data:" + e.getMessage(), e);
                 } finally {
                     LOG.info("Inserted Complete");
                 }
             }
-                       
+
         }
         return null;
     }

@@ -27,12 +27,12 @@ import java.io.ObjectOutput;
 /**
  * Created by Erin Driggers
  */
-public class TupleFunction implements Function<Tuple2<String, String>, String>, Externalizable{
+public class TupleFunction implements Function<Tuple2<String, String>, String>, Externalizable {
 
     private static final Logger LOG = Logger
             .getLogger(TupleFunction.class);
 
-    
+
     @Override
     public String call(Tuple2<String, String> stringStringTuple2) throws Exception {
         LOG.info("=====================In tuple:" + stringStringTuple2.toString());
