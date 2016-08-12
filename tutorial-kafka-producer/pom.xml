@@ -90,7 +90,7 @@
         <profile>
             <id>mapr5.1.0</id>
             <properties>
-                <kafka.version>0.9.0.0-mapr-1602</kafka.version>
+                <kafka.version>0.9.0.0-mapr-1607</kafka.version>
             </properties>
         </profile>
         <profile>
