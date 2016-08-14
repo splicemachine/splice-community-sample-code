@@ -24,11 +24,10 @@ import com.splicemachine.db.impl.sql.execute.ValueRow;
 
 /**
  * This is a POJO that represents
- * an RFID message.  It is used in converting 
+ * an RFID message.  It is used in converting
  * incoming messages from a CSV entry to an object
- * 
- * @author Erin Driggers
  *
+ * @author Erin Driggers
  */
 public class RFIDMessage {
 
@@ -37,8 +36,7 @@ public class RFIDMessage {
     private Timestamp recordedTime;
     private String assetType;
     private String assetLocation;
-    
-    
+
     public String getAssetNumber() {
         return assetNumber;
     }
@@ -62,9 +60,9 @@ public class RFIDMessage {
     public void setRecordedTime(Timestamp recordedTime) {
         this.recordedTime = recordedTime;
     }
-    
+
     public void setRecordedTime(String recordedTime) {
-        if(recordedTime != null && recordedTime.length() > 0) {
+        if (recordedTime != null && recordedTime.length() > 0) {
             this.recordedTime = Timestamp.valueOf(recordedTime);
         }
     }
@@ -84,47 +82,45 @@ public class RFIDMessage {
     public void setAssetLocation(String assetLocation) {
         this.assetLocation = assetLocation;
     }
-    
+
     /**
-     * Builds a string with the values of the instance variables 
+     * Builds a string with the values of the instance variables
      */
     public String toString() {
-        return 
-            "assetNumber=" + this.getAssetNumber() + "\n" +
-            "assetDescription=" + this.getAssetDescription() + "\n" +
-            "recordedTime=" + this.getRecordedTime() + "\n" +
-            "assetType=" + this.getAssetType() + "\n" +
-            "assetLocation=" + this.getAssetLocation() + "\n";
+        return "assetNumber=" + this.getAssetNumber() + "\n"
+        + "assetDescription=" + this.getAssetDescription() + "\n"
+        + "recordedTime=" + this.getRecordedTime() + "\n"
+        + "assetType=" + this.getAssetType() + "\n"
+        + "assetLocation=" + this.getAssetLocation() + "\n";
     }
-    
+
     /**
      * Used by the VTI to build a Splice Machine compatible resultset
-     * 
+     *
      * @return
      * @throws SQLException
      * @throws StandardException
      */
     public ValueRow getRow() throws SQLException, StandardException {
         ValueRow valueRow = new ValueRow(5);
-        valueRow.setColumn(1,new SQLVarchar(this.getAssetNumber()));
-        valueRow.setColumn(2,new SQLVarchar(this.getAssetDescription()));
-        valueRow.setColumn(3,new SQLTimestamp(this.getRecordedTime()));
-        valueRow.setColumn(4,new SQLVarchar(this.getAssetType()));
-        valueRow.setColumn(5,new SQLVarchar(this.getAssetLocation()));
+        valueRow.setColumn(1, new SQLVarchar(this.getAssetNumber()));
+        valueRow.setColumn(2, new SQLVarchar(this.getAssetDescription()));
+        valueRow.setColumn(3, new SQLTimestamp(this.getRecordedTime()));
+        valueRow.setColumn(4, new SQLVarchar(this.getAssetType()));
+        valueRow.setColumn(5, new SQLVarchar(this.getAssetLocation()));
         return valueRow;
     }
-    
+
     /**
      * Table definition to use when using a VTI that is an instance of a class
+     *
      * @return
      */
     public static String getTableDefinition() {
-        return
-        "ASSET_NUMBER varchar(50), " +
-        "ASSET_DESCRIPTION varchar(100), " +
-        "RECORDED_TIME TIMESTAMP, " +
-        "ASSET_TYPE VARCHAR(50), " +
-        "ASSET_LOCATION VARCHAR(50) ";
+        return "ASSET_NUMBER varchar(50), "
+        + "ASSET_DESCRIPTION varchar(100), "
+        + "RECORDED_TIME TIMESTAMP, "
+        + "ASSET_TYPE VARCHAR(50), "
+        + "ASSET_LOCATION VARCHAR(50) ";
     }
-    
 }

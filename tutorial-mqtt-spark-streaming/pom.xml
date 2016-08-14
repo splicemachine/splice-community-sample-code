@@ -1,150 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 - 2016 Splice Machine, Inc.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+  ~ this file except in compliance with the License. You may obtain a copy of the
+  ~ License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed
+  ~ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+  ~ CONDITIONS OF ANY KIND, either express or implied. See the License for the
+  ~ specific language governing permissions and limitations under the License.
+  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.splicemachine</groupId>
+    <artifactId>splice-tutorial-mqtt</artifactId>
+    <version>2.0.1.18</version>
+    <packaging>jar</packaging>
+    <name>${project.artifactId}</name>
+    <description>Demo project for MQTT / Spark and Splice Machine</description>
 
-	<!-- This is a pom.xml file for customer solutions.  The 
-		mvn clean install -Pcdh5.4.10 -DskipTests 
-	-->
+    <repositories>
+        <repository>
+            <id>cloudera</id>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+        </repository>
+        <repository>
+            <id>mapr</id>
+            <url>http://repository.mapr.com/maven/</url>
+        </repository>
+        <repository>
+            <id>hortonworks-releases</id>
+            <url>http://repo.hortonworks.com/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>hortonworks-hadoop</id>
+            <url>http://repo.hortonworks.com/content/repositories/jetty-hadoop/</url>
+        </repository>
+        <repository>
+            <id>apache-repo</id>
+            <url>https://repository.apache.org/content/repositories/releases</url>
+        </repository>
+        <repository>
+            <id>splicemachine-public</id>
+            <url>http://repository.splicemachine.com/nexus/content/groups/public</url>
+        </repository>
+    </repositories>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
 
-	<!-- Supported POM version -->
-	<modelVersion>4.0.0</modelVersion>
-	<!-- Unique amongst an organization - the dots are replaced by / for the directory structure.  This group will live under the directory $M2_REPO/com/splicemachine -->
-	<groupId>com.splicemachine</groupId>
-	<!-- Name that the project is known by.  This artifact will live under the directory $M2_REPO/com/splicemachine/splice-cs-kafka -->
-	<artifactId>splice-tutorial-mqtt</artifactId>
-	<!-- Current version.  Separates versions from each other.  This version will live under the directory $M2_REPO/com/splicemachine/splice-cs-kafka/0.0.1-SNAPSHOT  -->
-	<version>2.0</version>
-	<!-- How the project is packaged -->
-	<packaging>jar</packaging>
-	<!-- Refers to the name of the project -->
-	<name>Demo project for MQTT / Spark and Splice Machine</name>
-	
-	<!-- Describes the prerequisites in the build environment for this project -->
-	<prerequisites>
-		<maven>3.3.9</maven>
-	</prerequisites>
-	
-	<!-- Properties that can easily and quickly be updated on a per project basis instead of updating the values below -->
+    <profiles>
+        <profile>
+            <id>cdh5.4.10</id>
+            <properties>
+                <spark.version>1.6.2</spark.version>
+                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.4.10</spark-assembly-id>
+            </properties>
+        </profile>
+        <profile>
+            <id>cdh5.5.2</id>
+            <properties>
+                <spark.version>1.6.2</spark.version>
+                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.5.2</spark-assembly-id>
+            </properties>
+        </profile>
+        <profile>
+            <id>cdh5.6.0</id>
+            <properties>
+                <spark.version>1.6.2</spark.version>
+                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.6.0</spark-assembly-id>
+            </properties>
+        </profile>
+        <profile>
+            <id>cdh5.7.2</id>
+            <properties>
+                <spark.version>1.6.2</spark.version>
+                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.7.2</spark-assembly-id>
+            </properties>
+        </profile>
+        <profile>
+            <id>cdh5.8.0</id>
+            <properties>
+                <spark.version>1.6.2</spark.version>
+                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.8.0</spark-assembly-id>
+            </properties>
+        </profile>
+        <profile>
+            <id>mapr5.1.0</id>
+            <properties>
+                <spark.version>1.6.2</spark.version>
+                <spark-assembly-id>spark-assembly-hadoop2.7.0-mapr-1602</spark-assembly-id>
+            </properties>
+        </profile>
+        <profile>
+            <id>hdp2.3.6</id>
+            <properties>
+                <spark.version>1.6.2</spark.version>
+                <spark-assembly-id>spark-assembly-hadoop2.7.1.2.3.6.0-3796</spark-assembly-id>
+            </properties>
+        </profile>
+        <profile>
+            <id>hdp2.4.2</id>
+            <properties>
+                <spark.version>1.6.2</spark.version>
+                <spark-assembly-id>spark-assembly-hadoop2.7.1.2.4.2.0-258</spark-assembly-id>
+            </properties>
+        </profile>
+    </profiles>
 
-	<!-- splice_machine-assembly-2.0.1.11-SNAPSHOT-mapr5.1.0_complete.jar -->
-	<properties>
-		<java.version>1.7</java.version>
-		<splice_machine.version>2.0.1.17-SNAPSHOT</splice_machine.version>
-        <spark-assembly-id>spark-assembly-hadoop2.7.0-mapr-1602</spark-assembly-id>
-        <spark.version>1.6.1</spark.version>
-	</properties>
+    <prerequisites>
+        <maven>3.3.9</maven>
+    </prerequisites>
 
-
-	<!-- When using Maven, particularly in a corporate environment, connecting to the internet to download dependencies is not acceptable for security, 
-	speed or bandwidth reasons. For that reason, it is desirable to set up an internal repository to house a copy of artifacts, and to 
-	publish private artifacts to. -->
-	<!-- The repository property specifies the internal splicemachine repository -->
-	<repositories>
-		<repository>
-			<name>Splice Nexus Server </name>
-			<id>splicemachine</id>
-			<url>http://nexus.splicemachine.com/nexus/content/groups/developers</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>apache-repo</id>
-			<name>Apache Repository</name>
-			<url>https://repository.apache.org/content/repositories/releases</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-		    <id>paho-mqtt-client</id>
-		    <name>Paho MQTT Client</name>
-		    <url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
-    	</repository>		
-	</repositories>
-	<dependencies>
-		<dependency>
-			<groupId>com.splicemachine</groupId>
-			<artifactId>splice_machine</artifactId>
-			<version>${splice_machine.version}</version>
+    <dependencies>
+        <dependency>
+            <groupId>com.splicemachine</groupId>
+            <artifactId>splice_machine</artifactId>
+            <version>${project.version}</version>
         </dependency>
-        <!-- Contains the SpliceSpark that is needed -->
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>${spark-assembly-id}</artifactId>
             <version>${spark.version}</version>
         </dependency>
-        <!-- Needed for to process the MQTT in spark -->
         <dependency>
-    		<groupId>org.apache.spark</groupId>
-    		<artifactId>spark-streaming-mqtt_2.10</artifactId>
-    		<version>${spark.version}</version>
-		</dependency>
-        <!-- Needed for sample MQTT client to publish messages -->
-		<dependency>
-		    <groupId>org.eclipse.paho</groupId>
-		    <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-		    <version>1.1.0</version>
-		</dependency>
-
-		<!-- Used for parsing JSON object and converting to object -->
-        <!-- Needed just for running: mvn -DskipTests exec:java -DreadQueue -->
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming-mqtt_2.10</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.paho</groupId>
+            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <!--
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
             <version>2.5</version>
         </dependency>
-        <!-- Needed just for running: mvn -DskipTests exec:java -DreadQueue -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>2.5</version>
         </dependency>
-        <!-- Needed just for running: mvn -DskipTests exec:java -DreadQueue -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.1</version>
-		</dependency>
-		<!-- Needed just for running: mvn -DskipTests exec:java -DreadQueue -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.1</version>
-		</dependency>    
-        <!-- Used for parsing CSV to object conversion -->
         <dependency>
-		    <groupId>net.sf.supercsv</groupId>
-		    <artifactId>super-csv</artifactId>
-		    <version>2.4.0</version>
-		</dependency>
-		<dependency>
-		    <groupId>net.sf.supercsv</groupId>
-		    <artifactId>super-csv-joda</artifactId>
-		    <version>2.4.0</version>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<plugins>
-	        <plugin>
-	          <groupId>org.apache.maven.plugins</groupId>
-	          <artifactId>maven-compiler-plugin</artifactId>
-	          <version>3.1</version>
-	          <configuration>
-	            <source>${java.version}</source>
-	            <target>${java.version}</target>
-	            <encoding>UTF-8</encoding>
-	            <maxmem>1024m</maxmem>
-	            <fork>true</fork>
-	          </configuration>
-	        </plugin>
-		</plugins>
-	</build>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>net.sf.supercsv</groupId>
+            <artifactId>super-csv</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.supercsv</groupId>
+            <artifactId>super-csv-joda</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+    </dependencies>
 </project>
