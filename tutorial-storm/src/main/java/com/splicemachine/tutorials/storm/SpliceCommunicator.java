@@ -14,7 +14,6 @@
  */
 package com.splicemachine.tutorials.storm;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -33,19 +32,19 @@ public class SpliceCommunicator {
     private int noOfColumns = 0;
     private int result = 0;
     Map<String, String> tableDetails;
-    
+
     public SpliceCommunicator(Connection con) {
         super();
         this.con = con;
     }
-    
+
     public int insertRow(String tableName, ArrayList<String> fieldNames, ArrayList<Object> fieldValues) throws SQLException {
         result = 0;
-        try {       
+        try {
             prepstmt = null;
             queryStmt = new StringBuffer();
             queryValues = new StringBuffer();
-            noOfColumns = fieldNames.size();           
+            noOfColumns = fieldNames.size();
             queryStmt.append("insert into ");
             queryStmt.append(tableName);
             queryStmt.append(" (");
@@ -71,9 +70,9 @@ public class SpliceCommunicator {
             if (result != 0) {
                 System.out.println("Inserted data successfully");
             } else {
-                System.out.println("Insertion failed");   
+                System.out.println("Insertion failed");
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;

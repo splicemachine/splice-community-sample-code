@@ -39,7 +39,7 @@ public class SpliceDumperBolt implements IBasicBolt {
     private String tableName = null;
     private ArrayList<String> fields = new ArrayList<String>();
     private ArrayList<Object> fieldValues = new ArrayList<Object>();
-    
+
     public SpliceDumperBolt(String server, String tableName) throws SQLException {
         super();
         this.tableName = tableName;
@@ -50,10 +50,10 @@ public class SpliceDumperBolt implements IBasicBolt {
         }
         communicator = new SpliceCommunicator(con);
     }
-    
+
     @Override
     public void execute(Tuple input, BasicOutputCollector collector) {
-    	fields = new ArrayList<String>();
+        fields = new ArrayList<String>();
         fields = (ArrayList<String>) input.getFields().toList();
         fieldValues = new ArrayList<Object>();
         fieldValues = (ArrayList<Object>) input.getValues();
@@ -64,19 +64,22 @@ public class SpliceDumperBolt implements IBasicBolt {
             e.printStackTrace();
         }
     }
-    
+
     @Override
-    public void declareOutputFields(OutputFieldsDeclarer declarer) {}
-    
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+    }
+
     @Override
     public Map<String, Object> getComponentConfiguration() {
         return null;
     }
-    
+
     @Override
-    public void prepare(Map stormConf, TopologyContext context) {}
-    
+    public void prepare(Map stormConf, TopologyContext context) {
+    }
+
     @Override
-    public void cleanup() {}
-	
+    public void cleanup() {
+    }
+
 }

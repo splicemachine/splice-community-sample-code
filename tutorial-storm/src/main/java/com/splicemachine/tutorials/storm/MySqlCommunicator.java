@@ -25,19 +25,18 @@ import java.sql.SQLException;
 public class MySqlCommunicator {
 
     private Connection con = null;
-    
+
     public MySqlCommunicator(Connection con) {
         super();
         this.con = con;
     }
-    
-    public ResultSet selectRows(String tableName) throws SQLException {
 
-    	ResultSet rs = null;
-        try {       
+    public ResultSet selectRows(String tableName) throws SQLException {
+        ResultSet rs = null;
+        try {
             PreparedStatement prepstmt = con.prepareStatement("SELECT * FROM " + tableName);
             rs = prepstmt.executeQuery();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return rs;

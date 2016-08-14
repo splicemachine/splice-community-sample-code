@@ -30,27 +30,27 @@ import backtype.storm.utils.Utils;
 public class SpliceDumperTopology {
 
     public static void main(String[] args) throws SQLException {
-    	
+
         ArrayList<String> columnNames = new ArrayList<String>();
         ArrayList<String> columnTypes = new ArrayList<String>();
-        //this table must exist in splice
-        //create table testTable (word varchar(100), number int);
+        // this table must exist in splice
+        // create table testTable (word varchar(100), number int);
         String tableName = "testTable";
         String server = "localhost";
-        
+
         // add the column names and the respective types in the two arraylists
         columnNames.add("word");
         columnNames.add("number");
-        
+
         // add the types
         columnTypes.add("varchar (100)");
         columnTypes.add("int");
-        
+
         TopologyBuilder builder = new TopologyBuilder();
-        
+
         // set the spout for the topology
         builder.setSpout("spout", new SpliceIntegerSpout(), 10);
-        
+
         // dump the stream data into splice       
         SpliceDumperBolt dumperBolt = new SpliceDumperBolt(server, tableName);
         builder.setBolt("dumperBolt", dumperBolt, 1).shuffleGrouping("spout");

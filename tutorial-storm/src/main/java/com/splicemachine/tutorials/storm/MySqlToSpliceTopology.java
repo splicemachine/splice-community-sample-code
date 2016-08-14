@@ -28,21 +28,20 @@ import backtype.storm.utils.Utils;
 public class MySqlToSpliceTopology {
 
     public static void main(String[] args) throws SQLException {
-    	
-        //tableName is the name of the table in splice to insert records to
-    		//server is the server instance running splice
+
+        // tableName is the name of the table in splice to insert records to
+        // server is the server instance running splice
         String tableName = "students";
         String server = "localhost";
-        
         TopologyBuilder builder = new TopologyBuilder();
 
         // set the spout for the topology
         builder.setSpout("seedDataFromMySql", new MySqlSpout());
-        
-        // dump the stream data into splice       
-        builder.setBolt("dbRowProcessing", new MySqlSpliceBolt(server,tableName), 1).shuffleGrouping("seedDataFromMySql");
 
-		Config conf = new Config();
+        // dump the stream data into splice       
+        builder.setBolt("dbRowProcessing", new MySqlSpliceBolt(server, tableName), 1).shuffleGrouping("seedDataFromMySql");
+
+        Config conf = new Config();
         conf.setDebug(true);
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("mysql-splice-topology", conf, builder.createTopology());
