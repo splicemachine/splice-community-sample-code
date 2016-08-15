@@ -14,8 +14,6 @@
  */
 package com.splicemachine.tutorials.tsdbanalytics;
 
-
-
 import java.io.Externalizable;
 
 import java.io.IOException;
@@ -34,62 +32,50 @@ import com.splicemachine.tutorials.tsdbanalytics.dataobjects.AggregationLog;
 import com.splicemachine.tutorials.tsdbanalytics.dataobjects.AggregationResult;
 import com.splicemachine.tutorials.tsdbanalytics.dataobjects.PublisherGeoKey;
 
-
 /**
- * This converts  AggregationLog to AggregationResult and invokes 
- * Save for each Partition to save the Aggregation Results to database. 
- * @author Jyotsna Ramineni
+ * This converts  AggregationLog to AggregationResult and invokes
+ * Save for each Partition to save the Aggregation Results to database.
  *
+ * @author Jyotsna Ramineni
  */
 
+public class SaveLogAggRDD implements VoidFunction<JavaPairRDD<PublisherGeoKey, AggregationLog>>, Externalizable {
+    private static final Logger LOG = Logger
+            .getLogger(SaveLogAggRDD.class);
 
-public class SaveLogAggRDD implements VoidFunction<JavaPairRDD<PublisherGeoKey,AggregationLog>>,Externalizable {
-	 private static final Logger LOG = Logger
-	            .getLogger(SaveLogAggRDD.class);
+    @Override
+    public void call(JavaPairRDD<PublisherGeoKey, AggregationLog> logsRDD) throws Exception {
 
-	@Override
-	public void call(JavaPairRDD<PublisherGeoKey,AggregationLog> logsRDD) throws Exception {
-		
-		if(logsRDD != null) {
-			LOG.info(" Data to process in RDD:" + logsRDD.count());  
-			
-			JavaRDD<AggregationResult> aggResRDD = logsRDD.map(new Function<Tuple2<PublisherGeoKey,AggregationLog>,AggregationResult >() {
+        if (logsRDD != null) {
+            LOG.info(" Data to process in RDD:" + logsRDD.count());
 
-				@Override
-				public AggregationResult call(
-						Tuple2<PublisherGeoKey, AggregationLog> arg0)
-						throws Exception {
-						PublisherGeoKey p = arg0._1;
-						AggregationLog a = arg0._2;
-						return new AggregationResult(new Timestamp(a.getTimestamp()),
-								p.getPublisher(), p.getGeo(), a.getImps(), 
-								new Integer((int) a.getUniquesHll().estimatedSize() ),
-								a.getSumBids()/a.getImps());
-					
-				}
-			});
-				
-			LOG.info(" Call Data Process Partition");
-			aggResRDD.foreachPartition(new SaveLogAggPartition());
-			  
-		         
-		}
-		else
-			LOG.error("Data to process:" + 0);
-		
-	}
+            JavaRDD<AggregationResult> aggResRDD = logsRDD.map(new Function<Tuple2<PublisherGeoKey, AggregationLog>, AggregationResult>() {
+                @Override
+                public AggregationResult call(
+                        Tuple2<PublisherGeoKey, AggregationLog> arg0)
+                        throws Exception {
+                    PublisherGeoKey p = arg0._1;
+                    AggregationLog a = arg0._2;
+                    return new AggregationResult(new Timestamp(a.getTimestamp()),
+                            p.getPublisher(), p.getGeo(), a.getImps(),
+                            (int) a.getUniquesHll().estimatedSize(),
+                            a.getSumBids() / a.getImps());
+                }
+            });
+            LOG.info(" Call Data Process Partition");
+            aggResRDD.foreachPartition(new SaveLogAggPartition());
+        } else
+            LOG.error("Data to process:" + 0);
+    }
 
-	@Override
-	public void writeExternal(ObjectOutput out) throws IOException {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        // TODO Auto-generated method stub
+    }
 
-	@Override
-	public void readExternal(ObjectInput in) throws IOException,
-			ClassNotFoundException {
-		// TODO Auto-generated method stub
-		
-	}
-
+    @Override
+    public void readExternal(ObjectInput in) throws IOException,
+            ClassNotFoundException {
+        // TODO Auto-generated method stub
+    }
 }

@@ -25,50 +25,46 @@ import com.google.gson.Gson;
 
 /**
  * Serializer Class for ImpressionLog, used with Kafka Queue.
- * The ImpressionLog is encoded as Json String by producer. And Consumer convert the JasonString to 
- * IMpressionLOg object
- * 
- * @author Jyotsna Ramineni
+ * The ImpressionLog is encoded as Json String by producer.
+ * The Consumer converts the JsonString to ImpressionLog object.
  *
+ * @author Jyotsna Ramineni
  */
 public class ImpressionLogSerializer implements Closeable, AutoCloseable, Serializer<ImpressionLog>, Deserializer<ImpressionLog> {
 
-private Gson gson ;
+    private Gson gson;
 
+    public ImpressionLogSerializer() {
+        this(null);
+    }
 
-public ImpressionLogSerializer() {
-	this(null);
-}
+    public ImpressionLogSerializer(Gson gson) {
+        super();
+        this.gson = gson;
+    }
 
-public ImpressionLogSerializer(Gson gson) {
-	super();
-	this.gson = gson;
-}
+    @Override
+    public void close() {
+        gson = null;
+    }
 
-@Override
-public void close() {
-	 gson  = null;
-	
-}
+    @Override
+    public void configure(Map<String, ?> map, boolean b) {
+        if (gson == null)
+            gson = new Gson();
+    }
 
-@Override
-public void configure(Map<String, ?> map, boolean b) {
-	if(gson == null)
-		gson = new Gson();
-	
-}
+    @Override
+    public byte[] serialize(String s, ImpressionLog log) {
+        final String jsonStr = gson.toJson(log, ImpressionLog.class);
+        return jsonStr.getBytes();
+    }
 
-@Override
-public byte[] serialize(String s, ImpressionLog log) {
-	final String jsonStr = gson.toJson(log, ImpressionLog.class);
-	return jsonStr.getBytes();
-}
-
-@Override
-public ImpressionLog deserialize(String s, byte[] bytes) {
-	String jsonString = new String(bytes, Charsets.UTF_8);
-	final ImpressionLog impressionLog = gson.fromJson(jsonString, ImpressionLog.class);
-	return impressionLog;
-}
+    @Override
+    public ImpressionLog deserialize(String s, byte[] bytes) {
+        String jsonString = new String(bytes, Charsets.UTF_8);
+        final ImpressionLog impressionLog = gson.fromJson(jsonString, ImpressionLog.class);
+        return impressionLog;
+    }
 
 }

@@ -28,16 +28,14 @@ import java.io.ObjectOutput;
 
 /**
  * This Maps the Tuple stream to ImpressionLog stream
- * @author Jyotsna Ramineni
  *
+ * @author Jyotsna Ramineni
  */
 
-public class TupleFunction implements Function<Tuple2<String, ImpressionLog>, ImpressionLog>, Externalizable{
+public class TupleFunction implements Function<Tuple2<String, ImpressionLog>, ImpressionLog>, Externalizable {
 
-    private static final Logger LOG = Logger
-            .getLogger(TupleFunction.class);
+    private static final Logger LOG = Logger.getLogger(TupleFunction.class);
 
-    
     @Override
     public ImpressionLog call(Tuple2<String, ImpressionLog> stringLogTuple2) throws Exception {
         return stringLogTuple2._2();
@@ -45,11 +43,9 @@ public class TupleFunction implements Function<Tuple2<String, ImpressionLog>, Im
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-
     }
 }

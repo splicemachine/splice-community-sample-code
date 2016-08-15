@@ -18,67 +18,61 @@ import java.io.Serializable;
 
 import com.twitter.algebird.HLL;
 
-
 /**
  * AggregationLog Object definition to which impression logs are mapped
- * and aggreagtions are performed. This part of Pair RDD, where the Key is PubliherGeoKey
- * 
- * @author Jyotsna Ramineni
+ * and aggregations are performed. This part of Pair RDD, where the Key is PublisherGeoKey
  *
+ * @author Jyotsna Ramineni
  */
 public class AggregationLog implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7604119541801254085L;
-	//Fields in AggregationLog
-	private Long timestamp;
-	private Double sumBids;
-	private Integer imps = 1;
-	private HLL uniquesHll ;
-	
-	public AggregationLog(Long timestamp, Double sumBids, Integer imps,
-			HLL uniquesHll) {
-		super();
-		this.timestamp = timestamp;
-		this.sumBids = sumBids;
-		this.imps = imps;
-		this.uniquesHll = uniquesHll;
-	}
+    /**
+     *
+     */
+    private static final long serialVersionUID = -7604119541801254085L;
+    //Fields in AggregationLog
+    private Long timestamp;
+    private Double sumBids;
+    private Integer imps = 1;
+    private HLL uniquesHll;
 
-	public Long getTimestamp() {
-		return timestamp;
-	}
+    public AggregationLog(Long timestamp, Double sumBids, Integer imps, HLL uniquesHll) {
+        super();
+        this.timestamp = timestamp;
+        this.sumBids = sumBids;
+        this.imps = imps;
+        this.uniquesHll = uniquesHll;
+    }
 
-	public void setTimestamp(Long timestamp) {
-		this.timestamp = timestamp;
-	}
+    public Long getTimestamp() {
+        return timestamp;
+    }
 
-	public Double getSumBids() {
-		return sumBids;
-	}
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
 
-	public void setSumBids(Double sumBids) {
-		this.sumBids = sumBids;
-	}
+    public Double getSumBids() {
+        return sumBids;
+    }
 
-	public Integer getImps() {
-		return imps;
-	}
+    public void setSumBids(Double sumBids) {
+        this.sumBids = sumBids;
+    }
 
-	public void setImps(Integer imps) {
-		this.imps = imps;
-	}
+    public Integer getImps() {
+        return imps;
+    }
 
-	public HLL getUniquesHll() {
-		return uniquesHll;
-	}
+    public void setImps(Integer imps) {
+        this.imps = imps;
+    }
 
-	public void setUniquesHll(HLL uniquesHll) {
-		this.uniquesHll = uniquesHll;
-	}
-	
-	
-	
+    public HLL getUniquesHll() {
+        return uniquesHll;
+    }
+
+    public void setUniquesHll(HLL uniquesHll) {
+        this.uniquesHll = uniquesHll;
+    }
 
 }

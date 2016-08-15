@@ -16,60 +16,60 @@
 package com.splicemachine.tutorials.tsdbanalytics.dataobjects;
 
 import java.io.Serializable;
+
 /**
- * PublisherGeoKey Object definition. This object is used as key for mapping impression Log
- * in prepartion for aggregation
- * 
- * @author Jyotsna Ramineni
+ * PublisherGeoKey Object definition.
+ * This object is used as key for mapping ImpressionLog in preparation for aggregation
  *
+ * @author Jyotsna Ramineni
  */
 public class PublisherGeoKey implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -1895676943619006281L;
-	
-	
-	private String publisher;
-	private String geo;
-	
-	public PublisherGeoKey(String publisher, String geo)  {
-		super();
-		this.publisher = publisher;
-		this.geo = geo;
-	}
-	
-	public boolean equals(Object obj)
-	{
-		if(this == obj)
-			return true;
-		if((obj == null) || (obj.getClass() != this.getClass()))
-			return false;
-		// object must be Test at this point
-		PublisherGeoKey test = (PublisherGeoKey)obj;
-		return ((publisher == test.publisher || (publisher != null && publisher.equals(test.publisher))) &&
-		(geo == test.geo || (geo != null && geo.equals(test.geo))));
-	}
+    /**
+     *
+     */
+    private static final long serialVersionUID = -1895676943619006281L;
 
-	public int hashCode()
-	{
-		int hash = 7;
-		hash = 31 * hash + (null == publisher ? 0 : publisher.hashCode());
-		hash = 31 * hash + (null == geo ? 0 : geo.hashCode());
-		return hash;
-	}
-	public String getPublisher() {
-		return publisher;
-	}
-	public void setPublisher(String publisher) {
-		this.publisher = publisher;
-	}
-	public String getGeo() {
-		return geo;
-	}
-	public void setGeo(String geo) {
-		this.geo = geo;
-	}
-	
-	
+    private String publisher;
+    private String geo;
+
+    public PublisherGeoKey(String publisher, String geo) {
+        super();
+        this.publisher = publisher;
+        this.geo = geo;
+    }
+
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if ((obj == null) || (obj.getClass() != this.getClass()))
+            return false;
+        // object must be Test at this point
+        PublisherGeoKey test = (PublisherGeoKey) obj;
+        return ((publisher == test.publisher || (publisher != null && publisher.equals(test.publisher))) &&
+                (geo == test.geo || (geo != null && geo.equals(test.geo))));
+    }
+
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + (null == publisher ? 0 : publisher.hashCode());
+        hash = 31 * hash + (null == geo ? 0 : geo.hashCode());
+        return hash;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public String getGeo() {
+        return geo;
+    }
+
+    public void setGeo(String geo) {
+        this.geo = geo;
+    }
+
 }

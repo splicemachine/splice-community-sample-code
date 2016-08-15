@@ -14,8 +14,6 @@
  */
 package com.splicemachine.tutorials.tsdbanalytics;
 
-
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -33,79 +31,69 @@ import org.apache.spark.api.java.function.VoidFunction;
 import com.splicemachine.tutorials.tsdbanalytics.dataobjects.AggregationResult;
 
 /**
- * This saves the AggregationResult records to SPlice table. 
- * and returns AggregationResult 
- * @author Jyotsna Ramineni
+ * This saves the AggregationResult records to a Splice table and returns AggregationResult
  *
+ * @author Jyotsna Ramineni
  */
 
-public class SaveLogAggPartition implements VoidFunction<Iterator<AggregationResult>>,Externalizable {
-	 private static final Logger LOG = Logger
-	            .getLogger(SaveLogAggPartition.class);
+public class SaveLogAggPartition implements VoidFunction<Iterator<AggregationResult>>, Externalizable {
+    private static final Logger LOG = Logger.getLogger(SaveLogAggPartition.class);
+    // -AMM- TODO this should at least be a passed arg, if not obtained form somewhere else
+    public String splicehost = "localhost";
 
-	@Override
-	public void call(Iterator<AggregationResult> aggResItr) throws Exception {
-		
-		if(aggResItr != null && aggResItr.hasNext()) {
-			LOG.info("Data to process in partition:" );  
-			
-			
-			//Create List of AggregationResult objects from Iterator
-			List<AggregationResult> aggLogs = new ArrayList <AggregationResult>();
-			while(aggResItr.hasNext()){
-				aggLogs.add(aggResItr.next());
-			}
-	
-			int numRcds = aggLogs.size();
-			  LOG.info(" Number of records to process in partition:" + numRcds);  
-			  if(numRcds > 0) {
-				  
-				  //Get Connection to Splice Database
-	                Connection con = DriverManager.getConnection("jdbc:splice://stl-colo-srv54:1527/splicedb;user=splice;password=admin");
-	                
-	                //Insert Statement Using VTI to convert the AggregationResult Object list
-	                // to SPlice fomat for insert statmenet
-	                String vtiStatement = "INSERT INTO LOGAGG.AggregateResults " +
-	                        "select s.* from new com.splicemachine.tutorials.tsdbanalytics.AggregationResultVTI(?) s (" + AggregationResult.getTableDefinition() + ")";
-	                							 
-	                PreparedStatement ps = con.prepareStatement(vtiStatement);
-	                
-	                ps.setObject(1,aggLogs);
-	                try {
-	                    ps.execute();
-	                } catch (Exception e) {
-	                    LOG.error("Exception inserting data:" + e.getMessage(), e); 
-	                } finally {
-	                   if(ps != null)
-	                	   ps.close();
-	                	LOG.info("Inserted Complete");
-	                    
-	                }
-	                if(con != null)
-	                	con.close();
-	                
-	            }
-			  
-		         
-		}
-		else
-			LOG.info("No Records to Process in Partition");
-		
-	
-	
-	}
+    @Override
+    public void call(Iterator<AggregationResult> aggResItr) throws Exception {
 
-	@Override
-	public void writeExternal(ObjectOutput out) throws IOException {
-		// TODO Auto-generated method stub
-		
-	}
+        if (aggResItr != null && aggResItr.hasNext()) {
+            LOG.info("Data to process in partition:");
 
-	@Override
-	public void readExternal(ObjectInput in) throws IOException,
-			ClassNotFoundException {
-		// TODO Auto-generated method stub
-		
-	}
+            //Create List of AggregationResult objects from Iterator
+            List<AggregationResult> aggLogs = new ArrayList<AggregationResult>();
+            while (aggResItr.hasNext()) {
+                aggLogs.add(aggResItr.next());
+            }
 
+            int numRcds = aggLogs.size();
+            LOG.info(" Number of records to process in partition:" + numRcds);
+            if (numRcds > 0) {
+
+                //Get Connection to Splice Database
+                Connection con = DriverManager.getConnection("jdbc:splice://" + splicehost + ":1527/splicedb;user=splice;password=admin");
+
+                // Insert Statement Using VTI to convert the AggregationResult
+                // Object list to Splice format for insert statement
+                String vtiStatement = "INSERT INTO LOGAGG.AggregateResults "
+                        + "select s.* from new com.splicemachine.tutorials.tsdbanalytics.AggregationResultVTI(?) s ("
+                        + AggregationResult.getTableDefinition() + ")";
+
+                PreparedStatement ps = con.prepareStatement(vtiStatement);
+
+                ps.setObject(1, aggLogs);
+                try {
+                    ps.execute();
+                } catch (Exception e) {
+                    LOG.error("Exception inserting data:" + e.getMessage(), e);
+                } finally {
+                    if (ps != null)
+                        ps.close();
+                    LOG.info("Inserted Complete");
+
+                }
+                if (con != null)
+                    con.close();
+            }
+        } else
+            LOG.info("No Records to Process in Partition");
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException,
+            ClassNotFoundException {
+        // TODO Auto-generated method stub
+    }
 }

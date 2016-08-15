@@ -44,23 +44,21 @@ import org.apache.log4j.Logger;
 /**
  * This is VTI that reads in a list of AggregationResult objects
  * and returns the list in splice format for insert into table values
- * 
- * @author  Jyotsna Ramineni
  *
+ * @author Jyotsna Ramineni
  */
-public class AggregationResultVTI  implements DatasetProvider, VTICosting{
-    
+public class AggregationResultVTI implements DatasetProvider, VTICosting {
+
     private static final Logger LOG = Logger.getLogger(AggregationResultVTI.class);
 
     private List<AggregationResult> records = null;
-    
+
     protected OperationContext operationContext;
 
-
-    public AggregationResultVTI (List<AggregationResult> pRecords) {
+    public AggregationResultVTI(List<AggregationResult> pRecords) {
         this.records = pRecords;
     }
-    
+
     public static DatasetProvider getSensorMessageVTI(List<AggregationResult> pRecords) {
         return new AggregationResultVTI(pRecords);
     }
@@ -68,20 +66,18 @@ public class AggregationResultVTI  implements DatasetProvider, VTICosting{
     @Override
     public DataSet<LocatedRow> getDataSet(SpliceOperation op, DataSetProcessor dsp, ExecRow execRow) throws StandardException {
         operationContext = dsp.createOperationContext(op);
-        
+
         //Create an arraylist to store aggregation results
         ArrayList<LocatedRow> items = new ArrayList<LocatedRow>();
-        
+
         try {
-            
-            
             int numRcds = this.records == null ? 0 : this.records.size();
-            
-            if(numRcds > 0 ) {        
+
+            if (numRcds > 0) {
                 LOG.error("Records to process:" + numRcds);
                 //Loop through each record and then set the values
-                for(AggregationResult aggResult : records) {  
-                	 items.add(new LocatedRow(aggResult.getRow()));
+                for (AggregationResult aggResult : records) {
+                    items.add(new LocatedRow(aggResult.getRow()));
                 }
             }
         } catch (Exception e) {
@@ -93,17 +89,16 @@ public class AggregationResultVTI  implements DatasetProvider, VTICosting{
     }
 
     /**
-     * The estimated cost to instantiate and iterate through the Table 
+     * The estimated cost to instantiate and iterate through the Table
      * Function.
      */
     @Override
-    public double getEstimatedCostPerInstantiation(VTIEnvironment arg0)
-            throws SQLException {
+    public double getEstimatedCostPerInstantiation(VTIEnvironment arg0) throws SQLException {
         return 0;
     }
 
     /**
-     * The estimated number of rows returned by the Table Function in a 
+     * The estimated number of rows returned by the Table Function in a
      * single instantiation.
      */
     @Override
@@ -112,18 +107,17 @@ public class AggregationResultVTI  implements DatasetProvider, VTICosting{
     }
 
     /**
-     * Whether or not the Table Function can be instantiated multiple times 
+     * Whether or not the Table Function can be instantiated multiple times
      * within a single query execution.
      */
     @Override
-    public boolean supportsMultipleInstantiations(VTIEnvironment arg0)
-            throws SQLException {
+    public boolean supportsMultipleInstantiations(VTIEnvironment arg0) throws SQLException {
         return false;
     }
 
     /**
      * Dynamic MetaData used to dynamically bind a function.
-     * 
+     * <p>
      * Metadata
      */
     @Override
@@ -135,6 +129,5 @@ public class AggregationResultVTI  implements DatasetProvider, VTICosting{
     public OperationContext getOperationContext() {
         return this.operationContext;
     }
-    
-    
+
 }

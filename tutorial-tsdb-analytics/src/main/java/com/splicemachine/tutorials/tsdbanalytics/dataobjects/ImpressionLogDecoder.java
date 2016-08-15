@@ -23,31 +23,28 @@ import com.google.gson.Gson;
 
 /**
  * Decoder Class for ImpressionLog, used with Kafka Queue.
- * The ImpressionLog is encoded as Json String by producer. And Consumer convert the Json String to 
- * IMpressionLog object
- * 
- * @author Jyotsna Ramineni
+ * The ImpressionLog is encoded as Json String by the Producer.
+ * The Consumer converts the Json String to an ImpressionLog object
  *
+ * @author Jyotsna Ramineni
  */
 
 public class ImpressionLogDecoder implements Decoder<ImpressionLog> {
 
-	public ImpressionLogDecoder( ) {
-		this(null);
-	}
-	public ImpressionLogDecoder( VerifiableProperties props) {
-		/* This constructor must be present for successful compile. */
-	}
-	
-	@Override
-	public ImpressionLog fromBytes(byte[] bytes) {
-		
-		String jsonString = new String(bytes, Charsets.UTF_8);
-		Gson gson = new Gson(); 
-		final ImpressionLog impressionLog = gson.fromJson(jsonString, ImpressionLog.class);
-		return impressionLog;
-	}
-	
+    public ImpressionLogDecoder() {
+        this(null);
+    }
 
-	
+    public ImpressionLogDecoder(VerifiableProperties props) {
+        /* This constructor must be present for successful compile. */
+    }
+
+    @Override
+    public ImpressionLog fromBytes(byte[] bytes) {
+        String jsonString = new String(bytes, Charsets.UTF_8);
+        Gson gson = new Gson();
+        final ImpressionLog impressionLog = gson.fromJson(jsonString, ImpressionLog.class);
+        return impressionLog;
+    }
+
 }

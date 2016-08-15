@@ -35,41 +35,32 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 /**
- * This converts Impression log to Pair of <PublisherKey, AggregateLog> 
- * 
- * @author Jyotsna Ramineni
+ * This converts ImpressionLog to Pair of <PublisherKey, AggregateLog>
  *
+ * @author Jyotsna Ramineni
  */
-public class AggregateFunction implements PairFunction< ImpressionLog, PublisherGeoKey, AggregationLog>, Externalizable{
+public class AggregateFunction implements PairFunction<ImpressionLog, PublisherGeoKey, AggregationLog>, Externalizable {
 
-	
-    private static final Logger LOG = Logger
-            .getLogger(AggregateFunction.class);
-    private  HyperLogLogMonoid hyperLogLog = new HyperLogLogMonoid(12);
-    
-   
+    private static final Logger LOG = Logger.getLogger(AggregateFunction.class);
+    private HyperLogLogMonoid hyperLogLog = new HyperLogLogMonoid(12);
 
-	@Override
-    public  Tuple2<PublisherGeoKey, AggregationLog>  call(ImpressionLog  log) throws Exception {
-    	
-		//Create PublisherGeoKey object with Publisher and Geo values from Impression Log
-    	 PublisherGeoKey pub = new PublisherGeoKey(log.getPublisher(), log.getGeo());
-    	 
-    	 //Create AggregationLog object with timestamp, bid, 1 for imp and HyperLogLog value for cookie from 
-    	 //imporession log
-    	 AggregationLog agg = new AggregationLog(log.getTimestamp(), log.getBid(), 1,
-    			 hyperLogLog.create(log.getCookie().getBytes(Charsets.UTF_8))
-    			 );
-    	return new Tuple2<>(pub, agg);
+    @Override
+    public Tuple2<PublisherGeoKey, AggregationLog> call(ImpressionLog log) throws Exception {
+
+        //Create PublisherGeoKey object with Publisher and Geo values from Impression Log
+        PublisherGeoKey pub = new PublisherGeoKey(log.getPublisher(), log.getGeo());
+
+        //Create AggregationLog object with timestamp, bid, 1 for imp and HyperLogLog value for cookie from ImpressionLog
+        AggregationLog agg = new AggregationLog(log.getTimestamp(), log.getBid(),
+                1, hyperLogLog.create(log.getCookie().getBytes(Charsets.UTF_8)));
+        return new Tuple2<>(pub, agg);
     }
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-
     }
 }

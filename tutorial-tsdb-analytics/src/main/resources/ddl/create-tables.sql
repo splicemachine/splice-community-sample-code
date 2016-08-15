@@ -1,12 +1,12 @@
 CREATE SCHEMA LOGAGG;
 
 CREATE TABLE LOGAGG.AggregateResults (
-	LOGDATE timestamp, 
-    PUBLISHER varchar(50), 
-    GEO varchar(50),  
-    IMPS integer, 
-    UNIQUES integer, 
-    AVGBIDS decimal(10,5) 
+  LOGDATE   TIMESTAMP,
+  PUBLISHER VARCHAR(50),
+  GEO       VARCHAR(50),
+  IMPS      INTEGER,
+  UNIQUES   INTEGER,
+  AVGBIDS   DECIMAL(10, 5)
 );
 
 

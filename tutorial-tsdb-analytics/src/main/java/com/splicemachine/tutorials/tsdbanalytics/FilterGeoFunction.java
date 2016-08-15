@@ -25,30 +25,26 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
 /**
  * This filter Impression logs with Unknown Geo
- * 
- * @author Jyotsna Ramineni
  *
+ * @author Jyotsna Ramineni
  */
-public class FilterGeoFunction implements Function< ImpressionLog, Boolean>, Externalizable{
+public class FilterGeoFunction implements Function<ImpressionLog, Boolean>, Externalizable {
 
-    private static final Logger LOG = Logger
-            .getLogger(FilterGeoFunction.class);
+    private static final Logger LOG = Logger.getLogger(FilterGeoFunction.class);
 
-    
     @Override
-    public Boolean call( ImpressionLog log) {
-		 return !(log.getGeo().equals("unknown"));
-	}
+    public Boolean call(ImpressionLog log) {
+        return !(log.getGeo().equals("unknown"));
+    }
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-
     }
 }
