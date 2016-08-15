@@ -60,58 +60,235 @@
         <profile>
             <id>cdh5.4.10</id>
             <properties>
+                <envClassifier>cdh5.4.10</envClassifier>
                 <kafka.version>0.9.0-kafka-2.0.2</kafka.version>
+                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.4.10</spark-assembly-id>
                 <spark.version>1.6.2</spark.version>
+                <storm.version>0.10.1</storm.version>
             </properties>
         </profile>
         <profile>
             <id>cdh5.5.2</id>
             <properties>
+                <envClassifier>cdh5.5.2</envClassifier>
                 <kafka.version>0.9.0-kafka-2.0.2</kafka.version>
+                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.5.2</spark-assembly-id>
                 <spark.version>1.6.2</spark.version>
+                <storm.version>0.10.1</storm.version>
             </properties>
         </profile>
         <profile>
             <id>cdh5.6.0</id>
             <properties>
+                <envClassifier>cdh5.6.0</envClassifier>
                 <kafka.version>0.9.0-kafka-2.0.2</kafka.version>
+                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.6.0</spark-assembly-id>
                 <spark.version>1.6.2</spark.version>
+                <storm.version>0.10.1</storm.version>
             </properties>
         </profile>
         <profile>
             <id>cdh5.7.2</id>
             <properties>
+                <envClassifier>cdh5.7.2</envClassifier>
                 <kafka.version>0.9.0-kafka-2.0.2</kafka.version>
+                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.7.2</spark-assembly-id>
                 <spark.version>1.6.2</spark.version>
+                <storm.version>0.10.1</storm.version>
             </properties>
         </profile>
         <profile>
             <id>cdh5.8.0</id>
             <properties>
-                <kafka.version>0.9.0-kafka-2.0.2</kafka.version>
                 <spark.version>1.6.2</spark.version>
+                <kafka.version>0.9.0-kafka-2.0.2</kafka.version>
+                <envClassifier>cdh5.8.0</envClassifier>
+                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.8.0</spark-assembly-id>
+                <storm.version>0.10.1</storm.version>
             </properties>
         </profile>
         <profile>
             <id>mapr5.1.0</id>
             <properties>
+                <envClassifier>mapr5.1.0</envClassifier>
                 <kafka.version>0.9.0.0-mapr-1607</kafka.version>
+                <spark-assembly-id>spark-assembly-hadoop2.7.0-mapr-1602</spark-assembly-id>
                 <spark.version>1.6.2</spark.version>
+                <storm.version>0.10.0-mapr-1607</storm.version>
             </properties>
         </profile>
         <profile>
             <id>hdp2.3.6</id>
             <properties>
+                <envClassifier>hdp2.3.6</envClassifier>
                 <kafka.version>0.9.0.2.3.6.0-3796</kafka.version>
+                <spark-assembly-id>spark-assembly-hadoop2.7.1.2.3.6.0-3796</spark-assembly-id>
                 <spark.version>1.6.2</spark.version>
+                <storm.version>0.10.0.2.3.6.0-3796</storm.version>
             </properties>
         </profile>
         <profile>
             <id>hdp2.4.2</id>
             <properties>
+                <envClassifier>hdp2.4.2</envClassifier>
                 <kafka.version>0.9.0.2.4.2.0-258</kafka.version>
+                <spark-assembly-id>spark-assembly-hadoop2.7.1.2.4.2.0-258</spark-assembly-id>
                 <spark.version>1.6.2</spark.version>
+                <storm.version>0.10.0.2.4.2.0-258</storm.version>
             </properties>
+        </profile>
+        <profile>
+            <id>populateQueue</id>
+            <activation>
+                <property>
+                    <name>populateQueue</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.5.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <arguments>
+                                <argument>10</argument>
+                                <!-- Kafka server -->
+                                <argument>localhost:9092</argument>
+                            </arguments>
+                            <mainClass>com.splicemachine.cs.demo.kafka.KafkaProducerExample</mainClass>
+                            <includeProjectDependencies>true</includeProjectDependencies>
+                            <executable>maven</executable>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>readQueue</id>
+            <activation>
+                <property>
+                    <name>readQueue</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.4.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <arguments>
+                                <!-- Kafka Queue -->
+                                <argument>localhost:9092</argument>
+                                <!-- Zookeeper -->
+                                <argument>localhost:2181</argument>
+                                <!-- Topic -->
+                                <argument>rfid</argument>
+                                <!-- Num Records to Read -->
+                                <argument>2</argument>
+                            </arguments>
+                            <mainClass>com.splicemachine.cs.demo.kafka.KafkaConsumerExample</mainClass>
+                            <includeProjectDependencies>true</includeProjectDependencies>
+                            <executable>maven</executable>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>populateQueueSP</id>
+            <activation>
+                <property>
+                    <name>populateQueueSP</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.4.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <arguments>
+                                <!-- Test -->
+                                <argument>populate</argument>
+                                <!-- Kafka server -->
+                                <argument>localhost:9092</argument>
+                                <!-- Topic -->
+                                <argument>rfid</argument>
+                                <!-- Num messages -->
+                                <argument>10</argument>
+                            </arguments>
+                            <mainClass>com.splicemachine.cs.demo.spark.SparkStreamingExamples</mainClass>
+                            <includeProjectDependencies>true</includeProjectDependencies>
+                            <executable>maven</executable>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>readQueueSP</id>
+            <activation>
+                <property>
+                    <name>readQueueSP</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.4.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <arguments>
+                                <!-- Test -->
+                                <argument>read</argument>
+                                <!-- Kafka Queue -->
+                                <argument>localhost:9092</argument>
+                                <!-- Zookeeper -->
+                                <argument>localhost:2181</argument>
+                                <!-- Topic -->
+                                <argument>rfid</argument>
+                                <!-- Num Records to Read -->
+                                <argument>2</argument>
+                            </arguments>
+                            <mainClass>com.splicemachine.cs.demo.spark.SparkStreamingExamples</mainClass>
+                            <includeProjectDependencies>true</includeProjectDependencies>
+                            <executable>maven</executable>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 
