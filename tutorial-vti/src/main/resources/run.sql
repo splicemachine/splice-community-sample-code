@@ -1,2 +1,2 @@
-select * from new com.splicemachine.tutorials.vti.PropertiesFileVTI('sample.properties') as b (KEY_NAME VARCHAR(200), VALUE VARCHAR(200));
-select * from table (PROPERTIESFILE('sample.properties')) b;
+SELECT * FROM new com.splicemachine.tutorials.vti.PropertiesFileVTI('sample.properties') AS b (KEY_NAME VARCHAR (200), VALUE VARCHAR (200));
+SELECT * FROM TABLE (PROPERTIESFILE('sample.properties')) b;

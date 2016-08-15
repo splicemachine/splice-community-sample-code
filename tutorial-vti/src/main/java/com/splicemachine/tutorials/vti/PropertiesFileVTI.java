@@ -44,23 +44,22 @@ import org.apache.log4j.Logger;
 /**
  * The is an example of a custom VTI that can be executed using a table
  * function as well as a full method name.
- * 
+ * <p>
  * The DatasetProvider is the mechanism for constructing the execution tree
- * 
+ * <p>
  * The VTICosting is the interface that the query optimizer uses to determine
  * the cost of executing the table function.
- * 
- * @author erindriggers
  *
+ * @author erindriggers
  */
-public class PropertiesFileVTI  implements DatasetProvider, VTICosting{
-    
+public class PropertiesFileVTI implements DatasetProvider, VTICosting {
+
     //Used for logging
     private static final Logger LOG = Logger.getLogger(PropertiesFileVTI.class);
 
     //Instance variable that will store the name of the properties file that is being read
     private String fileName;
-    
+
     //Provide external context which can be carried with the operation
     protected OperationContext operationContext;
 
@@ -68,58 +67,57 @@ public class PropertiesFileVTI  implements DatasetProvider, VTICosting{
      * This empty constructor is required if you want to access this VTI
      * using a Table Function
      */
-    public PropertiesFileVTI () {
+    public PropertiesFileVTI() {
 
     }
-    
+
     /**
      * This is the signature used by invoking the VTI using the class name.
-     * 
+     *
      * @param pfileName
      */
-    public PropertiesFileVTI (String pfileName) {
+    public PropertiesFileVTI(String pfileName) {
         this.fileName = pfileName;
     }
-    
-    /** 
+
+    /**
      * This static constructor is called by the VTI - Table Function
-     * 
+     *
      * @param fileName
      * @return
      */
     public static DatasetProvider getPropertiesFileVTI(String fileName) {
         return new PropertiesFileVTI(fileName);
     }
-    
+
     /**
      * Method is called by the VTIOperation process to get the resultset to be returned.
-     * 
+     * <p>
      * op - Reference to the operation at the top of the stack
      * dsp - The mechanism for constructing the execution tree
-     * execRow - 
-     * 
+     * execRow -
      */
     @Override
     public DataSet<LocatedRow> getDataSet(SpliceOperation op, DataSetProcessor dsp, ExecRow execRow) throws StandardException {
         operationContext = dsp.createOperationContext(op);
-        
+
         //Create an arraylist to store the key / value pairs
         ArrayList<LocatedRow> items = new ArrayList<LocatedRow>();
-        
+
         try {
             Properties properties = new Properties();
-            
+
             //Load the properties file
-            properties.load( getClass().getClassLoader().getResourceAsStream(fileName) );
-            
+            properties.load(getClass().getClassLoader().getResourceAsStream(fileName));
+
             //Loop through the properties and create an array
-            for(String key : properties.stringPropertyNames()) {
+            for (String key : properties.stringPropertyNames()) {
                 String value = properties.getProperty(key);
                 ValueRow valueRow = new ValueRow(2);
-                valueRow.setColumn(1,new SQLVarchar(key));
-                valueRow.setColumn(2,new SQLVarchar(value));
+                valueRow.setColumn(1, new SQLVarchar(key));
+                valueRow.setColumn(2, new SQLVarchar(value));
                 items.add(new LocatedRow(valueRow));
-              }
+            }
         } catch (FileNotFoundException e) {
             LOG.error("File not found: " + this.fileName, e);
         } catch (IOException e) {
@@ -131,17 +129,16 @@ public class PropertiesFileVTI  implements DatasetProvider, VTICosting{
     }
 
     /**
-     * The estimated cost to instantiate and iterate through the Table 
+     * The estimated cost to instantiate and iterate through the Table
      * Function.
      */
     @Override
-    public double getEstimatedCostPerInstantiation(VTIEnvironment arg0)
-            throws SQLException {
+    public double getEstimatedCostPerInstantiation(VTIEnvironment arg0) throws SQLException {
         return 0;
     }
 
     /**
-     * The estimated number of rows returned by the Table Function in a 
+     * The estimated number of rows returned by the Table Function in a
      * single instantiation.
      */
     @Override
@@ -150,12 +147,11 @@ public class PropertiesFileVTI  implements DatasetProvider, VTICosting{
     }
 
     /**
-     * Whether or not the Table Function can be instantiated multiple times 
+     * Whether or not the Table Function can be instantiated multiple times
      * within a single query execution.
      */
     @Override
-    public boolean supportsMultipleInstantiations(VTIEnvironment arg0)
-            throws SQLException {
+    public boolean supportsMultipleInstantiations(VTIEnvironment arg0) throws SQLException {
         return false;
     }
 
@@ -163,22 +159,21 @@ public class PropertiesFileVTI  implements DatasetProvider, VTICosting{
     public OperationContext getOperationContext() {
         return this.operationContext;
     }
-    
+
     /**
      * Dynamic MetaData used to dynamically bind a function.
-     * 
+     * <p>
      * Metadata
      */
     @Override
     public ResultSetMetaData getMetaData() throws SQLException {
         return metadata;
     }
-    
+
     private static final ResultColumnDescriptor[] columnInfo = {
-        EmbedResultSetMetaData.getResultColumnDescriptor("KEY1", Types.VARCHAR, false, 200),
-        EmbedResultSetMetaData.getResultColumnDescriptor("VALUE", Types.VARCHAR, false, 200),
+            EmbedResultSetMetaData.getResultColumnDescriptor("KEY1", Types.VARCHAR, false, 200),
+            EmbedResultSetMetaData.getResultColumnDescriptor("VALUE", Types.VARCHAR, false, 200),
     };
 
     private static final ResultSetMetaData metadata = new EmbedResultSetMetaData(columnInfo);
-    
 }
