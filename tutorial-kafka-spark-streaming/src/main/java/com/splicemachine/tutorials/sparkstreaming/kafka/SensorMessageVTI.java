@@ -52,18 +52,42 @@ import org.apache.log4j.Logger;
  *
  * @author Erin Driggers
  */
-public class SensorMessageVTI implements DatasetProvider, VTICosting {
-
+public class SensorMessageVTI  implements DatasetProvider, VTICosting{
+    
+    /**
+     * Log object to log messages.  The log messages in this class will appear
+     * in the HBase Region server log
+     */
     private static final Logger LOG = Logger.getLogger(SensorMessageVTI.class);
+    
+    
     protected OperationContext operationContext;
+
+    /**
+     * The records to be inserted
+     */
     private List<String> records = null;
+    
+    /**
+     * Object that helps map the incoming json string to SensorMessage object
+     */
     private ObjectMapper mapper = new ObjectMapper();
 
 
-    public SensorMessageVTI(List<String> pRecords) {
+    /**
+     * 
+     * @param pRecords - List of String with the SensorMessage in JSON format
+     */
+    public SensorMessageVTI (List<String> pRecords) {
         this.records = pRecords;
     }
-
+    
+    /**
+     * Static method to allow you to call with VTI using a TABLE FUNCTION
+     * 
+     * @param pRecords
+     * @return
+     */
     public static DatasetProvider getSensorMessageVTI(List<String> pRecords) {
         return new SensorMessageVTI(pRecords);
     }
@@ -74,20 +98,14 @@ public class SensorMessageVTI implements DatasetProvider, VTICosting {
 
         //Create an arraylist to store the key / value pairs
         ArrayList<LocatedRow> items = new ArrayList<LocatedRow>();
-
-        try {
-
-            LOG.error("in VTI:" + records);
-
-            int numRcds = this.records == null ? 0 : this.records.size();
-
-            if (numRcds > 0) {
-                LOG.error("Records to process:" + numRcds);
+        
+        try {            
+            int numRcds = this.records == null ? 0 : this.records.size();            
+            if(numRcds > 0 ) {        
                 //Loop through each record convert to a SensorObject
                 //and then set the values
-                for (String jsonString : records) {
+                for(String jsonString : records) {  
                     SensorMessage sensor = mapper.readValue(jsonString, SensorMessage.class);
-                    LOG.error("adding record:" + sensor.getId());
                     items.add(new LocatedRow(sensor.getRow()));
                 }
             }

@@ -29,13 +29,16 @@ import java.io.ObjectOutput;
  */
 public class TupleFunction implements Function<Tuple2<String, String>, String>, Externalizable {
 
+    /**
+     * Log object to log messages.  The log messages in this class will appear
+     * in the spark application's driver log file
+     */
     private static final Logger LOG = Logger
             .getLogger(TupleFunction.class);
 
 
     @Override
     public String call(Tuple2<String, String> stringStringTuple2) throws Exception {
-        LOG.info("=====================In tuple:" + stringStringTuple2.toString());
         return stringStringTuple2._2();
     }
 
