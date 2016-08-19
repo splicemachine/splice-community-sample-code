@@ -30,8 +30,7 @@ returns it as a table.
 		- sudo -su hdfs hadoop fs -copyFromLocal /tmp/test_orc_file /testorcvti
 
 8.  Run this command in SQLShell to use VTI to read the OrcFile:
-	+
-	SELECT * FROM new com.splicemachine.tutorials.vti.SpliceORCFileVTI(
+	- SELECT * FROM new com.splicemachine.tutorials.vti.SpliceORCFileVTI(
   '/testorcvti/test_orc_file') AS b
    (id bigint, name VARCHAR(10), activity char(1), is_fte boolean,
 	test_tinyint smallint, test_smallint smallint, test_int int, test_float float,
@@ -42,8 +41,7 @@ returns it as a table.
 		
 		
 9. Run this command to insert the Contents of ORcFile to SPlice machine table
-	+
-	insert into user_orc SELECT * FROM new com.splicemachine.tutorials.vti.SpliceORCFileVTI(
+	- insert into user_orc SELECT * FROM new com.splicemachine.tutorials.vti.SpliceORCFileVTI(
   '/testorcvti/test_orc_file') AS b
    (id bigint, name VARCHAR(10), activity char(1), is_fte boolean,
 	test_tinyint smallint, test_smallint smallint, test_int int, test_float float,
