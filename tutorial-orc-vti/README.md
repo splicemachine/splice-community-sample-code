@@ -50,3 +50,12 @@ returns it as a table.
 	start_dt date, update_dt timestamp
 	);
 		
+10. For Multiple files in folder /testorcvti, specify the folder instead of filename
+	- insert into user_orc SELECT * FROM new com.splicemachine.tutorials.vti.SpliceORCFileVTI(
+  '/testorcvti') AS b
+   (id bigint, name VARCHAR(10), activity char(1), is_fte boolean,
+	test_tinyint smallint, test_smallint smallint, test_int int, test_float float,
+	test_double double, test_decimal decimal(10,0),
+	role varchar(64),	salary decimal(8,2),
+	start_dt date, update_dt timestamp
+	);
