@@ -1,9 +1,9 @@
 == README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+If you dont have rvm setup make sure you go through the steps to setup rvm in the following website:
+http://installrails.com
 
-Things you may want to cover:
+It is very important that the versions of the below outline products should have the proper major version.
 
 * Ruby version
   2.3.1
@@ -15,24 +15,40 @@ Things you may want to cover:
   4.0.0 ( Note Rails 5 is incompatible with the jdbcderby adapter)
 
 * System dependencies
+  The client jar file needs to be placed in the classpath mentioned below:
   The db-client-2.x.x.x.jar needs to be placed in the lib folder of the jruby
   In my case it was at /Users/amitmudgal/.rbenv/versions/jruby-9.1.5.0/lib
-   
+  Remember to install the jdbcderby-adapter using the command "gem install activerecord-jdbcderby-adapter"
+     
 
 * Configuration
+  Make sure splicemachine is up and running:
 
 * Database creation
+  We use the default SPLICE database for this implementation. 
 
 * Database initialization
-
+  Do run the "bundle install" after cloning the git repo locally. It would install all the local gems required.
+  I was running the local install so my config/database.yml looks like the one below:
+    adapter: jdbcderby
+    database: splicedb
+    username: splice
+    password: admin
+    driver: com.splicemachine.db.jdbc.ClientDriver
+    url: jdbc:splice://localhost:1527/splicedb
+  Modify the same based on your environment.
+ 
 * How to run the test suite
+  To run via rake you can use the below commands:
+  rails generate model Company name:string
+  bin/rake db:migrate RAILS_ENV=development
 
 * Services (job queues, cache servers, search engines, etc.)
 
 * Deployment instructions
 
-* ...
+  Make sure you have all gems added from gemlist.txt. A thing to note here is that the version of the activerecord should be the same.
+  Please refer to document : http://doc.splicemachine.com/Developers/Connecting/JDBCConnectWithJRuby.html for further steps.
+  
 
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
