@@ -5,3 +5,7 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+Company.delete_all
+1.upto(100000) do |i|
+   Company.create(:name => "User #{i}")
+end

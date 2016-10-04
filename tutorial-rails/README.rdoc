@@ -36,6 +36,8 @@ It is very important that the versions of the below outline products should have
     password: admin
     driver: com.splicemachine.db.jdbc.ClientDriver
     url: jdbc:splice://localhost:1527/splicedb
+    prepared_statements: true
+
   Modify the same based on your environment.
  
 * How to run the test suite
