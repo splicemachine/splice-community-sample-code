@@ -1,3 +1,17 @@
+/*
+ * Copyright 2012 - 2016 Splice Machine, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the
+ * License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
 package com.splicemachine.tutorials.storm;
 
 import java.sql.Connection;
@@ -21,105 +35,107 @@ import backtype.storm.utils.Utils;
  */
 public class MySqlSpout implements IRichSpout {
 
-	private static final long serialVersionUID = 1L;
-	private TopologyContext _context;
-	private SpoutOutputCollector _collector;
-	private transient Connection con = null;
-	static Queue<String> bufferQueue = new ConcurrentLinkedQueue<String>();
-	static int index = 0;
-	final static int SIZE = 10;
-    
+    private static final long serialVersionUID = 1L;
+    private TopologyContext _context;
+    private SpoutOutputCollector _collector;
+    private transient Connection con = null;
+    static Queue<String> bufferQueue = new ConcurrentLinkedQueue<String>();
+    static int index = 0;
+    final static int SIZE = 10;
+
     public boolean isDistributed() {
         return true;
     }
-    
+
     @Override
-    public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {   
-    	_context = context;
+    public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
+        _context = context;
         _collector = collector;
     }
-    
-	private void seedBufferQueue(String server, String db, String user, String pwd){
-		try {
-			final MySqlConnector connector = new MySqlConnector();
-			con = connector.getConnection(server, db, user, pwd);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
-		PreparedStatement pst = null;
+    private void seedBufferQueue(String server, String db, String user, String pwd) {
+        try {
+            final MySqlConnector connector = new MySqlConnector();
+            con = connector.getConnection(server, db, user, pwd);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		try {
-			//sql statement used to extract data from mysql
-			pst = con.prepareStatement("SELECT name FROM students");
-			index+=SIZE;
-			
-			// execute the SQL
-			ResultSet res = pst.executeQuery();
-			while (res.next()) {
-				//data to be extracted
-				String name = res.getString("name");
-				bufferQueue.add(name);
-			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		} finally {
-			try {
-				if (pst != null) {
-					pst.close();
-				}
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+        PreparedStatement pst = null;
 
-	public void nextTuple() {			
-		if(bufferQueue.isEmpty()){
-			//pass in mysql server, db name, user, password
-			seedBufferQueue("localhost", "test", "root", "");
-			Utils.sleep(100);
-		} else {
-			//Replace name with the data being extracted.  This example expects only name to be returned in the sql
-			//and thus is only item outputed by the spout.  To add additional data add them to the values using new Values(value1, value2, etc)
-			//then emit the values
-			String name = bufferQueue.poll();	
-			if (name != null) {
-				Values values = new Values();				
-				values.add(name);
-				_collector.emit(values);
-			}
-			Utils.sleep(50);
-		}	
-	}
-    
-    @Override
-    public void close() {        
+        try {
+            //sql statement used to extract data from mysql
+            pst = con.prepareStatement("SELECT name FROM students");
+            index += SIZE;
+
+            // execute the SQL
+            ResultSet res = pst.executeQuery();
+            while (res.next()) {
+                //data to be extracted
+                String name = res.getString("name");
+                bufferQueue.add(name);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
-    
+
+    public void nextTuple() {
+        if (bufferQueue.isEmpty()) {
+            // pass in mysql server, db name, user, password
+            seedBufferQueue("localhost", "test", "root", "");
+            Utils.sleep(100);
+        } else {
+            // Replace name with the data being extracted.
+            // This example expects only name to be returned in the sql/and thus is only item output by the spout.
+            //  To add additional data add them to the values using new Values(value1, value2, etc) then emit the values
+            String name = bufferQueue.poll();
+            if (name != null) {
+                Values values = new Values();
+                values.add(name);
+                _collector.emit(values);
+            }
+            Utils.sleep(50);
+        }
+    }
+
+    @Override
+    public void close() {
+    }
+
     @Override
     public void ack(Object id) {
     }
-    
+
     @Override
     public void fail(Object id) {
     }
-     
+
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declare(new Fields("name"));
     }
-    
+
     @Override
-    public void activate() {}
-    
+    public void activate() {
+    }
+
     @Override
-    public void deactivate() {}
-    
+    public void deactivate() {
+    }
+
     @Override
     public Map<String, Object> getComponentConfiguration() {
         return null;
     }
-    
+
 }
