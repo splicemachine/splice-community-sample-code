@@ -1,0 +1,67 @@
+#
+# Options file for Sqoop import
+#
+
+# Specified the tool being invoked
+#import 
+
+# JDBC connection string
+--connect
+jdbc:mysql://localhost/test
+
+# Connection credentials
+--username
+sqoop
+--password
+sqoop
+
+# Directory where the file should be placed
+#--target-dir
+#/export
+
+#--split-by
+#Account_Key
+
+# Appends data to existing dataset in HDFS
+#--append
+
+# Indicates the character to use a the field delimiter.
+--fields-terminated-by
+,
+
+# Enclosed by character - this can be used to enclose a field with a particular string like double quote
+--enclosed-by
+'\"'
+
+#Sets the escape character
+--escaped-by
+'\"'
+#\\
+
+#If a field happens to have the special character in it like a quote, it will escape the special character in the field
+--optionally-enclosed-by
+'\"'
+
+# Print verbose information
+--verbose
+
+# The number of map tasks to import in parallel - for testing purposes we have 1
+#-m
+#1
+
+# Use direct import fast path - Some database have a more performant native method besides jdbc to extract data.  For example, mysql has mysqldump
+#--direct
+
+# Enable compression
+#--compress
+
+#
+
+# The string to be written for a null value for string columns.  By default it will write the word null - splice machine does not like that.
+--null-string
+''
+
+# The string to be written for a null value for non-string columns.  By default it will write the word null - splice machine does not like that.
+--null-non-string
+''
+
