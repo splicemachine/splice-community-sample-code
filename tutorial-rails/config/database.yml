@@ -11,6 +11,7 @@ default: &default
     password: admin
     driver: com.splicemachine.db.jdbc.ClientDriver
     url: jdbc:splice://localhost:1527/splicedb
+    prepared_statements: true
 
 development:
   <<: *default
