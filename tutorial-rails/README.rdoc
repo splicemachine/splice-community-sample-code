@@ -52,5 +52,20 @@ It is very important that the versions of the below outline products should have
   Make sure you have all gems added from gemlist.txt. A thing to note here is that the version of the activerecord should be the same.
   Please refer to document : http://doc.splicemachine.com/Developers/Connecting/JDBCConnectWithJRuby.html for further steps.
   
+Implementation of Rails on CentOS (centos-release-6-8.el6.centos.12.3.x86_64)
 
-
+* sudo yum groupinstall -y 'development tools'
+* gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+* curl -L get.rvm.io | bash -s stable (In case the keys are not present then the above key would be shown )
+* source ~/.profile
+* rvm install jruby
+  in case ruby gems is not installed (rvm ruby gems latest)
+* gem install rails -v 4.0.0
+* gem install bundle
+* git clone https://github.com/splicemachine/splice-community-sample-code.git
+* navigate to “tutorial-rails” and run "bundle install"
+* which jruby
+  whatever directory comes substitute bin for lib and put the client driver file there.
+  In my case i for ~/.rvm/rubies/jruby-9.0.5.0/bin/jruby
+  ~/.rvm/rubies/jruby-9.0.5.0/lib
+   
