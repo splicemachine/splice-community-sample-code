@@ -37,6 +37,7 @@ It is very important that the versions of the below outline products should have
     driver: com.splicemachine.db.jdbc.ClientDriver
     url: jdbc:splice://localhost:1527/splicedb
     prepared_statements: true
+    pool: 1000
 
   Modify the same based on your environment.
  

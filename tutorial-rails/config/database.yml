@@ -12,6 +12,7 @@ default: &default
     driver: com.splicemachine.db.jdbc.ClientDriver
     url: jdbc:splice://localhost:1527/splicedb
     prepared_statements: true
+    pool: 1000
 
 development:
   <<: *default

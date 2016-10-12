@@ -13,16 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20160923023052) do
 
-  create_table "a", id: false, force: true do |t|
-    t.integer "i", limit: 10
-  end
-
-  create_table "ar_internal_metadata", primary_key: "key", force: true do |t|
-    t.string    "value"
-    t.timestamp "created_at", limit: 29, null: false
-    t.timestamp "updated_at", limit: 29, null: false
-  end
-
   create_table "companies", force: true do |t|
     t.string    "name"
     t.timestamp "created_at", limit: 29
