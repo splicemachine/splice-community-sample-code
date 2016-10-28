@@ -1,0 +1,9 @@
+<script>
+	MLFormatBehavior = {
+		formatDate: function(myTimestamp) {
+			if(myTimestamp == null || myTimestamp == '') return '';
+			var d = new Date(myTimestamp);
+			return d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
+		}
+	};
+</script>

@@ -1,0 +1,63 @@
+<link rel="import" href="../components/ml-search.html">
+<dom-module id="ml-model-edit">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+      }      
+      h1 {
+      	color: rgb(235, 160, 104);
+      }
+      paper-button.action {
+	    background-color: #FA7252;
+	    color: white;
+	  }
+      
+    </style>
+    <div class="card">
+    	<div class="container flex-10">
+   			<div class="stdInputControl">
+   				<label for="name">Name</label>
+   				<input type="text" id="name">
+   			</div>
+   			<div class="stdInputControl">
+   				<label for="description">Description</label>
+   				<input type="text" id="description">
+   			</div>    		
+   			<div class="stdInputControl">
+   				<label for="status">Status</label>
+   				<select id="status">
+   					<option>Active</option>
+   					<option>Inactive</option>
+   				</select>
+   			</div> 
+   			<div class="stdInputControl">
+   				<label for="description">Enable Real Time Predictions</label>
+   				<input type="checkbox" id="realTimePredictions">
+   			</div> 
+    	</div>	
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'ml-model-edit',
+      behaviors: [MLCommonBehavior],
+      pageTitle: 'Model Edit',
+      properties: {
+    	  modelid: Number  
+      },
+      attached: function() {
+    	  if(this.modelid == null) {
+    		  this.setPageTitle("Create New Model");
+    	  } else {
+    		this.populateModelData();  
+    	  }
+      },
+      populateModelData: function() {
+    	  
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,17 @@
+<script>
+	MLDialogBehavior = {
+		properties: {
+			disposable: {type: Boolean, value:true}
+		},
+		open: function(){
+			this.$.dialog.open();
+		},
+		cancel: function(){
+			this.$.dialog.close();
+			if(this.disposable && this.parentElement != null) {
+				this.parentElement.removeChild(this);
+			}
+		}
+
+	};
+</script>

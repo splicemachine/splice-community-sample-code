@@ -1,0 +1,179 @@
+<dom-module id="ml-model">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+      }      
+      h1 {
+      	color: rgb(235, 160, 104);
+      }
+      .table {
+      	display: table;*
+      	margin-top: 6px !important;
+      	margin-bottom: 6px !important;
+      	width: 100%;
+      	border-spacing: 0px;
+      	padding: 1px;
+      }
+      .heading {
+      	display: table-row;
+      	font-weight: bold;
+      	text-align: center;
+      }
+      .row {
+      	display: table-row;
+      }
+      
+      .heading .cell {
+      	display: table-cell;
+      	vertical-align: middle;
+      	padding: 5px;
+      	border-bottom: 1px solid #333;
+      	font-weight: bold;
+      }
+      
+      .row .cell {
+      	display: table-cell;
+      	padding: 10px;
+      	border-top: 1px solid #dddddd;
+      }
+      
+      paper-button.action {
+	    background-color: #FA7252;
+	    color: white;
+	  }
+      .table {
+      	display: table;*
+      	margin-top: 6px !important;
+      	margin-bottom: 6px !important;
+      	width: 100%;
+      	border-spacing: 0px;
+      	padding: 1px;
+      }
+      .heading {
+      	display: table-row;
+      	font-weight: bold;
+      }
+      .row {
+      	display: table-row;
+      }
+      
+      .heading .cell {
+      	display: table-cell;
+      	vertical-align: middle;
+      	padding: 5px;
+      	border-bottom: 1px solid #333;
+      	font-weight: bold;
+      }
+      
+      .row .cell {
+      	display: table-cell;
+      	padding: 10px;
+      	border-top: 1px solid #dddddd;
+      }
+      
+      paper-button.action {
+	    background-color: #FA7252;
+	    color: white;
+	  }
+	  .stdControl {
+	  	display: flex;
+	  }
+	  .label {
+	  	font-weight: bold;
+	  	width: 300px;
+	  }
+	  
+      
+    </style>
+    <div class="card">
+    	<div class="container flex">
+    		<div class="horizontal end-justified layout"><paper-button raised class="action" on-click="edit">Edit</paper-button></div>
+    	</div>
+    	<div class="container flex-10">
+   			<div class="stdControl">
+   				<div class="label">Name</div>
+   				<div class="value">[[detail.displayName]]</div>
+   			</div>
+   			<div class="stdControl">
+   				<div class="label">Description</div>
+   				<div class="value">[[detail.description]]</div>
+   			</div>    		
+   			<div class="stdControl">
+   				<div class="label">Status</div>
+   				<div class="value">[[detail.statusDesc]]</div>
+   			</div> 
+   			<div class="stdControl">
+   				<div class="label">Enable Real Time Predictions</div>
+   				<div class="value">[[detail.enableRealTimePredictions]]</div>
+   			</div> 
+    	</div>	
+    </div>
+    <div class="card">
+    	<h1>Model Versions</h1>
+    	<div class="container flex">
+    		<div class="horizontal end-justified layout"><paper-button raised class="action" on-click="addNew">New</paper-button></div>
+    	</div>
+		<div class="scrollTable">
+			<div class="table">
+				<thead>
+					<div class="heading">
+						<div class="cell">Version</div>
+						<div class="cell">Status</div>
+						<div class="cell">Platform</div>
+						<div class="cell">Model Create Date</div>
+						<div class="cell">Effective Date</div>
+					</div>
+				</thead>
+				<template is="dom-repeat" items="[[rows]]" as="row">
+					<div class="row">
+						<div class="cell"><a href$="/modeldeploy/app/model/[[row.modelId]]/version/[[row.id]]/edit">[[row.version]]</a></div>
+						<div class="cell">[[row.statusDesc]]</div>
+						<div class="cell">[[row.platform]]</div>
+						<div class="cell">[[row.formattedModelCreateDate]]</div>
+						<div class="cell">[[row.formattedEffectiveDate]]</div>
+					</div>
+				</template>
+			</div>
+		</div>    		
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'ml-model',
+      behaviors: [MLCommonBehavior],
+      pageTitle: 'Model Edit',
+      properties: {
+    	  modelid: Number  
+      },
+      detail: {},
+      rows: [],
+      attached: function() {
+    	  this.setPageTitle("Model Details");
+    	  this.sendRestRequest("GET", "/modeldeploy/service/model/" + 1, null, this.detailResponse, null);
+    	  this.sendRestRequest("GET", "/modeldeploy/service/modelversion/" + 1, null, this.modelVersionsResponse, null);
+      },
+      detailResponse: function(detailResp) {
+    	  var jsonResponse = detailResp.detail.response;
+    	  if(jsonResponse != null ) {
+    		  this.detail = jsonResponse;
+    	  }   	  
+      },
+      modelVersionsResponse: function(detailResp) {
+    	  var jsonResponse = detailResp.detail.response;
+    	  if(jsonResponse != null ) {
+    		  this.rows = jsonResponse;
+    	  }
+      },
+      edit: function() {
+    	  var dialog = document.createElement('ml-dialog-create-model');
+    	  dialog.modelId = this.modelid;
+    	  Polymer.dom(this.root).appendChild(dialog);
+    	  Polymer.dom.flush();
+    	  dialog.open();
+      }
+    });
+  </script>
+</dom-module>

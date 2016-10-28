@@ -1,0 +1,114 @@
+<dom-module id="ml-login">
+  <template>
+    <style>
+      :host {
+        display: block;
+        padding: 10px;
+        font-size: 14px;
+      }
+      #loginPanel {
+	    align-items: center;
+  		display: flex;
+  		justify-content: center;
+  		padding-top: 10%;
+	  }
+	  #message {
+	  	color: red;
+	  	padding-left: 15px;
+	  	padding-bottom: 5px;  	
+	  }
+	  .form-group{
+	  	display: block;
+	  	height: 45px;
+	  	padding-left: 15px;
+	  }
+	  .icon {
+	  	color: gray;
+	  	display: inline;
+	  	background-color: #eee;
+	  	width: 30px;
+	  	padding: 7px;
+	  }
+	  input {
+	  	border: none;
+	  	width: 250px;
+	  	color: gray;
+	  	font-size:14px;
+	  }
+	  .icon-inline {
+	  	border-color: #ddd;
+	  	border-style: solid;
+	  	border-width: 2px;
+	  	width: 300px;
+	  	min-height: 26px;
+	  	padding-top: 4px;
+	  }
+	  .card-actions {
+	  	padding: 10px
+	  }
+	  .button {
+	  	margin-left: 40%;
+	  }
+	  
+    </style>
+
+	<div id="loginPanel">
+		<paper-card heading="Sign Into Model Management" alt="Sign Into Model Management">
+		  <div>
+		  		<div id="message">[[message]]</div>
+	          	<div class="form-group">
+	          		<div class="icon-inline">
+	          			<span class="icon"><iron-icon icon="icons:mail"></iron-icon></span>
+	          			<input type="email" placeholder="support@testing.com" id="emailaddress" >
+	          		</div>
+	      		</div>
+	      		<div class="form-group">
+	      			<div class="icon-inline">
+	      				<span class="icon"><iron-icon icon="communication:vpn-key"></iron-icon></span>
+	      				<input type="password" placeholder="password" id="password">
+	      			</div>
+	      		</div>
+		  </div>
+		  <div class="card-actions">
+		    <paper-button class="button" on-click="authenticate">Login</paper-button>
+		  </div>
+		</paper-card>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'ml-login',
+      properties: {
+    	  message: ""
+      },
+      behaviors: [MLCommonBehavior],
+      authenticate: function() {
+    	  var parms = {};
+    	  parms.user= this.$.emailaddress.value;
+    	  parms.pwd=this.$.password.value;
+    	  if(parms.user == "" || parms.pwd == "") {
+    		  this.message = "Please enter a user id and password";
+    		  return;
+    	  }
+    	  this.message = "";
+    	  this.sendRestRequest(null, "login.do", parms, this.loginResponse, this.loginError);
+      },
+      loginResponse: function(detailResp) {  
+    	  var jsonResponse = detailResp.detail.response;
+    	  if(jsonResponse != null && jsonResponse.authorized) {
+    		  app.loggedIn = true;
+    		  app.userId = jsonResponse.userId;
+    		  app.userDisplayName = jsonResponse.firstName + " " + jsonResponse.lastName;
+    		  page('/modeldeploy/app/home');
+    	  } else {
+    		  this.message = "Invalid user id or password";
+    	  }
+      },
+      loginError: function(errorResp) {  	
+    	  var jsonResponse = errorResp.detail.response;
+    	  this.message = "There was an error processing your request";
+      }
+    });
+  </script>
+</dom-module>

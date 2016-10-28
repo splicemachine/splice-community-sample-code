@@ -1,0 +1,48 @@
+<dom-module id="ml-left">
+  <template>
+  	<style>
+  	
+  	paper-item {
+      --paper-item: {
+        cursor: pointer;
+      };
+    }
+    
+    paper-menu {
+    	--paper-menu-background-color: black;
+    	--paper-menu-color: #89949B;
+    }
+    
+    .menu-icon {
+    	padding-right: 10px;
+    }
+    
+    .menu-content {
+    	padding-left: 25px;
+    }
+  	
+  	</style>
+	<nav class="navbar" role="navigation">
+		<paper-menu id="side-menu" multi="true">
+			<paper-submenu>
+				<paper-item id="ModelHub" class="menu-trigger" autonav="ModelSearch">
+					<iron-icon icon="folder" item-icon class="menu-icon"></iron-icon>
+					<span>Models</span>
+				</paper-item>
+				<paper-menu class="menu-content" id="modelMenu" parentId="ModelHub" multi="true">
+					<paper-item on-click="navToPage" id="ModelSearch" data-route="/modeldeploy/app/models">Search</paper-item>
+					<paper-item on-click="navToPage" id="ModelDetail" data-route="/modeldeploy/app/model/:modelid">Details</paper-item>
+				</paper-menu>
+			</paper-submenu>
+		</paper-menu>
+	</nav>
+  </template>
+   <script>
+    Polymer({
+      is: 'ml-left',
+      navToPage: function(e) {
+    	  page(e.currentTarget.attributes['data-route'].nodeValue);
+      }
+    });
+  </script>
+</dom-module>

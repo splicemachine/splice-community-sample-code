@@ -1,0 +1,18 @@
+<script>
+	MLLayoutBehavior = {
+		properties: {
+	      	pagetitle: "Home",
+	      	username: "",
+		},
+		listeners: {
+			'pagetitle': 'setPageTitle',
+			'logout' : 'doLogout'
+		},
+		attached: function(e) {
+			this.username = app.userDisplayName;  
+		},
+		setPageTitle: function(e) {
+			this.pagetitle = e.detail.title;
+		}
+	};
+</script>

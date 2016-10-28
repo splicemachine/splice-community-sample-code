@@ -1,0 +1,34 @@
+<dom-module id="ml-model-version-edit">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+      }
+    </style>
+
+    <div class="card">
+      <div class="circle">1</div>
+      <h1>Model Version Edit</h1>
+      <p>Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
+      <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'ml-model-version-edit',
+      behaviors: [MLCommonBehavior,MLFormatBehavior],
+      attached: function(){
+    	  if(this.modelid == null) {
+    		  this.setPageTitle("Create New Model Version");
+    	  } else {
+    		this.populateModelData();  
+    	  }
+      },
+      populateModelData: function() {
+    	  
+      }
+    });
+  </script>
+</dom-module>

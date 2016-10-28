@@ -1,0 +1,63 @@
+<script>
+	MLCommonBehavior = {
+			callRestService: function(e) {
+				//Add logic for being authenticated
+			},
+			sendRestRequest: function(type, path, parms, successResponse, failureResponse) {
+				var _requestBot = document.createElement("iron-ajax");
+				if(successResponse == null) {
+					_requestBot.addEventListener("response", this.processSuccessResponse.bind(this));
+				} else {
+					_requestBot.addEventListener("response", successResponse.bind(this));
+				}
+				if(failureResponse == null) {
+					_requestBot.addEventListener("error", this.processFailureResponse.bind(this));
+				} else {
+					_requestBot.addEventListener("error", failureResponse.bind(this));
+				}
+				
+				if(type == null) type = "POST";
+				
+				_requestBot.url = path;
+				_requestBot.method = type;
+				
+				if(type == "POST") {
+					_requestBot.contentType = "application/x-www-form-urlencoded";
+					_requestBot.body = parms;
+				} else {
+					_requestBot.contentType = "application/json";
+					_requestBot.parms = parms;
+				}
+				_requestBot.generateRequest();
+			},
+			processSuccessResponse: function(detailResp) {
+				var jsonResponse = detailResp.detail.response;
+				alert('JsonResponse:' + jsonResponse);
+			},
+			processFailureResponse: function(errorResp) {
+				var status = errorResp.detail.request.status;
+				var url = errorResp.detail.request.url;
+				if(status == 404) {
+					alert('The rest service for ' + url + " could not be found.  Please confirm the URL is correct.");
+				} else if (status == 401) {
+					alert('The rest service for ' + url + 'requires that you are authenticated');
+				} else if (status == 500) {
+					alert('An internal error occurred processing the rest service ' + url);
+				} else {
+					alert('An error occurred processing the rest service ' + url);
+				}
+			},
+			setPageTitle: function(title) {
+				var pageDtls = {};
+				pageDtls.title = title;
+				this.fire('pagetitle', pageDtls);	
+			},
+			doLogout: function() {
+				this.sendRestRequest(null, "/modeldeploy/logout.do", null, this.logoutResponse, null);
+			},
+			logoutResponse: function() {
+				app.logout();
+			}
+			
+	};
+</script>

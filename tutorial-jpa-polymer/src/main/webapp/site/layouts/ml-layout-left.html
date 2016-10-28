@@ -1,0 +1,63 @@
+<link rel="import" href="../components/ml-left.html">
+<link rel="import" href="../components/ml-top-menu.html">
+<link rel="import" href="../views/ml-model-search.html">
+
+<dom-module id="ml-layout-left">
+  <template>
+  		<style>
+  			#user {
+  				background-color: #FA7252;
+  				color: #fff;
+  			}
+  			#leftnav {
+  				background-color: #333;
+  				color: #eeeeee;
+  			}
+  			#main-body {
+  				background-color: #E9F0F5;
+  			}
+  			#header {
+  				min-height: 64px;
+  				background-color: #333;
+  			}
+  			#leftSide {
+  				background-color: #333;
+  			}
+  			.avatar {
+		      display: inline-block;
+		      width: 40px;
+		      height: 40px;
+		      border-radius: 50%;
+		      overflow: hidden;
+		      background: #ccc;
+		    }
+  		</style>
+		<paper-drawer-panel response-width="1200px">
+			<paper-header-panel drawer id="leftSide">
+				<paper-toolbar id="user">
+					<div class="layout vertical">
+						<div id="avatar"></div>
+						<div id="username">[[username]]</div>
+					</div>
+				</paper-toolbar>
+				<div id="leftnav">
+					<ml-left id="left"></ml-left>
+				</div>
+			</paper-header-panel>
+			<paper-header-panel main>
+				<div id="header" class="paper-header vertical layout">
+					<div><ml-top-menu id="top" title="[[pagetitle]]"></ml-top-menu></div>
+				</div>
+				<div id="main-body">
+					<content id="layoutMainContent"></content>
+				</div>
+			</paper-header-panel>
+		</paper-drawer-panel>
+  </template>
+   <script>
+    Polymer({
+      is: 'ml-layout-left',
+      behaviors: [MLCommonBehavior,MLLayoutBehavior]
+    });
+  </script>
+</dom-module>

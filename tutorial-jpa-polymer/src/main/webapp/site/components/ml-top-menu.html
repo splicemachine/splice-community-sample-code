@@ -1,0 +1,58 @@
+<dom-module id="ml-top-menu">
+  <template>
+	<style is="custom-style">
+
+      :host {
+        display: block;
+		background-color: #333;
+		color: #89949B;
+      }
+      
+      #logout {
+      	background-color: #FA7252;
+      	color: #fff;
+      }
+      
+      #pagetitle {
+      	font-size: 24px;
+      	padding-left: 10px;
+      	padding-top: 10px;
+      }
+      
+      .largeIcon  {
+      	width: 64px;
+      	height: 64px;
+      }
+	
+  	  .flex {
+    	@apply(--layout-horizontal);
+  	  }
+  	
+	</style>
+	<div class="container flex">
+		<div class="flex-10">
+			<div id="pagetitle">[[title]]</div>
+		</div>
+		<div class="layout end-justified">
+			<div class="horizontal layout end ">
+				<div><paper-icon-button noink icon="icons:settings" id="settings" class="largeIcon" alt="Settings" title="Settings" on-click="settings"></paper-icon-button>
+			</div>
+			<div class="horizontal layout end ">
+				<div><paper-icon-button noink icon="icons:settings-power" id="logout" class="largeIcon" alt="Sign Out" title="Sign Out" on-click="logout"></paper-icon-button>
+			</div>
+		</div>
+	</div>
+
+  </template>
+   <script>
+    Polymer({
+      is: 'ml-top-menu',
+      properties: {
+      	title: String
+      },
+      logout: function() {
+    	  this.fire('logout', null);	
+      }
+    });
+  </script>
+</dom-module>

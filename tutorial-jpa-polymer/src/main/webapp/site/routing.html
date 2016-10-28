@@ -1,0 +1,91 @@
+<script src="../bower_components/page/page.js"></script>
+<script>
+	{
+		var app={};
+		app.loggedIn = false;
+		
+		app.logout = function() {
+			app.loggedIn = false;
+			page('/modeldeploy/index.html');
+		};
+		
+		function scrollToTop(ctx, next) {
+			debugger;
+			app.scrollPageToTop();
+			next();
+		}		
+		
+		function closeDrawer(ctx, next) {
+			debugger;
+			app.closeDrawer();
+			next();
+		}
+		
+		function setFocus(selected) {
+			
+			//Should do this in a more secure fashion
+			//in a real example
+			if(app.loggedIn == false && !app.route == 'login') {
+				page.redirect('/modeldeploy/index.html');
+				return;
+			}
+			
+			//Get the page layout
+			var layout = selected.layout;
+			
+			//Locate the section in index.html where the layout is placed
+			var centerContentContainer = Polymer.dom(this.root).querySelector("#layoutContent");
+			var childNodes = Polymer.dom(centerContentContainer).childNodes;
+			
+			var layoutAlreadyInPlace = false;
+			var layoutNodel = null;
+			for(var i=0; i<childNodes.length; i++) {
+				if(childNodes[i].nodeName == layout.toUpperCase()) {
+					layoutAlreadyInPlace = true;
+					layoutNodel = childNodes[i];
+				} else {
+					Polymer.dom(centerContentContainer).removeChild(childNodes[i]);
+				}
+			}
+			
+			if(!layoutAlreadyInPlace) {
+				layoutNodel = document.createElement(layout);
+			} 
+
+			layoutNodel['title'] = selected.title;
+			
+			var layoutCenter = null;
+			var centerNode = document.createElement(selected.view);
+			
+			if(layoutNodel.childNodes != null) {
+				var layoutChildNodes = layoutNodel.childNodes;				
+				for(var i=0; i<layoutChildNodes.length; i++) {
+					layoutNodel.removeChild(layoutChildNodes[i]);
+				}
+			} 
+			layoutNodel.appendChild(centerNode);
+
+			Polymer.dom(centerContentContainer).appendChild(layoutNodel);
+			Polymer.dom.flush();				
+
+		}
+		
+		// Routes
+		page('/modeldeploy/app/home', function() {app.route='home';app.view='ml-model-search';app.title='Home';app.layout='ml-layout-full';setFocus(app);});
+		page('/modeldeploy/index.html', function() {app.route='login';app.view='ml-login';app.title='Login';app.layout='ml-layout-empty';setFocus(app);});
+		page('/modeldeploy/app/models', function() {app.route='models';app.view='ml-model-search';app.title='Model Search';app.layout='ml-layout-full';setFocus(app);});
+		page('/modeldeploy/app/model/new', function() {app.route='models';app.view='ml-model-edit';app.title='New Model';app.layout='ml-layout-full';setFocus(app);});
+		page('/modeldeploy/app/model/:modelid', function() {app.route='models';app.view='ml-model';app.title='Model Detail';app.layout='ml-layout-full';setFocus(app);});
+		page('/modeldeploy/app/model/:modelid/edit', function() {app.route='models';app.view='ml-model-edit';app.title='Model Edit';app.layout='ml-layout-full';setFocus(app);});
+		page('/modeldeploy/app/model/:modelid/version/new', function() {app.route='models';app.view='ml-model-version-edit';app.title='New Model Version';app.layout='ml-layout-full';setFocus(app);});
+		page('/modeldeploy/app/model/:modelid/version/:modelversionid/edit', function() {app.route='models';app.view='ml-model-version-edit';app.title='Model Version Edit';app.layout='ml-layout-full';setFocus(app);});
+		page('/modeldeploy/app/model/:modelid/version/:modelversionid/test', function() {app.route='models';app.view='ml-model-version-test';app.title='Model Version Test';app.layout='ml-layout-full';setFocus(app);});
+
+		//Add #! before urls
+		page({
+			basepath: "modeldeploy",
+			hashbang: true
+		});
+		
+	}
+</script>
