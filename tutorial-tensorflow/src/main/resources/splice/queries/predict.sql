@@ -1,0 +1,1 @@
+call SPLICE.PREDICT_MODEL('/Users/erindriggers/anaconda/envs/tensorflow/projects/wide_n_deep/Tensor-Demo.py','wide_n_deep','CENSUS','CENSUS.LIVE_DATA',4);
