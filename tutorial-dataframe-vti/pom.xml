@@ -1,0 +1,236 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<!-- This is a pom.xml file for customer solutions.  The 
+		mvn clean install -Pcdh5.4.10 -DskipTests 
+	-->
+
+	<!-- Supported POM version -->
+	<modelVersion>4.0.0</modelVersion>
+	<!-- Unique amongst an organization - the dots are replaced by / for the directory structure.  This group will live under the directory $M2_REPO/com/splicemachine -->
+	<groupId>com.splicemachine.tutorials</groupId>
+	<!-- Name that the project is known by.  This artifact will live under the directory $M2_REPO/com/splicemachine/splice-cs-kafka -->
+	<artifactId>splice-dataframe-vti</artifactId>
+	<!-- Current version.  Separates versions from each other.  This version will live under the directory $M2_REPO/com/splicemachine/splice-cs-kafka/0.0.1-SNAPSHOT  -->
+	<version>2.0.1.18</version>
+	<!-- How the project is packaged -->
+	<packaging>jar</packaging>
+	<!-- Refers to the name of the project -->
+	<name>Splice Machine DataFrame VTI</name>
+	
+	<properties>
+		<java.version>1.8</java.version>
+	</properties>
+	
+	<!-- Describes the prerequisites in the build environment for this project -->
+
+	
+	<!-- Properties that can easily and quickly be updated on a per project basis instead of updating the values below -->
+    <repositories>
+    	<!-- 
+        <repository>
+            <id>cloudera</id>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+        </repository>
+        
+        <repository>
+            <id>mapr</id>
+            <url>http://repository.mapr.com/maven/</url>
+        </repository>
+        
+        <repository>
+            <id>hortonworks-releases</id>
+            <url>http://repo.hortonworks.com/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>hortonworks-hadoop</id>
+            <url>http://repo.hortonworks.com/content/repositories/jetty-hadoop/</url>
+        </repository>
+         -->
+        <repository>
+            <id>splicemachine-public</id>
+            <url>http://repository.splicemachine.com/nexus/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>splicemachine</id>
+            <url>http://nexus.splicemachine.com/nexus/content/groups/developers</url>
+        </repository>
+    </repositories>
+	<profiles>
+        <profile>
+            <id>cdh5.4.10</id>
+            <properties>
+                <envClassifier>cdh5.4.10</envClassifier>
+                <kafka.version>0.9.0-kafka-2.0.2</kafka.version>
+                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.4.10</spark-assembly-id>
+                <spark.version>1.6.2</spark.version>
+                <storm.version>0.10.1</storm.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>cdh5.5.2</id>
+            <properties>
+                <envClassifier>cdh5.5.2</envClassifier>
+                <kafka.version>0.9.0-kafka-2.0.2</kafka.version>
+                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.5.2</spark-assembly-id>
+                <spark.version>1.6.2</spark.version>
+                <storm.version>0.10.1</storm.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>cdh5.6.0</id>
+            <properties>
+                <envClassifier>cdh5.6.0</envClassifier>
+                <kafka.version>0.9.0-kafka-2.0.2</kafka.version>
+                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.6.0</spark-assembly-id>
+                <spark.version>1.6.2</spark.version>
+                <storm.version>0.10.1</storm.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>cdh5.7.2</id>
+            <properties>
+                <envClassifier>cdh5.7.2</envClassifier>
+                <kafka.version>0.9.0-kafka-2.0.2</kafka.version>
+                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.7.2</spark-assembly-id>
+                <spark.version>1.6.2</spark.version>
+                <storm.version>0.10.1</storm.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>cdh5.8.0</id>
+            <properties>
+                <spark.version>1.6.2</spark.version>
+                <kafka.version>0.9.0-kafka-2.0.2</kafka.version>
+                <envClassifier>cdh5.8.0</envClassifier>
+                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.8.0</spark-assembly-id>
+                <storm.version>0.10.1</storm.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>mapr5.1.0</id>
+            <properties>
+                <envClassifier>mapr5.1.0</envClassifier>
+                <kafka.version>0.9.0.0-mapr-1607</kafka.version>
+                <spark-assembly-id>spark-assembly-hadoop2.7.0-mapr-1602</spark-assembly-id>
+                <spark.version>1.6.2</spark.version>
+                <storm.version>0.10.0-mapr-1607</storm.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>mapr5.2.0</id>
+            <properties>
+                <envClassifier>mapr5.2.0</envClassifier>
+                <hadoop.version>2.7.0-mapr-1607</hadoop.version>
+                <spark.version>1.6.2</spark.version>
+                <spark-assembly-id>spark-assembly-hadoop${hadoop.version}</spark-assembly-id>
+                <kafka.version>0.8.2.1</kafka.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>hdp2.3.6</id>
+            <properties>
+                <envClassifier>hdp2.3.6</envClassifier>
+                <kafka.version>0.9.0.2.3.6.0-3796</kafka.version>
+                <spark-assembly-id>spark-assembly-hadoop2.7.1.2.3.6.0-3796</spark-assembly-id>
+                <spark.version>1.6.2</spark.version>
+                <storm.version>0.10.0.2.3.6.0-3796</storm.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>hdp2.4.2</id>
+            <properties>
+                <envClassifier>hdp2.4.2</envClassifier>
+                <kafka.version>0.9.0.2.4.2.0-258</kafka.version>
+                <spark-assembly-id>spark-assembly-hadoop2.7.1.2.4.2.0-258</spark-assembly-id>
+                <spark.version>1.6.2</spark.version>
+                <storm.version>0.10.0.2.4.2.0-258</storm.version>
+            </properties>
+        </profile>
+
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.splicemachine</groupId>
+            <artifactId>splice_machine</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>${spark-assembly-id}</artifactId>
+            <version>${spark.version}</version>
+             <scope>provided</scope>
+        </dependency>    
+        <dependency>
+            <groupId>com.splicemachine</groupId>
+            <artifactId>hbase_sql-${envClassifier}</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>        
+        <dependency>
+            <groupId>com.splicemachine</groupId>
+            <artifactId>db-engine</artifactId>
+            <version>${project.version}</version>
+        </dependency>       
+        <dependency>
+            <groupId>com.splicemachine</groupId>
+            <artifactId>db-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>          
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>1.7.21</version>
+        </dependency>
+    </dependencies>
+
+    <prerequisites>
+        <maven>3.3.9</maven>
+    </prerequisites>
+
+    <build>
+        <plugins>
+        	<plugin>
+	          <groupId>org.apache.maven.plugins</groupId>
+	          <artifactId>maven-compiler-plugin</artifactId>
+	          <version>3.1</version>
+	          <configuration>
+	            <source>${java.version}</source>
+	            <target>${java.version}</target>
+	            <encoding>UTF-8</encoding>
+	            <maxmem>1024m</maxmem>
+	            <fork>true</fork>
+	          </configuration>
+	        </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-shade-plugin</artifactId>
+		        <version>2.4.3</version>
+		        <executions>
+		          <execution>
+		            <phase>package</phase>
+		            <goals>
+		              <goal>shade</goal>
+		            </goals>		            
+		          </execution>
+		        </executions>
+		      </plugin>		
+        </plugins>
+    </build>
+</project>
