@@ -40,24 +40,17 @@ flags = tf.app.flags
 FLAGS = flags.FLAGS
 
 flags.DEFINE_string("model_dir", "", "Base directory for output models.")
-flags.DEFINE_string("model_type", "wide_n_deep",
-                    "Valid model types: {'wide', 'deep', 'wide_n_deep'}.")
+flags.DEFINE_string("model_type", "wide_n_deep","Valid model types: {'wide', 'deep', 'wide_n_deep'}.")
 flags.DEFINE_integer("train_steps", 200, "Number of training steps.")
-flags.DEFINE_string(
-    "train_data",
-    "",
-    "Path to the training data.")
-flags.DEFINE_string(
-    "test_data",
-    "",
-    "Path to the test data.")
-flags.DEFINE_string(
-    "inputs",
-    '{"columns": ["age","workclass","fnlwgt","education","education_num","marital_status","occupation","relationship","race","gender","capital_gain","capital_loss","hours_per_week","native_country","income_bracket"],"categorical_columns": ["workclass","education","marital_status","occupation","relationship","race","gender","native_country"],"continuous_columns": ["age","education_num","capital_gain","capital_loss","hours_per_week"],"label_column": "label","bucketized_columns": {"age_buckets": {      "age": [    18,    25,    30,    35,    40,    45,    50,    55,    60,    65  ]}},"crossed_columns": [[  "education",  "occupation"],[  "age_buckets",  "education",  "occupation"],[  "native_country",  "occupation"]],"train_data_path": "/Users/erindriggers/anaconda/envs/tensorflow/projects/wide_n_deep/data/train/part-r-00000.csv","test_data_path": "/Users/erindriggers/anaconda/envs/tensorflow/projects/wide_n_deep/data/test/part-r-00000.csv"}',
-    "Input data dictionary")
+flags.DEFINE_string("train_data","","Path to the training data.")
+flags.DEFINE_string("test_data","","Path to the test data.")
+flags.DEFINE_string("inputs","","Input data dictionary")
 flags.DEFINE_string("input_record", "","Comma delimited input record")
 flags.DEFINE_string("predict", "false","Indicates if we are predicting or building the model")
 
+print("inputs=%s" % FLAGS.inputs)
+print("model_type=%s" % FLAGS.model_type)
+print("model_dir=%s" % FLAGS.model_dir)
 
 
 # In[4]:
@@ -210,6 +203,9 @@ def prepare_crossed(cols):
             b = BUCKETIZED_TF_COLUMNS.get(var,False)
             s = SPARSE_TF_COLUMNS.get(var,False)
             r = REAL_TF_COLUMNS.get(var,False)
+            print(b)
+            print(s)
+            print(r)
             if b : tf_var = b
             else :
                 if s : tf_var = s

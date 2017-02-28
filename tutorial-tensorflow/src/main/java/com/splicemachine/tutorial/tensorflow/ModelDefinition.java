@@ -3,16 +3,12 @@ package com.splicemachine.tutorial.tensorflow;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -22,25 +18,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.splicemachine.db.iapi.error.StandardException;
-import com.splicemachine.db.iapi.sql.Activation;
-import com.splicemachine.db.iapi.sql.ResultColumnDescriptor;
-import com.splicemachine.db.iapi.sql.execute.ExecRow;
-import com.splicemachine.db.iapi.types.DataTypeDescriptor;
-import com.splicemachine.db.iapi.types.SQLVarchar;
-import com.splicemachine.db.impl.jdbc.EmbedConnection;
-import com.splicemachine.db.impl.jdbc.EmbedResultSet40;
-import com.splicemachine.db.impl.sql.GenericColumnDescriptor;
-import com.splicemachine.db.impl.sql.execute.IteratorNoPutResultSet;
-import com.splicemachine.db.impl.sql.execute.ValueRow;
 
 
-public class CreateInputDictionary {
+
+public class ModelDefinition {
     
     private static int fileSuffix = 0;
     
-    private static final org.apache.log4j.Logger LOG = Logger
-            .getLogger(CreateInputDictionary.class);
+    private static Logger LOG = Logger.getLogger(ModelDefinition.class);
     
     /**
      * This method is used to build the JSON object that is feed into the Tensorflow model.  This needs to be called
@@ -54,11 +39,23 @@ public class CreateInputDictionary {
      * @throws SQLException
      */
     private static StringBuilder buildDictionaryObject(Connection conn, String modelName, JsonObject inputDict) throws SQLException {
-        //Get Columns
-        PreparedStatement pstmt = conn.prepareStatement("select COLUMN_NAME from MODEL_DICTIONARY where MODEL = ? and TYPE = ? order by SEQUENCE");
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        
+        //Get the Model Id
+        int modelId = -1;
+        pstmt = conn.prepareStatement("select MODEL_ID from MODEL where NAME = ? and STATUS = ?");
         pstmt.setString(1, modelName);
-        pstmt.setString(2, "COLUMN");
-        ResultSet rs = pstmt.executeQuery();
+        pstmt.setString(2, "A");
+        rs = pstmt.executeQuery();
+        if(rs.next()) {
+            modelId = rs.getInt(1);
+        }
+        
+        //Get Columns
+        pstmt = conn.prepareStatement("select FEATURE_NAME from MODEL_FEATURES where MODEL_ID = ? and DATABASE_COLUMN_NAME IS NOT NULL order by EXTRACT_SEQUENCE");
+        pstmt.setInt(1, modelId);
+        rs = pstmt.executeQuery();
                
         //Contains a list of columns to export 
         StringBuilder exportColumns = new StringBuilder();
@@ -80,7 +77,8 @@ public class CreateInputDictionary {
         
         //Get the categorical columns
         pstmt.clearParameters();
-        pstmt.setString(1, modelName);
+        pstmt = conn.prepareStatement("select FEATURE_NAME from MODEL_FEATURES where MODEL_ID = ? and MODEL_DATA_TYPE = ? order by MODEL_DATA_TYPE_EXTRACT_SEQUENCE");
+        pstmt.setInt(1, modelId);
         pstmt.setString(2, "CATEGORICAL");
         rs = pstmt.executeQuery();        
         jsonArr = new JsonArray();
@@ -95,7 +93,7 @@ public class CreateInputDictionary {
         
         //Get the continuous columns
         pstmt.clearParameters();
-        pstmt.setString(1, modelName);
+        pstmt.setInt(1, modelId);
         pstmt.setString(2, "CONTINUOUS");
         rs = pstmt.executeQuery();        
         jsonArr = new JsonArray();
@@ -110,8 +108,9 @@ public class CreateInputDictionary {
 
         //Get label_column
         pstmt.clearParameters();
-        pstmt.setString(1, modelName);
-        pstmt.setString(2, "LABEL");
+        pstmt = conn.prepareStatement("select FEATURE_NAME from MODEL_FEATURES where MODEL_ID = ? and IS_LABEL = ?");
+        pstmt.setInt(1, modelId);
+        pstmt.setBoolean(2, true);
         rs = pstmt.executeQuery();
         if(rs.next()) {
             inputDict.addProperty("label_column", rs.getString(1).toLowerCase());
@@ -119,16 +118,14 @@ public class CreateInputDictionary {
         
         //Get bucketized_columns
         JsonObject buckets = new JsonObject();
-        pstmt = conn.prepareStatement("select COLUMN_NAME, LABEL, GROUPING_DETAILS, GROUPING_DETAILS_TYPE from MODEL_DICTIONARY where MODEL = ? and TYPE = ? order by SEQUENCE");
-        pstmt.setString(1, modelName);
-        pstmt.setString(2, "BUCKET");
+        pstmt = conn.prepareStatement("select FEATURE_NAME, FEATURE_BUCKETS, FEATURE_BUCKET_DATA_TYPE from MODEL_FEATURES where MODEL_ID = ? and FEATURE_BUCKETS IS NOT NULL order by EXTRACT_SEQUENCE");
+        pstmt.setInt(1, modelId);
         rs = pstmt.executeQuery(); 
         numColumns = 0;
         if(rs.next()) {
             String column = rs.getString(1).toLowerCase();
-            String label = rs.getString(2).toLowerCase();
-            String groupingDetails = rs.getString(3);
-            String groupingDetailsType = rs.getString(4);
+            String groupingDetails = rs.getString(2);
+            String groupingDetailsType = rs.getString(3);
             
             JsonObject bucketObject = new JsonObject();
             
@@ -148,7 +145,7 @@ public class CreateInputDictionary {
             bucketValues.addAll(bucketDetailsValues);
             bucketObject.add(column, bucketValues);
             
-            buckets.add(label, bucketObject);
+            buckets.add(column + "_buckets", bucketObject);
             
             numColumns++;
         }
@@ -157,19 +154,18 @@ public class CreateInputDictionary {
         }
         
         //Get the crossed
-        pstmt = conn.prepareStatement("select GROUPING, COLUMN_NAME from MODEL_DICTIONARY where MODEL = ? and TYPE = ? order by GROUPING,SEQUENCE");
-        pstmt.setString(1, modelName);
-        pstmt.setString(2, "CROSSED");
+        pstmt = conn.prepareStatement("select FEATURE_CROSS_NAME, FEATURE_NAME from MODEL_FEATURE_CROSS where MODEL_ID = ? order by FEATURE_CROSS_NAME,CROSS_SEQUENCE");
+        pstmt.setInt(1, modelId);
         rs = pstmt.executeQuery();
         
         JsonArray crossed_columns = new JsonArray();
         numColumns = 0;
-        int currentGrouping = 0;
+        String currentGrouping = "";
         JsonArray group = null;
         while(rs.next()) {
-            int grouping = rs.getInt(1);
-            if(numColumns == 0 || currentGrouping != grouping) {
-                if (numColumns != 0 && currentGrouping != grouping) {
+            String grouping = rs.getString(1);
+            if(numColumns == 0 || !currentGrouping.equals(grouping) ){
+                if (numColumns != 0 && !currentGrouping.equals(grouping)) {
                     crossed_columns.add(group);
                 }
                 group = new JsonArray();
