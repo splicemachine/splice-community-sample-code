@@ -18,7 +18,7 @@ The original tensorflow model was modified to be more generic and provide the ab
 In Splice Machine we created several tables to store the model and feature definitions.  This section describes the purpose of each table.
 
 ## Table: MODEL
-The model table is contains the high level definition of a model and is used in other tables to define
+The model table contains the high level definition of a model and is used in other tables to define.  The intent is that overtime you may have multiple models.
 
 * **MODEL_ID**: A unique identifier for the model
 * **NAME**: The name of the model.  This is used when calling the stored procedure to generate the model
