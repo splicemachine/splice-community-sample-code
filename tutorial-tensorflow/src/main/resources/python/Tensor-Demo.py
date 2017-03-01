@@ -48,10 +48,12 @@ flags.DEFINE_string("inputs","","Input data dictionary")
 flags.DEFINE_string("input_record", "","Comma delimited input record")
 flags.DEFINE_string("predict", "false","Indicates if we are predicting or building the model")
 
-print("inputs=%s" % FLAGS.inputs)
-print("model_type=%s" % FLAGS.model_type)
 print("model_dir=%s" % FLAGS.model_dir)
-
+print("model_type=%s" % FLAGS.model_type)
+print("train_steps=%s" % FLAGS.train_steps)
+print("train_data=%s" % FLAGS.train_data)
+print("test_data=%s" % FLAGS.test_data)
+print("inputs=%s" % FLAGS.inputs)
 
 # In[4]:
 
@@ -71,12 +73,11 @@ BUCKETIZED_COLUMNS = INPUT_DICT['bucketized_columns'];
 
 print("INPUT_DICT=%s" % INPUT_DICT)
 print("COLUMNS=%s" % COLUMNS)
+print("LABEL_COLUMN=%s" % LABEL_COLUMN)
 print("CATEGORICAL_COLUMNS=%s" % CATEGORICAL_COLUMNS)
 print("CONTINUOUS_COLUMNS=%s" % CONTINUOUS_COLUMNS)
-print("LABEL_COLUMN=%s" % LABEL_COLUMN)
-print("COLUMNS=%s" % COLUMNS)
-print("BUCKETIZED_COLUMNS=%s" % BUCKETIZED_COLUMNS)
 print("CROSSED_COLUMNS=%s" % CROSSED_COLUMNS)
+print("BUCKETIZED_COLUMNS=%s" % BUCKETIZED_COLUMNS)
 
 
 # In[5]:
@@ -88,7 +89,7 @@ def maybe_download():
     train_file_name = FLAGS.train_data
   else:
     train_file = tempfile.NamedTemporaryFile(delete=False)
-    urllib.request.urlretrieve(INPUT_DICT['train_data_path'], train_file.name)  # pylint: disable=line-too-long
+    urllib.request.urlretrieve(FLAGS.train_data, train_file.name)  # pylint: disable=line-too-long
     train_file_name = train_file.name
     train_file.close()
     print("Training data is downloaded to %s" % train_file_name)
@@ -97,7 +98,7 @@ def maybe_download():
     test_file_name = FLAGS.test_data
   else:
     test_file = tempfile.NamedTemporaryFile(delete=False)
-    urllib.request.urlretrieve(INPUT_DICT['test_data_path'], test_file.name)  # pylint: disable=line-too-long
+    urllib.request.urlretrieve(FLAGS.test_data, test_file.name)  # pylint: disable=line-too-long
     test_file_name = test_file.name
     test_file.close()
     print("Test data is downloaded to %s" % test_file_name)
@@ -203,9 +204,6 @@ def prepare_crossed(cols):
             b = BUCKETIZED_TF_COLUMNS.get(var,False)
             s = SPARSE_TF_COLUMNS.get(var,False)
             r = REAL_TF_COLUMNS.get(var,False)
-            print(b)
-            print(s)
-            print(r)
             if b : tf_var = b
             else :
                 if s : tf_var = s
@@ -274,8 +272,8 @@ def input_fn(df):
 def train_and_eval():
   """Train and evaluate the model."""
 #  train_file_name, test_file_name = maybe_download()
-  train_file_name=INPUT_DICT['train_data_path'];
-  test_file_name=INPUT_DICT['test_data_path'];
+  train_file_name=FLAGS.train_data;
+  test_file_name=FLAGS.test_data;
 
   df_train = pd.read_csv(
       tf.gfile.Open(train_file_name),

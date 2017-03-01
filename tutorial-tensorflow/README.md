@@ -124,18 +124,22 @@ The ddl script for creating the tables and stored procedures can be found under 
 #### Stored Procedure: CREATE_MODEL
 Used for creating a model
 * scriptPathAndName: Full path and name to the python script
-* type: What type of
-* modelName: Name of the model that is being created, it maps to an entry in MODEL_DICTIONARY
+* type: The type of model. Valid model types: {'wide', 'deep', 'wide_n_deep'}
+* modelName: Name of the model that is being created, it maps to an entry in the MODEL and the column NAME
 * trainingDataTable: The table containing the training data
 * testDataTable: The table containing the test data
+* modelOutputDirectory: Base directory for output models
+* trainSteps: Number of training steps
+
 	
 #### Stored Procedure: PREDICT_MODEL
 Used for predicting the outcome of a particular record
 * scriptPathAndName: Full path and name to the python script
-* type: What type of
-* modelName: Name of the model that is being created, it maps to an entry in MODEL_DICTIONARY
+* type: The type of model. Valid model types: {'wide', 'deep', 'wide_n_deep'}
+* modelName: Name of the model that is being created, it maps to an entry in the MODEL and the column NAME
 * sourceTable: The table containing the live data
 * recordId: ID of the record to perform the prediction on
+* modelDirectory: The directory where the model was created
 
 
 ### Census Example

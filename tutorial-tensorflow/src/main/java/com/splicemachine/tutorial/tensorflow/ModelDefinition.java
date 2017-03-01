@@ -23,8 +23,6 @@ import com.google.gson.JsonObject;
 
 public class ModelDefinition {
     
-    private static int fileSuffix = 0;
-    
     private static Logger LOG = Logger.getLogger(ModelDefinition.class);
     
     /**
@@ -201,22 +199,33 @@ public class ModelDefinition {
             stmt.close();
         }
     }
-    
+
+
     /**
      * 
      * @param fullModelPath - The full path and name of the python file
-     * @param type - the type of model, for now it is always wide_n_deep
+     * @param modelType - the type of model. Valid model types: {'wide', 'deep', 'wide_n_deep'}.
      * @param modelName - The name of the model to be used to retrieve the list of columns.  It should correspond to
-     *  a value in the MODEL column in the MODEL_DICTIONARY table.
-     * @param trainTable - The table containing the training data.
-     * @param testTable - The table containing the test data.
+     *  a value in the NAME column in the MODEL table
+     * @param trainTable - The table containing the training data
+     * @param testTable - The table containing the test data
+     * @param modelOutputDirectory - Base directory for output models.
+     * @param trainSteps - Number of training steps.
      */
-    public static void generateModel(String fullModelPath, String type, String modelName, String trainTable, String testTable, ResultSet[] returnResultset) { 
+    public static void generateModel(
+            String fullModelPath, 
+            String modelType, 
+            String modelName, 
+            String trainTable, 
+            String testTable, 
+            String modelOutputDirectory,
+            int trainSteps,
+            ResultSet[] returnResultset) { 
         
         Statement stmt = null;
         Connection conn = null;
         Connection conn2 = null;
-        boolean sucess = false;
+
         try{
             //For now, keep logging on for this stored procedure
             LOG.setLevel(Level.INFO);
@@ -227,7 +236,14 @@ public class ModelDefinition {
             
             //This second connection is to be able to return a resultset
             conn2 = DriverManager.getConnection("jdbc:default:connection");            
-            stmt = conn2.createStatement();    
+            stmt = conn2.createStatement();              
+            
+            //Confirm the model type that was passed in
+            if(!"wide".equalsIgnoreCase(modelType) &&
+                    !"deep".equalsIgnoreCase(modelType) && !"wide_n_deep".equalsIgnoreCase(modelType)) {
+                returnResultset[0] = stmt.executeQuery("values(-1, 'Invalid modelType:" + modelType + ".  Valid values are: wide, deep, or wide_n_deep')");
+                return;
+            }         
             
             File pythonFile = new File(fullModelPath);
             String parentDir = pythonFile.getParent();
@@ -237,15 +253,12 @@ public class ModelDefinition {
             //Ideally this process should be changed to export the data
             //using a VTI that writes a file in TFRecord format
             String dataDir = parentDir + "/data";
-            String trainingDataFile = dataDir + "/train/part-r-00000.csv";
-            String testDataFile = dataDir + "/test/part-r-00000.csv";
+
 
             //This is the directory where the model output is placed
             //This is on the file system and contains the actual model files
-            String modelOutputDir = parentDir + "/output";
-            
             //We need to clean out the model output directory
-            File fModelOutputDir = new File(modelOutputDir);
+            File fModelOutputDir = new File(modelOutputDirectory);
             if(fModelOutputDir.exists()) {
                 purgeDirectory(fModelOutputDir); 
             } else {
@@ -259,13 +272,15 @@ public class ModelDefinition {
             
             //Export the training data
             String exportPathTrain = dataDir + "/train";
-            inputDict.addProperty("train_data_path", exportPathTrain + "/part-r-00000.csv");
+            String trainingFilePath = exportPathTrain + "/part-r-00000.csv";
+            //inputDict.addProperty("train_data_path", exportPathTrain + "/part-r-00000.csv");
             String exportCmd = "EXPORT('" + exportPathTrain + "', false, null, null, null, null) SELECT " + exportColumns.toString() + " FROM " + trainTable;
             exportData(conn, exportCmd, exportPathTrain + "/* ", exportPathTrain + "/traindata.txt");        
             
             //Export the training data
             String exportPathTest = dataDir + "/test";
-            inputDict.addProperty("test_data_path", exportPathTest + "/part-r-00000.csv");
+            String testFilePath = exportPathTest + "/part-r-00000.csv";
+            //inputDict.addProperty("test_data_path", exportPathTest + "/part-r-00000.csv");
             exportCmd = "EXPORT('" + exportPathTest + "', false, null, null, null, null) SELECT " + exportColumns.toString() + " FROM " + testTable;
             exportData(conn, exportCmd, exportPathTest + "/* ", exportPathTest + "/testdata.txt");
 
@@ -274,16 +289,24 @@ public class ModelDefinition {
             String jsonData = gson.toJson(inputDict);
             
             LOG.info("Python Script: " + fullModelPath);
-            LOG.info("Model Type (model_type): " + type);
-            LOG.info("Model Output Directory (model_dir): " + modelOutputDir);
+            LOG.info("Model Type (model_type): " + modelType);
+            LOG.info("Model Output Directory (model_dir): " + modelOutputDirectory);
+            LOG.info("Model Train Steps (train_steps): " + trainSteps);
+            LOG.info("Training data File (train_data): " + trainingFilePath);
+            LOG.info("Test data file (test_data): " + testFilePath);
             LOG.info("Model Inputs (inputs): " + jsonData);
             
             //Call the python script
             ProcessBuilder pb = new ProcessBuilder("python",fullModelPath,
-                    "--model_type=" + type,
-                    "--model_dir=" + modelOutputDir,
+                    "--model_type=" + modelType,
+                    "--model_dir=" + modelOutputDirectory,
+                    "--train_steps=" + trainSteps,
+                    "--train_data=" + trainingFilePath,
+                    "--test_data=" + testFilePath,
                     "--inputs=" + jsonData);
+            
             Process p = pb.start();
+
              
             //Process the output and write it the the log file
             BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -295,7 +318,6 @@ public class ModelDefinition {
                
             if(exitCode != 0) {
                 returnResultset[0] = stmt.executeQuery("values(-1, 'Python Script Failed')");
-                sucess = false;
                 return;
             }
 
@@ -303,7 +325,6 @@ public class ModelDefinition {
 
         }catch(Exception e){
             try {returnResultset[0] = stmt.executeQuery("values(-1, 'Unexpected Exception')");} catch (Exception e1){}
-            sucess = false;
             LOG.error("Exception generating model file.", e);
         } finally {
             if(conn != null) { try {conn.close();} catch (Exception e){}} 
@@ -330,9 +351,16 @@ public class ModelDefinition {
      *       a value in the MODEL column in the MODEL_DICTIONARY table.
      * @param sourceTable - Table containing the live data
      * @param sourceId - Key to the record you want to predict
+     * @param modelDirectory - Directory where the model exists
      * @param returnResultset
      */
-    public static void predictModel(String fullModelPath, String type, String modelName, String sourceTable, int sourceId, ResultSet[] returnResultset) {
+    public static void predictModel(String fullModelPath, 
+            String type, 
+            String modelName, 
+            String sourceTable, 
+            int sourceId, 
+            String modelDirectory,
+            ResultSet[] returnResultset) {
 
         Connection conn = null;
         Statement stmt = null;
@@ -343,12 +371,6 @@ public class ModelDefinition {
             LOG.setLevel(Level.INFO);
             
             conn = DriverManager.getConnection("jdbc:default:connection");
-            
-            File pythonFile = new File(fullModelPath);
-            String parentDir = pythonFile.getParent();
-            
-            String modelOutputDir = parentDir + "/output";
-            String dataDir = parentDir + "/data";
             
             JsonObject inputDict = new JsonObject();
             StringBuilder exportColumns = buildDictionaryObject(conn, modelName, inputDict);
@@ -375,14 +397,14 @@ public class ModelDefinition {
             
             LOG.info("Python Script: " + fullModelPath);
             LOG.info("Model Type (model_type): " + type);
-            LOG.info("Model Output Directory (model_dir): " + modelOutputDir);
+            LOG.info("Model Output Directory (model_dir): " + modelDirectory);
             LOG.info("Data Input Record (input_record): " + recordAsCSV);
             LOG.info("Model Inputs (inputs): " + jsonData);
             
             ProcessBuilder pb = new ProcessBuilder("python",fullModelPath,
                     "--predict=true",
                     "--model_type=" + type,
-                    "--model_dir=" + modelOutputDir,
+                    "--model_dir=" + modelDirectory,
                     "--input_record=" + recordAsCSV,                    
                     "--inputs=" + jsonData);
 
