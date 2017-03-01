@@ -3,7 +3,7 @@
 TensorFlow (www.tensorflow.org) is an open source software library for machine learning across a range of tasks.  It is a framework for building Deep Learning Neural Networks.  We took the 'TensorFlow Wide & Deep Learning Tutorial' (https://www.tensorflow.org/versions/r0.11/tutorials/wide_and_deep/index.html) which trains a model to predict the probability that an individual has an annual income over 50,000 dollars using Census Income data set and created a method to generically create a model using any data set.
 
 ## Dynamically Creating Variables
-The original code provided by TensorFlow (https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/learn/wide_n_deep_tutorial.py) created a model where the variables COLUMNS, LABEL_COLUMN, CATEGORICAL_COLUMNS and CONTINIOUS_COLUMNS where hard coded.  Before we explain how the process was generized let's explain the purpose for each of the variables:
+The original code provided by TensorFlow (https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/learn/wide_n_deep_tutorial.py) created a model where the variables COLUMNS, LABEL_COLUMN, CATEGORICAL_COLUMNS and CONTINIOUS_COLUMNS were hard coded.  Before we explain how the process was generized let's explain the purpose for each of the variables:
 
 * **COLUMNS**: This is a list of all of the columns / features in the data set.  For example age or marital status.
 * **LABEL_COLUMN**: This is the name of the column in the data set that you are trying to predict.  In this example it is a flag that indicates the probability of having an annual income of over 50,000.
@@ -36,7 +36,7 @@ Here is some sample data for the non audit columns
 |MODEL_ID | NAME   | DESCRIPTION                                   | STATUS | VERSION |
 |-------- | ------ | --------------------------------------------- | ------ | ------- |
 |1        | CENSUS | Predict whether income is greater than 50,000 | A      | 1       |
-
+|2        | INSURANCE | Predict whether a customer has a caravan insurance policy | A      | 1       |
 
 ## Table: MODEL_FEATURES 
 A Feature represents a single feature / attribute in your data. This table stores all the features for your model with the properties needed to generically generate the model.
@@ -45,9 +45,7 @@ A Feature represents a single feature / attribute in your data. This table store
 * **MODEL_ID**: The model id that corresponds to this feature
 * **FEATURE_NAME**: Represents a single feature / attribute in your data such as color
 * **DATABASE_COLUMN_NAME**: The database column name that corresponds to that feature
-* **EXTRACT_SEQUENCE**: The sequence at which the column data should be extracted from the database
 * **MODEL_DATA_TYPE**: The feature data type either CONTINUOUS or CATEGORICAL or NULL
-* **MODEL_DATA_TYPE_EXTRACT_SEQUENCE**: The sequence the variable should appear in the continious or categorical grouping
 * **FEATURE_KEYS**: Used when you want to convert the categorical values into vectors automatically
 * **FEATURE_BUCKET_DATA_TYPE**: The data type of a bucket, ie INTEGER
 * **FEATURE_BUCKETS**: Used to convert a continuous column into a categorical column.  For example, it divides the range of possible values into subranges called buckets
@@ -60,24 +58,24 @@ A Feature represents a single feature / attribute in your data. This table store
 ### Sample Data
 Here is some sample data for the non audit columns
 
-|MODEL_ID |COLUMN_NAME	  |DATABASE_COLUMN_NAME	|EXTRACT_SEQUENCE |MODEL_DATA_TYPE |MODEL_DATA_TYPE_EXTRACT_SEQUENCE |FEATURE_KEYS                                                |FEATURE_BUCKET_DATA_TYPE |FEATURE_BUCKETS                        |IS_LABEL |
-|-------- |---------------|---------------------|-----------------|----------------|---------------------------------|------------------------------------------------------------|-------------------------|---------------------------------------|---------|
-|1	      |AGE	          | AGE	                |1	              |CONTINUOUS	   |1		                         |                                                            |INTEGER	                |18, 25, 30, 35, 40, 45, 50, 55, 60, 65	|         |
-|1	      |WORKCLASS	  | WORKCLASS	        |2	              |CATEGORICAL	   |1		                         |                                                            |                         |                                       |         |                                                     
-|1	      |FNLWGT	      | FNLWGT	            |3	              |                |		                         |                                                            |	                        |                                       |         |    
-|1	      |EDUCATION	  | EDUCATION	        |4	              |CATEGORICAL	   |2		                         |                                                            |                         |                                       |         |    
-|1	      |EDUCATION_NUM  |	EDUCATION_NUM	    |5	              |CONTINUOUS	   |2		                         |                                                            |                         |                                       |         |    
-|1	      |MARITAL_STATUS |	MARITAL_STATUS	    |6	              |CATEGORICAL	   |3		                         |                                                            |                         |                                       |         |    
-|1	      |OCCUPATION	  | OCCUPATION	        |7	              |CATEGORICAL	   |4		                         |                                                            |                         |                                       |         |    
-|1	      |RELATIONSHIP   |	RELATIONSHIP	    |8	              |CATEGORICAL	   |5		                         |                                                            |                         |                                       |         |    
-|1	      |RACE	          | RACE	            |9	              |CATEGORICAL	   |6		                         |Amer-Indian-Eskimo, Asian-Pac-Islander, Black, Other, White |                         |                                       |         |    
-|1	      |GENDER	      | GENDER	            |10	              |CATEGORICAL	   |7		                         |Female, Male                                      		  |                         |                                       |         |    
-|1	      |CAPITAL_GAIN	  | CAPITAL_GAIN	    |11	              |CONTINUOUS	   |3		                         |                                                            |	                        |                                       |         |    			
-|1	      |CAPITAL_LOSS	  | CAPITAL_LOSS	    |12	              |CONTINUOUS	   |4		                         |                                                            |                         |                                       |         |    				
-|1	      |HOURS_PER_WEEK |	HOURS_PER_WEEK	    |13	              |CONTINUOUS	   |5		                         |                                                            |                         |                                       |         |    				
-|1	      |NATIVE_COUNTRY |	NATIVE_COUNTRY	    |14	              |CATEGORICAL	   |8		                         |                                                            |                         |                                       |         |    				
-|1	      |INCOME_BRACKET |	INCOME_BRACKET	    |15	              |                |		                         |                                                            |	                        |                                       |         |    				
-|1	      |LABEL	      | LABEL	            |16	              |                |		                         |                                                            |                         |                                       | TRUE    |
+|MODEL_ID |COLUMN_NAME	  |DATABASE_COLUMN_NAME	|MODEL_DATA_TYPE |FEATURE_KEYS                                                |FEATURE_BUCKET_DATA_TYPE |FEATURE_BUCKETS                        |IS_LABEL |
+|-------- |---------------|---------------------|----------------|------------------------------------------------------------|-------------------------|---------------------------------------|---------|
+|1	      |AGE	          | AGE	                |CONTINUOUS	   |                                                            |INTEGER	                |18, 25, 30, 35, 40, 45, 50, 55, 60, 65	|         |
+|1	      |WORKCLASS	  | WORKCLASS	        |CATEGORICAL	   |                                                            |                         |                                       |         |                                                     
+|1	      |FNLWGT	      | FNLWGT	            |                |                                                            |	                        |                                       |         |    
+|1	      |EDUCATION	  | EDUCATION	        |CATEGORICAL	   |                                                            |                         |                                       |         |    
+|1	      |EDUCATION_NUM  |	EDUCATION_NUM	    |CONTINUOUS	   |                                                            |                         |                                       |         |    
+|1	      |MARITAL_STATUS |	MARITAL_STATUS	    |CATEGORICAL	   |                                                            |                         |                                       |         |    
+|1	      |OCCUPATION	  | OCCUPATION	        |CATEGORICAL	   |                                                           |                         |                                       |         |    
+|1	      |RELATIONSHIP   |	RELATIONSHIP	    |CATEGORICAL	   |                                                            |                         |                                       |         |    
+|1	      |RACE	          | RACE	            |CATEGORICAL	   |Amer-Indian-Eskimo, Asian-Pac-Islander, Black, Other, White |                         |                                       |         |    
+|1	      |GENDER	      | GENDER	            |CATEGORICAL	   |Female, Male                                      		  |                         |                                       |         |    
+|1	      |CAPITAL_GAIN	  | CAPITAL_GAIN	    |CONTINUOUS	   |                                                           |	                        |                                       |         |    			
+|1	      |CAPITAL_LOSS	  | CAPITAL_LOSS	    |CONTINUOUS	   |                                                            |                         |                                       |         |    				
+|1	      |HOURS_PER_WEEK |	HOURS_PER_WEEK	    |CONTINUOUS	   |                                                            |                         |                                       |         |    				
+|1	      |NATIVE_COUNTRY |	NATIVE_COUNTRY	    |CATEGORICAL	   |                                                            |                         |                                       |         |    				
+|1	      |INCOME_BRACKET |	INCOME_BRACKET	    |                |                                                            |	                        |                                       |         |    				
+|1	      |LABEL	      | LABEL	            |                |                                                            |                         |                                       | TRUE    |
 
 
 ## Table: MODEL_FEATURE_CROSS
@@ -87,7 +85,6 @@ A feature cross is when you need to combine a combination of features together i
 * **MODEL_ID**: Reference to the model id
 * **FEATURE_CROSS_NAME**: The name of the feature cross.  This will be repeated for multiple records
 * **FEATURE_NAME**: The name of the source feature from the MODEL_FEATURE
-* **CROSS_SEQUENCE**: The sequence the fields should be concatenated together
 * **CREATE_DATE**: Audit column that indicates the date the record was created 
 * **CREATE_USER**: Audit column that indicates the user / system that created the record
 * **UPDATE_DATE**: Audit column that indicates the date the record was last updated 
@@ -96,13 +93,13 @@ A feature cross is when you need to combine a combination of features together i
 ### Sample Data
 Here is some sample data for the non audit columns
 
-|MODEL_FEATURE_CROSS_ID | FEATURE_CROSS_NAME       | FEATURE_NAME | CROSS_SEQUENCE |
-|---------------------- | ------------------------ | ------------ | ---------------|
-|1                      | EDUCATION_OCCUPATION     | EDUCATION    | 1              |
-|2                      | EDUCATION_OCCUPATION     | OCCUPATION   | 2              |
-|3                      | AGE_EDUCATION_OCCUPATION | AGE_BUCKETS  | 1              |
-|4                      | AGE_EDUCATION_OCCUPATION | EDUCATION    | 2              |
-|5                      | AGE_EDUCATION_OCCUPATION | OCCUPATION   | 2              |
+|MODEL_FEATURE_CROSS_ID | FEATURE_CROSS_NAME       | FEATURE_NAME |
+|---------------------- | ------------------------ | ------------ |
+|1                      | EDUCATION_OCCUPATION     | EDUCATION    |
+|2                      | EDUCATION_OCCUPATION     | OCCUPATION   |
+|3                      | AGE_EDUCATION_OCCUPATION | AGE_BUCKETS  |
+|4                      | AGE_EDUCATION_OCCUPATION | EDUCATION    |
+|5                      | AGE_EDUCATION_OCCUPATION | OCCUPATION   |
 
 
 # Code Structure
@@ -142,7 +139,7 @@ Used for predicting the outcome of a particular record
 
 
 ### Census Example
-There is an example of predicting a model for census data.  The files to create the tables, entries in the MODEL, MODEL_FEATURES and MODEL_FEATURE_CROSS and to call the stored procedures can be found in the /resources/census_example folder
+There is an example of predicting a model for census data.  The files to create the tables, entries in the MODEL, MODEL_FEATURES and MODEL_FEATURE_CROSS and to call the stored procedures can be found in the /resources/examples/census_example folder
 
 
 * **/ddl/create-tables.sql**: Creates the schema CENSUS and the tables TRAINING_DATA and TESTING_DATA
@@ -172,7 +169,7 @@ In the instructions below the <SOURCE_DIRECTORY> variable should be replaced wit
 
 * **Compile the code:** mvn clean compile package
 * **Deploy the code:** Copy the compiled jar to your splice machine lib directory ./target/splice-tutorial-tensorflow-2.0.1.1703-SNAPSHOT.jar /Users/username/Downloads/splicemachine/lib
-* **Update the import file references:** Modify the file /resources/splice/census_example/create-data.sql to point to the location of your data files - there are three lines to update
+* **Update the import file references:** Modify the file /resources/examples/census_example/create-data.sql to point to the location of your data files - there are three lines to update
 * **Update the script file references:** Modify the file /resources/splice/load-all.sql to point to the locations on your filesystem
 * **Update the create-model.sql file references:** Modify the file /resources/splice/queries/create-model.sql and update the path to the python script to match your environment
 * **Update the predict.sql file references:** Modify the file /resources/splice/queries/predict.sql and update the path to the python script to match your environment
@@ -186,10 +183,10 @@ In the instructions below the <SOURCE_DIRECTORY> variable should be replaced wit
 ### Create the Census Example model
  This will run the process to create the model.  The data will be extracted to the /data/test and data/train directory
  
-* In a splice machine command prompt run the <SOURCE_DIRECTORY>/splice-community-sample-code/tutorial-tensorflow/src/main/resources/splice/census_example/queries/create-model.sql
+* In a splice machine command prompt run the <SOURCE_DIRECTORY>/splice-community-sample-code/tutorial-tensorflow/src/main/resources/examples/census_example/queries/create-model.sql
 
 ### Use the model to predict data
 
 * Query the CENSUS.LIVE_DATA and confirm that the LABEL column has no data 
-* In a splice machine command prompt run the <SOURCE_DIRECTORY>/splice-community-sample-code/tutorial-tensorflow/src/main/resources/splice/census_example/queries/predict.sql
+* In a splice machine command prompt run the <SOURCE_DIRECTORY>/splice-community-sample-code/tutorial-tensorflow/src/main/resources/examples/census_example/queries/predict.sql
 * Query the CENSUS.LIVE_DATA and confirm that the LABEL column now has data

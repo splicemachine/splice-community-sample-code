@@ -53,7 +53,7 @@ public class ModelDefinition {
         }
         
         //Get Columns
-        pstmt = conn.prepareStatement("select FEATURE_NAME from MODEL_FEATURES where MODEL_ID = ? and DATABASE_COLUMN_NAME IS NOT NULL order by EXTRACT_SEQUENCE");
+        pstmt = conn.prepareStatement("select FEATURE_NAME from MODEL_FEATURES where MODEL_ID = ? and DATABASE_COLUMN_NAME IS NOT NULL order by FEATURE_NAME");
         pstmt.setInt(1, modelId);
         rs = pstmt.executeQuery();
                
@@ -77,7 +77,7 @@ public class ModelDefinition {
         
         //Get the categorical columns
         pstmt.clearParameters();
-        pstmt = conn.prepareStatement("select FEATURE_NAME from MODEL_FEATURES where MODEL_ID = ? and MODEL_DATA_TYPE = ? order by MODEL_DATA_TYPE_EXTRACT_SEQUENCE");
+        pstmt = conn.prepareStatement("select FEATURE_NAME from MODEL_FEATURES where MODEL_ID = ? and MODEL_DATA_TYPE = ?");
         pstmt.setInt(1, modelId);
         pstmt.setString(2, "CATEGORICAL");
         rs = pstmt.executeQuery();        
@@ -118,7 +118,7 @@ public class ModelDefinition {
         
         //Get bucketized_columns
         JsonObject buckets = new JsonObject();
-        pstmt = conn.prepareStatement("select FEATURE_NAME, FEATURE_BUCKETS, FEATURE_BUCKET_DATA_TYPE from MODEL_FEATURES where MODEL_ID = ? and FEATURE_BUCKETS IS NOT NULL order by EXTRACT_SEQUENCE");
+        pstmt = conn.prepareStatement("select FEATURE_NAME, FEATURE_BUCKETS, FEATURE_BUCKET_DATA_TYPE from MODEL_FEATURES where MODEL_ID = ? and FEATURE_BUCKETS IS NOT NULL ");
         pstmt.setInt(1, modelId);
         rs = pstmt.executeQuery(); 
         numColumns = 0;
@@ -154,7 +154,7 @@ public class ModelDefinition {
         }
         
         //Get the crossed
-        pstmt = conn.prepareStatement("select FEATURE_CROSS_NAME, FEATURE_NAME from MODEL_FEATURE_CROSS where MODEL_ID = ? order by FEATURE_CROSS_NAME,CROSS_SEQUENCE");
+        pstmt = conn.prepareStatement("select FEATURE_CROSS_NAME, FEATURE_NAME from MODEL_FEATURE_CROSS where MODEL_ID = ? order by FEATURE_CROSS_NAME");
         pstmt.setInt(1, modelId);
         rs = pstmt.executeQuery();
         
