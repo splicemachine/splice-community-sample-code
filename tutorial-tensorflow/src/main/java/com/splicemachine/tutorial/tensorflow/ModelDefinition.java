@@ -220,6 +220,9 @@ public class ModelDefinition {
             String testTable, 
             String modelOutputDirectory,
             int trainSteps,
+            int hashBucketSize,
+            int dimensions,
+            String hiddenUnits,
             ResultSet[] returnResultset) { 
         
         Statement stmt = null;
@@ -293,14 +296,20 @@ public class ModelDefinition {
             LOG.info("Model Output Directory (model_dir): " + modelOutputDirectory);
             LOG.info("Model Train Steps (train_steps): " + trainSteps);
             LOG.info("Training data File (train_data): " + trainingFilePath);
+            LOG.info("Hash Bucket Size (hash_bucket_size): " + hashBucketSize);
+            LOG.info("Dimension (dimension): " + dimensions);
+            LOG.info("Hidden Units (dnn_hidden_units): " + hiddenUnits);
             LOG.info("Test data file (test_data): " + testFilePath);
             LOG.info("Model Inputs (inputs): " + jsonData);
-            
-            //Call the python script
+                       
+             //Call the python script
             ProcessBuilder pb = new ProcessBuilder("python",fullModelPath,
                     "--model_type=" + modelType,
                     "--model_dir=" + modelOutputDirectory,
                     "--train_steps=" + trainSteps,
+                    "--hash_bucket_size=" + hashBucketSize,
+                    "--dimension=" + dimensions,
+                    "--dnn_hidden_units=" + hiddenUnits,
                     "--train_data=" + trainingFilePath,
                     "--test_data=" + testFilePath,
                     "--inputs=" + jsonData);
@@ -357,7 +366,9 @@ public class ModelDefinition {
     public static void predictModel(String fullModelPath, 
             String type, 
             String modelName, 
-            String sourceTable, 
+            String sourceTable,
+            String comparisonColumn,
+            String criteria,
             int sourceId, 
             String modelDirectory,
             ResultSet[] returnResultset) {
@@ -397,13 +408,18 @@ public class ModelDefinition {
             
             LOG.info("Python Script: " + fullModelPath);
             LOG.info("Model Type (model_type): " + type);
+            LOG.info("Comparison Column: " + comparisonColumn);
+            LOG.info("Criteria: " + criteria);
             LOG.info("Model Output Directory (model_dir): " + modelDirectory);
             LOG.info("Data Input Record (input_record): " + recordAsCSV);
             LOG.info("Model Inputs (inputs): " + jsonData);
             
+            
             ProcessBuilder pb = new ProcessBuilder("python",fullModelPath,
                     "--predict=true",
                     "--model_type=" + type,
+                    "--comparison_column=" + comparisonColumn,
+                    "--criteria=" + criteria,
                     "--model_dir=" + modelDirectory,
                     "--input_record=" + recordAsCSV,                    
                     "--inputs=" + jsonData);

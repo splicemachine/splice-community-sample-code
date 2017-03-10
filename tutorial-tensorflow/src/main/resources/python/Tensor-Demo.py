@@ -47,7 +47,17 @@ flags.DEFINE_string("test_data","","Path to the test data.")
 flags.DEFINE_string("inputs","","Input data dictionary")
 flags.DEFINE_string("input_record", "","Comma delimited input record")
 flags.DEFINE_string("predict", "false","Indicates if we are predicting or building the model")
+flags.DEFINE_string("hash_bucket_size", 100,"The hash bucket size")
+flags.DEFINE_string("dimension", 8,"The dimension")
+flags.DEFINE_string("dnn_hidden_units", "100, 50","List of hidden units per DNN layer")
+flags.DEFINE_string("comparison_column", "income_bracket","The column the value will be compared against")
+flags.DEFINE_string("criteria", ">50K","The binary classification criteria")
 
+print("comparison_column=%s" % FLAGS.comparison_column)
+print("criteria=%s" % FLAGS.criteria)
+print("hash_bucket_size=%s" % FLAGS.hash_bucket_size)
+print("dimension=%s" % FLAGS.dimension)
+print("dnn_hidden_units=%s" % FLAGS.dnn_hidden_units)
 print("model_dir=%s" % FLAGS.model_dir)
 print("model_type=%s" % FLAGS.model_type)
 print("train_steps=%s" % FLAGS.train_steps)
@@ -115,7 +125,7 @@ def prepare_sparse_columns(cols):
     tf_cols ={}
     for col in cols :
         tf_cols[col] = tf.contrib.layers.sparse_column_with_hash_bucket(
-          col, hash_bucket_size=1000)
+          col, hash_bucket_size=FLAGS.hash_bucket_size)
     return tf_cols
 
 
@@ -168,7 +178,7 @@ def prepare_embedded_columns(cols):
     """Create tf.contrib.layers.embedding_columns for the sparse entries"""
     tf_cols = {}
     for col in cols:
-        tf_cols[col] = tf.contrib.layers.embedding_column(col, dimension=8)
+        tf_cols[col] = tf.contrib.layers.embedding_column(col, dimension=FLAGS.dimension)
     return tf_cols
 
 
@@ -240,7 +250,7 @@ def build_estimator(model_dir):
     model_dir=model_dir,
     linear_feature_columns=WIDE_TF_COLUMNS,
     dnn_feature_columns=DEEP_TF_COLUMNS,
-    dnn_hidden_units=[100, 50])
+    dnn_hidden_units=[FLAGS.dnn_hidden_units])
   return m
 
 
@@ -318,7 +328,7 @@ def predict_outcome():
       engine="python")
 
   prediction_set[LABEL_COLUMN] = (
-      prediction_set["income_bracket"].apply(lambda x: ">50K" in x)).astype(int)
+      prediction_set[FLAGS.comparison_column].apply(lambda x: FLAGS.criteria in x)).astype(int)
 
 
   y=m.predict(input_fn=lambda: input_fn(prediction_set))

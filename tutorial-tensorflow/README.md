@@ -129,15 +129,20 @@ Used for creating a model
 * trainingDataTable: The table containing the training data
 * testDataTable: The table containing the test data
 * modelOutputDirectory: Base directory for output models
+* hashBucketSize: Hash Buket Size - An example of a valid value is 100
+* dimension: The higher the dimension of the embedding is, the more degrees of freedom the model will have to learn the representations of the features An example of a valid value is 8
+* hiddenUnits: List of hidden units per DNN layer. An example of a valid value is '100, 50'
 * trainSteps: Number of training steps
 
-	
+
 #### Stored Procedure: PREDICT_MODEL
 Used for predicting the outcome of a particular record
 * scriptPathAndName: Full path and name to the python script
 * type: The type of model. Valid model types: {'wide', 'deep', 'wide_n_deep'}
 * modelName: Name of the model that is being created, it maps to an entry in the MODEL and the column NAME
 * sourceTable: The table containing the live data
+* comparisonColumn: The column that is used for the binary comparison
+* criteria: The criteria that the comparison column will evaluated against
 * recordId: ID of the record to perform the prediction on
 * modelDirectory: The directory where the model was created
 
