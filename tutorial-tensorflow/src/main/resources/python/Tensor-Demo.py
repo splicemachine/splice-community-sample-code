@@ -47,9 +47,9 @@ flags.DEFINE_string("test_data","","Path to the test data.")
 flags.DEFINE_string("inputs","","Input data dictionary")
 flags.DEFINE_string("input_record", "","Comma delimited input record")
 flags.DEFINE_string("predict", "false","Indicates if we are predicting or building the model")
-flags.DEFINE_string("hash_bucket_size", 100,"The hash bucket size")
-flags.DEFINE_string("dimension", 8,"The dimension")
-flags.DEFINE_string("dnn_hidden_units", "100, 50","List of hidden units per DNN layer")
+flags.DEFINE_integer("hash_bucket_size", 1000,"The hash bucket size")
+flags.DEFINE_integer("dimension", 8,"The dimension")
+flags.DEFINE_string("dnn_hidden_units", "100,50","List of hidden units per DNN layer")
 flags.DEFINE_string("comparison_column", "income_bracket","The column the value will be compared against")
 flags.DEFINE_string("criteria", ">50K","The binary classification criteria")
 
@@ -80,6 +80,7 @@ CATEGORICAL_COLUMNS = INPUT_DICT['categorical_columns'];
 CONTINUOUS_COLUMNS = INPUT_DICT['continuous_columns'];
 CROSSED_COLUMNS = INPUT_DICT['crossed_columns'];
 BUCKETIZED_COLUMNS = INPUT_DICT['bucketized_columns'];
+DNN_HIDDEN_UNITS=[int(s) for s in FLAGS.dnn_hidden_units.split(',')] 
 
 print("INPUT_DICT=%s" % INPUT_DICT)
 print("COLUMNS=%s" % COLUMNS)
@@ -88,6 +89,7 @@ print("CATEGORICAL_COLUMNS=%s" % CATEGORICAL_COLUMNS)
 print("CONTINUOUS_COLUMNS=%s" % CONTINUOUS_COLUMNS)
 print("CROSSED_COLUMNS=%s" % CROSSED_COLUMNS)
 print("BUCKETIZED_COLUMNS=%s" % BUCKETIZED_COLUMNS)
+print("DNN_HIDDEN_UNITS=%s" % DNN_HIDDEN_UNITS)
 
 
 # In[5]:
@@ -250,7 +252,8 @@ def build_estimator(model_dir):
     model_dir=model_dir,
     linear_feature_columns=WIDE_TF_COLUMNS,
     dnn_feature_columns=DEEP_TF_COLUMNS,
-    dnn_hidden_units=[FLAGS.dnn_hidden_units])
+    dnn_hidden_units=DNN_HIDDEN_UNITS
+    )
   return m
 
 
@@ -284,6 +287,9 @@ def train_and_eval():
 #  train_file_name, test_file_name = maybe_download()
   train_file_name=FLAGS.train_data;
   test_file_name=FLAGS.test_data;
+  
+  print("train file = %s" % train_file_name)
+  print("test file = %s" % test_file_name)
 
   df_train = pd.read_csv(
       tf.gfile.Open(train_file_name),
@@ -297,13 +303,6 @@ def train_and_eval():
       skiprows=1,
       engine="python")
     
-# Temp hack - label should come in the input 
-#  df_train[LABEL_COLUMN] = (
-#      df_train["income_bracket"].apply(lambda x: ">50K" in x)).astype(int)
-#  df_test[LABEL_COLUMN] = (
-#      df_test["income_bracket"].apply(lambda x: ">50K" in x)).astype(int)
-
-
   model_dir = tempfile.mkdtemp() if not FLAGS.model_dir else FLAGS.model_dir
   print("model directory = %s" % model_dir)
 
@@ -345,5 +344,4 @@ def main(_):
 
 if __name__ == "__main__":
   tf.app.run()
-
 

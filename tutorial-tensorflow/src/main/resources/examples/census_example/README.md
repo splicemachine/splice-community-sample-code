@@ -47,3 +47,27 @@ All three tables have the same definition:
 |38|Private|89814|HS-grad|9|Married-civ-spouse|Farming-fishing|Husband|White|Male|0|0|50|United-States|<=50K|
 |28|Local-gov|336951|Assoc-acdm|12|Married-civ-spouse|Protective-serv|Husband|White|Male|0|0|40|United-States|>50K|
 
+
+# Splice Machine Objects
+
+## Data Files
+
+* **/data/live.data.csv**: Contains the data that will be used when running the process to PREDICT a value
+* **/data/testing.data.csv**: Contains the data that will be used when running the process to TEST the model
+* **/data/training.data.csv**: Contains the data that will be used when running the process to TRAIN the model
+
+## Setup Files
+
+* **/ddl/create-tables.sql**: Creates the schema CENSUS and the tables CENSUS.TRAINING_DATA, CENSUS.TESTING_DATA and CENSUS.LIVE_DATA 
+* **/ddl/create-data.sql**: Populates the MODEL, MODEL_FEATURES and MODEL_FEATURE_CROSS tables with the data needed to generate the models and also populates the CENSUS.TRAINING_DATA, CENSUS.TESTING_DATA and CENSUS.LIVE_DATA tables.
+
+## Stored Procedure Call
+
+* **/queries/create_model.sql**: Query that calls the CREATE_MODEL stored procedure to generate the model.
+* **/queries/predict-true.sql**: Query that calls the PREDICT_MODEL stored procedure to generate the predictions in the live data where the expected output is true
+* **/queries/predict-false.sql**: Query that calls the PREDICT_MODEL stored procedure to generate the predictions in the live data where the expected output is false
+
+## Python Scripts
+* **/python/manually-create-model-using-python-only.sh**: A script to manually call the python code without splice machine to create the model.  Useful for debugging purposes
+* **/python/manually-predict-using-python-only.sh**: A script to manually call the python code without splice machine to predict the output.  Useful for debugging purposes
+

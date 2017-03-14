@@ -11,14 +11,14 @@ The original code provided by TensorFlow (https://github.com/tensorflow/tensorfl
 * **CONTINUOUS_COLUMNS**: Continuous data encompasses numerical and interval types
 
 # How the process works
-The original tensorflow model was modified to be more generic and provide the ability to not only create the model but also use the model after it has been created.  When creating the model, the columns, label, categorical columns, continuous columns, crossed columns and bucketized columns are passed into the python model via a JSON object as opposed to be hard coded in the model.  To do this, we call a stored procedure which will query the tables MODEL, MODEL_FEATURES and MODEL_FEATURE_CROSS and dynamically create a JSON object containing the fields into a python model.  This prevents the data from being hard coded and allows modelers to be able to quickly generate new models by adding entries to a database table.
+The original tensorflow python code was modified to be more generic and provide the ability to not only create the model but also use the model after it has been created.  When creating the model, the columns, label, categorical columns, continuous columns, crossed columns and bucketized columns are passed into the python code via a JSON object as opposed to be hard coded in the model.  To do this, we call a stored procedure which will query the tables MODEL, MODEL_FEATURES and MODEL_FEATURE_CROSS and dynamically create a JSON object containing the data required by the python code.  This prevents the data from being hard coded and allows modelers to be able to quickly generate new models by adding entries to a database table.
 
 
 # Splice Machine Tables
 In Splice Machine we created several tables to store the model and feature definitions.  This section describes the purpose of each table.
 
 ## Table: MODEL
-The model table contains the high level definition of a model and is used in other tables to define.  The intent is that overtime you may have multiple models.
+The model table contains the high level definition of a model and the MODEL_ID field is a key into other tables which define the data to include in the model creation.  The intent is that overtime you may have multiple models for the same dataset.
 
 * **MODEL_ID**: A unique identifier for the model
 * **NAME**: The name of the model.  This is used when calling the stored procedure to generate the model
@@ -123,45 +123,43 @@ The ddl script for creating the tables and stored procedures can be found under 
 
 #### Stored Procedure: CREATE_MODEL
 Used for creating a model
-* scriptPathAndName: Full path and name to the python script
-* type: The type of model. Valid model types: {'wide', 'deep', 'wide_n_deep'}
-* modelName: Name of the model that is being created, it maps to an entry in the MODEL and the column NAME
-* trainingDataTable: The table containing the training data
-* testDataTable: The table containing the test data
-* modelOutputDirectory: Base directory for output models
-* hashBucketSize: Hash Buket Size - An example of a valid value is 100
-* dimension: The higher the dimension of the embedding is, the more degrees of freedom the model will have to learn the representations of the features An example of a valid value is 8
-* hiddenUnits: List of hidden units per DNN layer. An example of a valid value is '100, 50'
-* trainSteps: Number of training steps
+* **scriptPathAndName**: Full path and name to the python script
+* **type**: The type of model. Valid model types: {'wide', 'deep', 'wide_n_deep'}
+* **modelName**: Name of the model that is being created, it maps to an entry in the MODEL table and the column NAME
+* **trainingDataTable**: The table containing the training data
+* **testDataTable**: The table containing the test data
+* **modelOutputDirectory**: Base directory for output models
+* **hashBucketSize**: Hash Buket Size - An example of a valid value is 100
+* **dimension**: The higher the dimension of the embedding is, the more degrees of freedom the model will have to learn the representations of the features An example of a valid value is 8
+* **hiddenUnits**: List of hidden units per DNN layer. An example of a valid value is '100, 50'
+* **trainSteps**: Number of training steps
 
 
 #### Stored Procedure: PREDICT_MODEL
 Used for predicting the outcome of a particular record
-* scriptPathAndName: Full path and name to the python script
-* type: The type of model. Valid model types: {'wide', 'deep', 'wide_n_deep'}
-* modelName: Name of the model that is being created, it maps to an entry in the MODEL and the column NAME
-* sourceTable: The table containing the live data
-* comparisonColumn: The column that is used for the binary comparison
-* criteria: The criteria that the comparison column will evaluated against
-* recordId: ID of the record to perform the prediction on
-* modelDirectory: The directory where the model was created
+* **scriptPathAndName**: Full path and name to the python script
+* **type**: The type of model. Valid model types: {'wide', 'deep', 'wide_n_deep'}
+* **modelName**: Name of the model that is being created, it maps to an entry in the MODEL and the column NAME
+* **sourceTable**: The table containing the live data
+* **comparisonColumn**: The column that is used for the binary comparison
+* **criteria**: The criteria that the comparison column will evaluated against
+* **recordId**: ID of the record to perform the prediction on
+* **modelDirectory**: The directory where the model was created
 
 
-### Census Example
-There is an example of predicting a model for census data.  The files to create the tables, entries in the MODEL, MODEL_FEATURES and MODEL_FEATURE_CROSS and to call the stored procedures can be found in the /resources/examples/census_example folder
+### Examples
+The examples folder has examples for dynamically creating models using different datasets.
 
+#### Census Example
+The folder /resources/examples/census_example contains the files needed to setup the census data.  The folders are as follows:
 
-* **/ddl/create-tables.sql**: Creates the schema CENSUS and the tables TRAINING_DATA and TESTING_DATA
-* **/ddl/create-data.sql**: Populates the MODEL, MODEL_FEATURES and MODEL_FEATURE_CROSS tables with the data needed to generate the models and also populates the TRAINING_DATA and TESTING_DATA tables.
+* **/data**: Contains the files for the training, test and live data sets.
+* **/ddl**: Contains the scripts for creating the training, test and live tables as well as the script for populating the MODEL, MODEL_FEATURES and MODEL_FEATURE_CROSS tables with data
+* **/python**: This folder contains examples of running the python script outside of the stored procedure.
+* **/queries**: This folder contains the sql statements to call the stored procedure to create the model and then use the model to predict the outcome.
 
-* **/data/testing.data.txt**: Contains the data that is used to train the Census model
-* **/data/training.data.txt**: Contains the data that is used to test the Census model
+An overview of the Census Example and the files can be found in the README.md file under the /resources/examples/census_example folder.
 
-
-* **/queries/create_model.sql**: Query that calls the CREATE_MODEL stored procedure to generate the model.
-* **/queries/predict.sql**: Query that calls the PREDICT_MODEL stored procedure to generate the predictions in the test data
-
-* **/python/manually-test-python.sh**: A script to manually test the python code without splice machine.  Useful for debugging purposes
 
 
 # How to Run the Tutorial 

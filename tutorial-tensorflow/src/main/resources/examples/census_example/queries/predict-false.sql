@@ -5,6 +5,6 @@ call SPLICE.PREDICT_MODEL(
 'CENSUS.LIVE_DATA',
 'income_bracket',
 '>50K',
-4,
+1177,
 '/Users/erindriggers/dev/workspace/tensorflow/splice-community-sample-code/tutorial-tensorflow/src/main/resources/census_out'
 );
