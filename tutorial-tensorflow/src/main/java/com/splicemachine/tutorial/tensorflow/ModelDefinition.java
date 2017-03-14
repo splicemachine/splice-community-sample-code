@@ -36,7 +36,7 @@ public class ModelDefinition {
      * @return List of the columns for the model
      * @throws SQLException
      */
-    private static StringBuilder buildDictionaryObject(Connection conn, String modelName, JsonObject inputDict) throws SQLException {
+    private static StringBuilder buildDictionaryObject(Connection conn, String modelName, JsonObject inputDict, StringBuilder sbLabel) throws SQLException {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         
@@ -111,7 +111,9 @@ public class ModelDefinition {
         pstmt.setBoolean(2, true);
         rs = pstmt.executeQuery();
         if(rs.next()) {
-            inputDict.addProperty("label_column", rs.getString(1).toLowerCase());
+            String labelField = rs.getString(1);
+            inputDict.addProperty("label_column", labelField.toLowerCase());
+            sbLabel.append(labelField);
         }
         
         //Get bucketized_columns
@@ -271,7 +273,8 @@ public class ModelDefinition {
             //A JSON Object is passed into the python script so that it
             //know the structure of the data and corresponding groupings
             JsonObject inputDict = new JsonObject();
-            StringBuilder exportColumns = buildDictionaryObject(conn, modelName, inputDict);           
+            StringBuilder labelField = new StringBuilder();
+            StringBuilder exportColumns = buildDictionaryObject(conn, modelName, inputDict,labelField);           
             
             //Export the training data
             String exportPathTrain = dataDir + "/train";
@@ -384,7 +387,8 @@ public class ModelDefinition {
             conn = DriverManager.getConnection("jdbc:default:connection");
             
             JsonObject inputDict = new JsonObject();
-            StringBuilder exportColumns = buildDictionaryObject(conn, modelName, inputDict);
+            StringBuilder labelField = new StringBuilder();
+            StringBuilder exportColumns = buildDictionaryObject(conn, modelName, inputDict,labelField);
             
             //Retrieve the record from the database
             StringBuilder recordAsCSV = null;
@@ -405,6 +409,8 @@ public class ModelDefinition {
             //Build JSON
             Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
             String jsonData = gson.toJson(inputDict);
+            
+            
             
             LOG.info("Python Script: " + fullModelPath);
             LOG.info("Model Type (model_type): " + type);
@@ -439,7 +445,11 @@ public class ModelDefinition {
                 int endIndex = returnVal.indexOf("]");
                 if(beginIndex > -1 && endIndex > -1) {
                     returnVal = returnVal.substring(beginIndex+1, endIndex);
-                    stmt.executeUpdate("UPDATE " + sourceTable + " set LABEL = '" + returnVal +"' where ID = " + sourceId);
+                    String updateSql = "UPDATE " + sourceTable + " set " + labelField.toString() + " = ? where ID = ?";
+                    PreparedStatement pstmt = conn.prepareStatement(updateSql);
+                    pstmt.setObject(1, returnVal);
+                    pstmt.setInt(2, sourceId);
+                    pstmt.execute();
                     returnResultset[0] = stmt.executeQuery("select * from "+ sourceTable + " where ID = " + sourceId);
                 }
             } else {

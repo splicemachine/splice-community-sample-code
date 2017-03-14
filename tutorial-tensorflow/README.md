@@ -197,3 +197,19 @@ In the instructions below the <SOURCE_DIRECTORY> variable should be replaced wit
 * Query the CENSUS.LIVE_DATA and confirm that the LABEL column has no data 
 * In a splice machine command prompt run the <SOURCE_DIRECTORY>/splice-community-sample-code/tutorial-tensorflow/src/main/resources/examples/census_example/queries/predict.sql
 * Query the CENSUS.LIVE_DATA and confirm that the LABEL column now has data
+
+# How to Setup a New Model
+Here are the high level steps for creating your own model
+
+* Create the splice machine table definitions for your training, test and live data sets.  Make sure the definition of the live table has an ID column that uniquely identifies the row for use in the predict stored procedure.
+* Import the data into each of the three tables above
+* Insert a record to the MODEL table with the name of your model and a unique identifier, for example:  insert into MODEL (MODEL_ID,NAME,DESCRIPTION) values (2,'INSURANCE','Predict whether a customer has a caravan insurance policy');
+* Review the columns in your dataset and identify the column that is the label, identify if the column is CONTINUOUS or CATEGORICAL.  If the column is a numeric column, please mark it as CONTINUOUS.  
+* Create the insert statements MODEL_FEATURES table and if applicable the MODEL_FEATURE_CROSS table.
+* Call the stored procedure to create your model
+* Call the stored procedure to predict an outcome.
+
+Look at the /resources/examples/census_example and the /resources/examples/insurance_example for examples of how this was done.
+
+
+

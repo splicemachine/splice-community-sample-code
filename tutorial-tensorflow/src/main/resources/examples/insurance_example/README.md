@@ -3,7 +3,7 @@ The Insurance Company Benchmark data set is from the UCI Machine Learning Reposi
 
 # Data Set Properties
 |Property|Value|
-|----|----|
+|---------|---------|
 |Data Set Characteristics|Multivariate|
 |Attribute Characteristics|Categorical, Integer|
 |Associated Tasks|Regression, Description|
@@ -27,7 +27,7 @@ All TRAINING_DATA,TESTING_DATA and LIVE_DATA  tables have the similar definition
 
 
 |Column Number|Source Name|Source Description|Splice Machine Column|Splice Machine Data Type|
-|----|----|----|----|----|
+|---------|---------|---------|---------|---------|
 |1|MOSTYPE |Customer Subtype (domain)|CUSTOMER_SUBTYPE|INTEGER|
 |2|MAANTH|Number of houses 1 - 10|NUM_HOUSES|INTEGER|
 |3|MGE|Avg size household 1 - 6|AVG_SIZE_HOUSEHOLD|INTEGER|
@@ -120,9 +120,42 @@ All TRAINING_DATA,TESTING_DATA and LIVE_DATA  tables have the similar definition
 
 ## Sample Data
 |CUSTOMER_SUBTYPE|NUM_HOUSES|AVG_SIZE_HOUSEHOLD|AVG_AGE|CUSTOMER_MAIN_TYPE|ROMAN_CATHOLIC|PROTESTANT|OTHER_RELIGION|NO_RELIGION|MARRIED|LIVING_TOGETHER|OTHER_RELATION|SINGLES|HOUSEHOLD_WITHOUT_CHILDREN|HOUSEHOLD_WITH_CHILDREN|HIGH_LEVEL_EDUCATION|MEDIUM_LEVEL_EDUCATION|LOWER_LEVEL_EDUCATION|HIGH_STATUS|ENTREPRENEUR|FARMER|MIDDLE_MANAGEMENT|SKILLED_LABOURERS|UNSKILLED_LABOURERS|SOCIAL_CLASS_A|SOCIAL_CLASS_B1|SOCIAL_CLASS_B2|SOCIAL_CLASS_C|SOCIAL_CLASS_D|RENTED_HOUSE|HOME_OWNERS|CARS_1|CARS_2|NO_CHAR|NATIONAL_HEALTH_SERVICE|PRIVATE_HEALTH_INSURANCE|INCOME_UNDER_30|INCOME_30_TO_45|INCOME_45_TO_75|INOCME_75_TO_112|INCOME_OVER_123|AVERAGE_INCOME|PURCHASING_POWER_CLASS|CONTRIB_PRIVATE_3RD_PARTY_INSURANCE|CONTRIB_3RD_PARTY_INSURANCE_FIRMS|CONTRIB_3RD_PARTY_INSURANCE_AGRICULTURE|CONTRIB_CAR_POLICIES|CONTRIB_DELIVERY_VAN_POLICIES|CONTRIB_MOTORCYCLE_SCOOTER_POLICIES|CONTRIB_LORRY_POLICIES|CONTRIB_TRAILER_POLICIES|CONTRIB_TRACTOR_POLICIES|CONTRIB_AGRICULTURAL_MACHINES_POLICIES|CONTRIB_MOPED_POLICIES|CONTRIB_LIFE_INSURANCE_POLICIES|CONTRIB_PRIVATE_ACCIDENT_INSURANCE_POLICIES|CONTRIB_FAMILY_ACCIDENTS_INSURANCE_POLICIES|CONTRIB_DISABILITY_INSURANCE_POLICIES|CONTRIB_FIRE_POLICIES|CONTRIB_SURFACE_POLICIES|CONTRIB_BOAT_POLICIES|CONTRIB_BICYCLE_POLICIES|CONTRIB_PORPERTY_INSURANCE_POLICIES|CONTRIB_SOCIAL_SECURITY_INSURANCE_POLICIES|NUM_PRIVATE_3RD_PARTY_INSURANCE|NUM_PRIVATE_3RD_PARTY_INSURANCE_FIRMS|NUM_PRIVATE_3RD_PARTY_INSURANCE_AGRICULTURE|NUM_CAR_POLICIES|NUM_DELIVERY_VAN_POLICIES|NUM_MOTORCYCLE_SCOOTER_POLICIES|NUM_LORRY_POLICIES|NUM_TRAILER_POLICIES|NUM_TRACTOR_POLICIES|NUM_AGRICULTURAL_MACHINES_POLICIES|NUM_MOPED_POLICIES|NUM_LIFE_INSURANCE|NUM_PRIVATE_ACCIDENT_INSURANCE_POLICIES|NUM_FAMILY_ACCIDENT_INSURANCE_POLICIES|NUM_DISABILITY_INSURANCE_POLICIES|NUM_FIRE_POLICIES|NUM_SURFBOARD_POLICIES|NUM_BOAT_POLICIES|NUM_BICYCLE_POLICIES|NUM_PROPERTY_INSURANCE_POLICIES|NUM_SOCIAL_SECURITY_INS_POLICIES|NUM_MOBILE_HOME|
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
 |33|1|3|2|8|0|5|1|3|7|0|2|1|2|6|1|2|7|1|0|1|2|5|2|1|1|2|6|1|1|8|8|0|1|8|1|0|4|5|0|0|4|3|0|0|0|6|0|0|0|0|0|0|0|0|0|0|0|5|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|
 |37|1|2|2|8|1|4|1|4|6|2|2|0|4|5|0|5|4|0|0|0|5|0|4|0|2|3|5|0|2|7|7|1|2|6|3|2|0|5|2|0|5|4|2|0|0|0|0|0|0|0|0|0|0|0|0|0|0|2|0|0|0|0|0|2|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|
 |37|1|2|2|8|0|4|2|4|3|2|4|4|4|2|0|5|4|0|0|0|7|0|2|0|5|0|4|0|7|2|7|0|2|9|0|4|5|0|0|0|3|4|2|0|0|6|0|0|0|0|0|0|0|0|0|0|0|2|0|0|0|0|0|1|0|0|1|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|
+|9|1|3|3|3|2|3|2|4|5|2|2|2|3|4|3|4|2|4|0|0|3|1|2|3|2|1|4|0|5|4|9|0|0|7|2|1|5|3|0|0|4|4|0|0|0|6|0|0|0|0|0|0|0|0|0|0|0|2|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|
+|40|1|4|2|10|1|4|1|4|7|1|2|2|4|4|5|4|0|0|5|4|0|0|0|9|0|0|0|0|4|5|6|2|1|5|4|0|0|9|0|0|6|3|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|6|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|
+|23|1|2|1|5|0|5|0|5|0|6|3|3|5|2|0|5|4|2|0|0|4|2|2|2|2|2|4|2|9|0|5|3|3|9|0|5|2|3|0|0|3|3|0|0|0|6|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|
+|39|2|3|2|9|2|2|0|5|7|2|0|0|3|6|0|4|5|0|0|0|4|1|5|0|1|4|5|0|6|3|8|0|1|9|0|4|3|3|0|0|3|5|0|0|0|6|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|
+|33|1|2|3|8|0|7|0|2|7|2|0|0|5|4|0|3|6|2|0|0|2|5|2|2|1|2|5|2|0|9|4|4|2|6|3|2|5|3|0|0|3|3|0|0|0|0|0|0|0|0|0|0|3|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|
+|33|1|2|4|8|0|1|3|6|6|0|3|3|3|3|0|1|8|1|1|0|1|8|1|1|1|0|8|1|9|0|5|2|3|7|2|7|2|1|0|0|2|3|0|0|0|5|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|
+|11|2|3|3|3|3|5|0|2|7|0|2|2|2|6|0|4|5|2|0|0|3|3|3|1|2|1|4|2|0|9|6|1|2|6|3|2|3|3|1|0|4|7|2|0|0|0|0|0|0|0|0|0|0|0|0|0|0|3|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|
+
+
+# Splice Machine Objects
+
+## Data Files
+
+* **/data/live-expected.txt**: Contains the expected results in the live data
+* **/data/live.txt**: Contains the data that will be used when running the process to PREDICT a value
+* **/data/testing.data.txt**: Contains the data that will be used when running the process to TEST the model
+* **/data/training.data.txt**: Contains the data that will be used when running the process to TRAIN the model
+
+## Setup Files
+
+* **/ddl/create-tables.sql**: Creates the INSURANCE schema and the tables in that SCHEMA
+* **/ddl/create-data.sql**: Populates the tables in the INSURANCE schema.
+* **/ddl/insert-splice-model-tables.sql**: Populates the MODEL, MODEL_FEATURES and MODEL_FEATURE_CROSS tables with the data needed to generate the models.
+
+## Stored Procedure Call
+
+* **/queries/create_model.sql**: Query that calls the CREATE_MODEL stored procedure to generate the model.
+* **/queries/predict-true.sql**: Query that calls the PREDICT_MODEL stored procedure to generate the predictions in the live data where the expected output is true
+* **/queries/predict-false.sql**: Query that calls the PREDICT_MODEL stored procedure to generate the predictions in the live data where the expected output is false
+
+## Python Scripts
+* **/python/manually-create-model-using-python-only.sh**: A script to manually call the python code without splice machine to create the model.  Useful for debugging purposes
+* **/python/manually-predict-using-python-only.sh**: A script to manually call the python code without splice machine to predict the output.  Useful for debugging purposes
 
 

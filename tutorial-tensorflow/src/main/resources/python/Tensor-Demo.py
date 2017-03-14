@@ -36,6 +36,8 @@ import tensorflow as tf
 
 # This will error if you run more than once
 
+DEBUG=False
+
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 
@@ -53,17 +55,18 @@ flags.DEFINE_string("dnn_hidden_units", "100,50","List of hidden units per DNN l
 flags.DEFINE_string("comparison_column", "income_bracket","The column the value will be compared against")
 flags.DEFINE_string("criteria", ">50K","The binary classification criteria")
 
-print("comparison_column=%s" % FLAGS.comparison_column)
-print("criteria=%s" % FLAGS.criteria)
-print("hash_bucket_size=%s" % FLAGS.hash_bucket_size)
-print("dimension=%s" % FLAGS.dimension)
-print("dnn_hidden_units=%s" % FLAGS.dnn_hidden_units)
-print("model_dir=%s" % FLAGS.model_dir)
-print("model_type=%s" % FLAGS.model_type)
-print("train_steps=%s" % FLAGS.train_steps)
-print("train_data=%s" % FLAGS.train_data)
-print("test_data=%s" % FLAGS.test_data)
-print("inputs=%s" % FLAGS.inputs)
+if DEBUG:
+	print("comparison_column=%s" % FLAGS.comparison_column)
+	print("criteria=%s" % FLAGS.criteria)
+	print("hash_bucket_size=%s" % FLAGS.hash_bucket_size)
+	print("dimension=%s" % FLAGS.dimension)
+	print("dnn_hidden_units=%s" % FLAGS.dnn_hidden_units)
+	print("model_dir=%s" % FLAGS.model_dir)
+	print("model_type=%s" % FLAGS.model_type)
+	print("train_steps=%s" % FLAGS.train_steps)
+	print("train_data=%s" % FLAGS.train_data)
+	print("test_data=%s" % FLAGS.test_data)
+	print("inputs=%s" % FLAGS.inputs)
 
 # In[4]:
 
@@ -76,20 +79,29 @@ print("inputs=%s" % FLAGS.inputs)
 INPUT_DICT=json.loads(FLAGS.inputs)
 COLUMNS = INPUT_DICT['columns'];
 LABEL_COLUMN = INPUT_DICT['label_column'];
-CATEGORICAL_COLUMNS = INPUT_DICT['categorical_columns'];
-CONTINUOUS_COLUMNS = INPUT_DICT['continuous_columns'];
-CROSSED_COLUMNS = INPUT_DICT['crossed_columns'];
-BUCKETIZED_COLUMNS = INPUT_DICT['bucketized_columns'];
+CATEGORICAL_COLUMNS=None
+if 'categorical_columns' in INPUT_DICT:
+	CATEGORICAL_COLUMNS = INPUT_DICT['categorical_columns'];
+CONTINUOUS_COLUMNS=None
+if 'continuous_columns' in INPUT_DICT:
+	CONTINUOUS_COLUMNS = INPUT_DICT['continuous_columns'];
+CROSSED_COLUMNS=None
+if 'crossed_columns' in INPUT_DICT:
+	CROSSED_COLUMNS = INPUT_DICT['crossed_columns'];
+BUCKETIZED_COLUMNS=None
+if 'bucketized_columns' in INPUT_DICT:
+	BUCKETIZED_COLUMNS = INPUT_DICT['bucketized_columns'];
 DNN_HIDDEN_UNITS=[int(s) for s in FLAGS.dnn_hidden_units.split(',')] 
 
-print("INPUT_DICT=%s" % INPUT_DICT)
-print("COLUMNS=%s" % COLUMNS)
-print("LABEL_COLUMN=%s" % LABEL_COLUMN)
-print("CATEGORICAL_COLUMNS=%s" % CATEGORICAL_COLUMNS)
-print("CONTINUOUS_COLUMNS=%s" % CONTINUOUS_COLUMNS)
-print("CROSSED_COLUMNS=%s" % CROSSED_COLUMNS)
-print("BUCKETIZED_COLUMNS=%s" % BUCKETIZED_COLUMNS)
-print("DNN_HIDDEN_UNITS=%s" % DNN_HIDDEN_UNITS)
+if DEBUG:
+	print("INPUT_DICT=%s" % INPUT_DICT)
+	print("COLUMNS=%s" % COLUMNS)
+	print("LABEL_COLUMN=%s" % LABEL_COLUMN)
+	print("CATEGORICAL_COLUMNS=%s" % CATEGORICAL_COLUMNS)
+	print("CONTINUOUS_COLUMNS=%s" % CONTINUOUS_COLUMNS)
+	print("CROSSED_COLUMNS=%s" % CROSSED_COLUMNS)
+	print("BUCKETIZED_COLUMNS=%s" % BUCKETIZED_COLUMNS)
+	print("DNN_HIDDEN_UNITS=%s" % DNN_HIDDEN_UNITS)
 
 
 # In[5]:
@@ -104,7 +116,8 @@ def maybe_download():
     urllib.request.urlretrieve(FLAGS.train_data, train_file.name)  # pylint: disable=line-too-long
     train_file_name = train_file.name
     train_file.close()
-    print("Training data is downloaded to %s" % train_file_name)
+    if DEBUG:
+    	print("Training data is downloaded to %s" % train_file_name)
 
   if FLAGS.test_data:
     test_file_name = FLAGS.test_data
@@ -113,7 +126,8 @@ def maybe_download():
     urllib.request.urlretrieve(FLAGS.test_data, test_file.name)  # pylint: disable=line-too-long
     test_file_name = test_file.name
     test_file.close()
-    print("Test data is downloaded to %s" % test_file_name)
+    if DEBUG:
+    	print("Test data is downloaded to %s" % test_file_name)
 
   return train_file_name, test_file_name
 
@@ -125,16 +139,18 @@ def prepare_sparse_columns(cols):
     # Sparse base columns.
     # TBD: allow keyed columns and hash bucket size as input
     tf_cols ={}
-    for col in cols :
-        tf_cols[col] = tf.contrib.layers.sparse_column_with_hash_bucket(
-          col, hash_bucket_size=FLAGS.hash_bucket_size)
+    if(cols != None):
+	    for col in cols :
+	        tf_cols[col] = tf.contrib.layers.sparse_column_with_hash_bucket(
+	          col, hash_bucket_size=FLAGS.hash_bucket_size)
     return tf_cols
 
 
 # In[7]:
 
 SPARSE_TF_COLUMNS = prepare_sparse_columns(CATEGORICAL_COLUMNS)
-print(SPARSE_TF_COLUMNS)
+if DEBUG:
+	print(SPARSE_TF_COLUMNS)
 
 
 # In[8]:
@@ -143,15 +159,17 @@ def prepare_continuous_columns(cols):
     """Creates tf.contrib.layers.real_valued_columns"""
     #Continuous base columns
     tf_cols ={}
-    for col in cols :
-        tf_cols[col] = (tf.contrib.layers.real_valued_column(col))
+    if(cols != None):
+	    for col in cols :
+	        tf_cols[col] = (tf.contrib.layers.real_valued_column(col))
     return tf_cols
 
 
 # In[9]:
 
 REAL_TF_COLUMNS = prepare_continuous_columns(CONTINUOUS_COLUMNS)
-print(REAL_TF_COLUMNS)
+if DEBUG:
+	print(REAL_TF_COLUMNS)
 
 
 # In[10]:
@@ -159,18 +177,19 @@ print(REAL_TF_COLUMNS)
 def prepare_buckets(cols):
     """Creates tf bucketed columns"""
     new_cols = {}
-    for newCol in cols:
-        keyvalues = cols[newCol]
-        for colname in keyvalues:
-            orig_col = REAL_TF_COLUMNS[colname]
-            bound = keyvalues[colname]
-            new_cols[newCol] = tf.contrib.layers.bucketized_column(orig_col, boundaries=bound)
+    if(cols != None):
+	    for newCol in cols:
+	        keyvalues = cols[newCol]
+	        for colname in keyvalues:
+	            orig_col = REAL_TF_COLUMNS[colname]
+	            bound = keyvalues[colname]
+	            new_cols[newCol] = tf.contrib.layers.bucketized_column(orig_col, boundaries=bound)
     return new_cols
 
 
 # In[11]:
-
-print(BUCKETIZED_COLUMNS)
+if DEBUG:
+	print(BUCKETIZED_COLUMNS)
 BUCKETIZED_TF_COLUMNS = prepare_buckets(BUCKETIZED_COLUMNS)
 
 
@@ -179,14 +198,15 @@ BUCKETIZED_TF_COLUMNS = prepare_buckets(BUCKETIZED_COLUMNS)
 def prepare_embedded_columns(cols):
     """Create tf.contrib.layers.embedding_columns for the sparse entries"""
     tf_cols = {}
-    for col in cols:
-        tf_cols[col] = tf.contrib.layers.embedding_column(col, dimension=FLAGS.dimension)
+    if(cols != None):
+	    for col in cols:
+	        tf_cols[col] = tf.contrib.layers.embedding_column(col, dimension=FLAGS.dimension)
     return tf_cols
 
 
 # In[13]:
-
-print(list(SPARSE_TF_COLUMNS.keys()))
+if DEBUG:
+	print(list(SPARSE_TF_COLUMNS.keys()))
 
 
 # In[14]:
@@ -195,14 +215,15 @@ EMBEDDED_TF_COLUMNS = prepare_embedded_columns(list(SPARSE_TF_COLUMNS.values()))
 
 
 # In[15]:
-
-print(EMBEDDED_TF_COLUMNS)
+if DEBUG:
+	print(EMBEDDED_TF_COLUMNS)
 
 
 # In[16]:
 
 DEEP_TF_COLUMNS =  list(EMBEDDED_TF_COLUMNS.values()) + list(REAL_TF_COLUMNS.values())
-print(DEEP_TF_COLUMNS)
+if DEBUG:
+	print(DEEP_TF_COLUMNS)
 
 
 # In[18]:
@@ -210,21 +231,22 @@ print(DEEP_TF_COLUMNS)
 def prepare_crossed(cols):
     """Creates tf crossed columns"""
     new_cols = [];
-    for tuple in cols:
-        list_of_cols = []
-        for var in tuple:
-            b = BUCKETIZED_TF_COLUMNS.get(var,False)
-            s = SPARSE_TF_COLUMNS.get(var,False)
-            r = REAL_TF_COLUMNS.get(var,False)
-            if b : tf_var = b
-            else :
-                if s : tf_var = s
-                else :
-                    if r : tf_var = r
-            print(tf_var)
-            list_of_cols.append(tf_var)
-        new_cols.append(tf.contrib.layers.crossed_column(list_of_cols,
-                      hash_bucket_size=int(1e6)))
+    if(cols != None):
+	    for tuple in cols:
+	        list_of_cols = []
+	        for var in tuple:
+	            b = BUCKETIZED_TF_COLUMNS.get(var,False)
+	            s = SPARSE_TF_COLUMNS.get(var,False)
+	            r = REAL_TF_COLUMNS.get(var,False)
+	            if b : tf_var = b
+	            else :
+	                if s : tf_var = s
+	                else :
+	                    if r : tf_var = r
+	            print(tf_var)
+	            list_of_cols.append(tf_var)
+	        new_cols.append(tf.contrib.layers.crossed_column(list_of_cols,
+	                      hash_bucket_size=int(1e6)))
     return new_cols
 
 
@@ -234,26 +256,36 @@ CROSSED_TF_COLS = prepare_crossed(CROSSED_COLUMNS)
 
 
 # In[20]:
-
-print(CROSSED_TF_COLS)
-CROSSED_TF_COLS[1]
+if DEBUG:
+	print(CROSSED_TF_COLS)
+if(len(CROSSED_TF_COLS) > 0):
+	CROSSED_TF_COLS[1]
 
 # In[17]:
 
 WIDE_TF_COLUMNS = list(SPARSE_TF_COLUMNS.values()) + list(BUCKETIZED_TF_COLUMNS.values()) + list(CROSSED_TF_COLS)
-print(WIDE_TF_COLUMNS)
+if DEBUG:
+	print(WIDE_TF_COLUMNS)
 
 
 # In[21]:
 
-def build_estimator(model_dir):
+def build_estimator(model_dir, model_type):
   """Build an estimator."""
-  m = tf.contrib.learn.DNNLinearCombinedClassifier(
-    model_dir=model_dir,
-    linear_feature_columns=WIDE_TF_COLUMNS,
-    dnn_feature_columns=DEEP_TF_COLUMNS,
-    dnn_hidden_units=DNN_HIDDEN_UNITS
-    )
+  if model_type == "wide":
+    m = tf.contrib.learn.LinearClassifier(model_dir=model_dir,
+                                          feature_columns=WIDE_TF_COLUMNS)
+  elif model_type == "deep":
+    m = tf.contrib.learn.DNNClassifier(model_dir=model_dir,
+                                       feature_columns=DEEP_TF_COLUMNS,
+                                       hidden_units=DNN_HIDDEN_UNITS)
+  else:
+	  m = tf.contrib.learn.DNNLinearCombinedClassifier(
+	    model_dir=model_dir,
+	    linear_feature_columns=WIDE_TF_COLUMNS,
+	    dnn_feature_columns=DEEP_TF_COLUMNS,
+	    dnn_hidden_units=DNN_HIDDEN_UNITS
+	    )
   return m
 
 
@@ -266,11 +298,13 @@ def input_fn(df):
   continuous_cols = {k: tf.constant(df[k].values) for k in CONTINUOUS_COLUMNS}
   # Creates a dictionary mapping from each categorical feature column name (k)
   # to the values of that column stored in a tf.SparseTensor.
-  categorical_cols = {k: tf.SparseTensor(
-      indices=[[i, 0] for i in range(df[k].size)],
-      values=df[k].values,
-      shape=[df[k].size, 1])
-                      for k in CATEGORICAL_COLUMNS}
+  categorical_cols = {}
+  if(CATEGORICAL_COLUMNS != None):
+	  categorical_cols = {k: tf.SparseTensor(
+	      indices=[[i, 0] for i in range(df[k].size)],
+	      values=df[k].values,
+	      shape=[df[k].size, 1])
+	                      for k in CATEGORICAL_COLUMNS}
   # Merges the two dictionaries into one.
   feature_cols = dict(continuous_cols)
   feature_cols.update(categorical_cols)
@@ -288,9 +322,6 @@ def train_and_eval():
   train_file_name=FLAGS.train_data;
   test_file_name=FLAGS.test_data;
   
-  print("train file = %s" % train_file_name)
-  print("test file = %s" % test_file_name)
-
   df_train = pd.read_csv(
       tf.gfile.Open(train_file_name),
       names=COLUMNS,
@@ -302,11 +333,13 @@ def train_and_eval():
       skipinitialspace=True,
       skiprows=1,
       engine="python")
-    
+      
+  
   model_dir = tempfile.mkdtemp() if not FLAGS.model_dir else FLAGS.model_dir
-  print("model directory = %s" % model_dir)
+  if DEBUG:
+  	print("model directory = %s" % model_dir)
 
-  m = build_estimator(model_dir)
+  m = build_estimator(model_dir, FLAGS.model_type )
   m.fit(input_fn=lambda: input_fn(df_train), steps=FLAGS.train_steps)
   results = m.evaluate(input_fn=lambda: input_fn(df_test), steps=1)
   for key in sorted(results):
@@ -315,7 +348,7 @@ def train_and_eval():
 def predict_outcome():
   model_dir = tempfile.mkdtemp() if not FLAGS.model_dir else FLAGS.model_dir
   print('model_dir = %s' % model_dir);
-  m = build_estimator(model_dir)
+  m = build_estimator(model_dir, FLAGS.model_type )
 
   indata=StringIO(FLAGS.input_record)
 
@@ -333,7 +366,7 @@ def predict_outcome():
   y=m.predict(input_fn=lambda: input_fn(prediction_set))
   print('Predictions: {}'.format(str(y)))
   return y
-
+  
 # In[ ]:
 
 def main(_):

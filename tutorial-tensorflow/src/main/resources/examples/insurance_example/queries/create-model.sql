@@ -3,6 +3,10 @@ call SPLICE.CREATE_MODEL(
 'wide_n_deep',
 'INSURANCE',
 'INSURANCE.TRAINING_DATA',
-'INSURANCE.TESTING_DATA'
+'INSURANCE.TESTING_DATA',
 '/Users/erindriggers/dev/workspace/tensorflow/splice-community-sample-code/tutorial-tensorflow/src/main/resources/insurance_out',
-200);
+200,
+100,
+8,
+'100, 50'
+);
