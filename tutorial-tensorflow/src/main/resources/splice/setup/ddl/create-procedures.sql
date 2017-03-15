@@ -1,4 +1,27 @@
-CREATE PROCEDURE SPLICE.CREATE_MODEL(scriptPathAndName VARCHAR(300), 
+CREATE PROCEDURE SPLICE.CREATE_MODEL_FOR_ALL_INPUT_SETS(
+	scriptPathAndName VARCHAR(300), 
+	modelOutputPath  VARCHAR(300),
+	modelId INTEGER
+	)
+   PARAMETER STYLE JAVA
+   READS SQL DATA
+   LANGUAGE JAVA
+   DYNAMIC RESULT SETS 1
+   EXTERNAL NAME 'com.splicemachine.tutorial.tensorflow.ModelDefinition.generateModelsForAllInputSets';
+
+CREATE PROCEDURE SPLICE.CREATE_MODEL_FOR_INPUT_SET(
+	scriptPathAndName VARCHAR(300), 
+	modelOutputPath  VARCHAR(300),
+	modelInputId INTEGER
+	)
+   PARAMETER STYLE JAVA
+   READS SQL DATA
+   LANGUAGE JAVA
+   DYNAMIC RESULT SETS 1
+   EXTERNAL NAME 'com.splicemachine.tutorial.tensorflow.ModelDefinition.generateModelForInputSet';
+
+CREATE PROCEDURE SPLICE.CREATE_MODEL(
+	scriptPathAndName VARCHAR(300), 
 	type VARCHAR(50), 
 	modelName VARCHAR(50), 
 	trainingDataTable VARCHAR(50), 
@@ -7,22 +30,26 @@ CREATE PROCEDURE SPLICE.CREATE_MODEL(scriptPathAndName VARCHAR(300),
 	trainingSteps INTEGER,
 	hashBucketSize INTEGER,
     dimensions INTEGER,
-    hiddenUnits  VARCHAR(300)
+    hiddenUnits  VARCHAR(300),
+    modelId INTEGER,
+    modelInputId INTEGER
 	)
    PARAMETER STYLE JAVA
    READS SQL DATA
    LANGUAGE JAVA
    DYNAMIC RESULT SETS 1
    EXTERNAL NAME 'com.splicemachine.tutorial.tensorflow.ModelDefinition.generateModel';
-
-CREATE PROCEDURE SPLICE.PREDICT_MODEL(scriptPathAndName VARCHAR(300), 
-	type VARCHAR(50), 
-	modelName VARCHAR(50), 
+      
+CREATE PROCEDURE SPLICE.PREDICT_MODEL(
+	scriptPathAndName VARCHAR(300), 
+	modelOutputPath  VARCHAR(300),
+	modelId INTEGER,
+    modelInputId INTEGER,
 	sourceTable VARCHAR(50), 
-	comparisonColumn VARCHAR(100), 
-	criteria VARCHAR(100),
 	recordId INTEGER,
-	modelDirectory VARCHAR(300))
+	comparisonColumn VARCHAR(100), 
+	criteria VARCHAR(100)
+   )
    PARAMETER STYLE JAVA
    READS SQL DATA
    LANGUAGE JAVA

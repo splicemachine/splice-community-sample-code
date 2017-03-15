@@ -101,11 +101,87 @@ Here is some sample data for the non audit columns
 |4                      | AGE_EDUCATION_OCCUPATION | EDUCATION    |
 |5                      | AGE_EDUCATION_OCCUPATION | OCCUPATION   |
 
+## Table: MODEL_INPUTS
+
+This table will have the parameters that you want to send to the tensorflow model generation process.  For one model you will have multiple entries.
+* **MODEL_INPUT_ID**: A unique identifier for the model input record
+* **MODEL_ID**: Reference to the model id
+* **TRAINING_TABLE**: The table containing the training data
+* **TEST_TABLE**: The table containing the test data
+* **MODEL_OUTPUT_PATH**: Name of the folder to place the generated model.  
+* **MODEL_TYPE**: The type of model. Valid model types: {'wide', 'deep', 'wide_n_deep'}
+* **TRAINING_STEPS**: Number of training steps
+* **HASH_BUCKET_SIZE**: Hash Buket Size - An example of a valid value is 100
+* **DIMENSIONS**: The higher the dimension of the embedding is, the more degrees of freedom the model will have to learn the representations of the features An example of a valid value is 8
+* **HIDDEN_UNITS**: List of hidden units per DNN layer. An example of a valid value is '100, 50'
+* **CREATE_DATE**: Audit column that indicates the date the record was created 
+* **CREATE_USER**: Audit column that indicates the user / system that created the record
+* **UPDATE_DATE**: Audit column that indicates the date the record was last updated 
+* **UPDATE_USER**: Audit column that indicates the user / system that last updated the record
+
+### Sample Data
+|MODEL_INPUT_ID|MODEL_ID|TRAINING_TABLE|TEST_TABLE|MODEL_OUTPUT_PATH|MODEL_TYPE|TRAINING_STEPS|HASH_BUCKET_SIZE|DIMENSIONS|HIDDEN_UNITS|
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+|2|1|CENSUS.TRAINING_DATA|CENSUS.TESTING_DATA|test-1|wide_n_deep|1000|1000|8|"100, 50"|
+|3|1|CENSUS.TRAINING_DATA|CENSUS.TESTING_DATA|test-2|wide_n_deep|2000|1000|8|"100, 50"|
+|4|1|CENSUS.TRAINING_DATA|CENSUS.TESTING_DATA|test-3|wide_n_deep|3000|1000|8|"100, 50"|
+|5|1|CENSUS.TRAINING_DATA|CENSUS.TESTING_DATA|test-1-wide|wide|1000|1000|8|"100, 50"|
+|6|1|CENSUS.TRAINING_DATA|CENSUS.TESTING_DATA|test-2-wide|wide|2000|1000|8|"100, 50"|
+|7|1|CENSUS.TRAINING_DATA|CENSUS.TESTING_DATA|test-3-wide|wide|3000|1000|8|"100, 50"|
+|8|1|CENSUS.TRAINING_DATA|CENSUS.TESTING_DATA|test-1-deep|deep|1000|1000|8|"100, 50"|
+|9|1|CENSUS.TRAINING_DATA|CENSUS.TESTING_DATA|test-2-deep|deep|2000|1000|8|"100, 50"|
+|10|1|CENSUS.TRAINING_DATA|CENSUS.TESTING_DATA|test-3-deep|deep|3000|1000|8|"100, 50"|
+|11|2|TRAINING.TRAINING_DATA|TRAINING.TESTING_DATA|test-1000-both|wide_n_deep|1000|1000|8|"100, 50"|
+|12|2|TRAINING.TRAINING_DATA|TRAINING.TESTING_DATA|test-2000-both|wide_n_deep|2000|1000|8|"100, 50"|
+|13|2|TRAINING.TRAINING_DATA|TRAINING.TESTING_DATA|test-3000-both|wide_n_deep|3000|1000|8|"100, 50"|
+|14|2|TRAINING.TRAINING_DATA|TRAINING.TESTING_DATA|test-1000-wide|wide|1000|1000|8|"100, 50"|
+|15|2|TRAINING.TRAINING_DATA|TRAINING.TESTING_DATA|test-2000-wide|wide|2000|1000|8|"100, 50"|
+|16|2|TRAINING.TRAINING_DATA|TRAINING.TESTING_DATA|test-3000-wide|wide|3000|1000|8|"100, 50"|
+|17|2|TRAINING.TRAINING_DATA|TRAINING.TESTING_DATA|test-1000-deep|deep|1000|1000|8|"100, 50"|
+|18|2|TRAINING.TRAINING_DATA|TRAINING.TESTING_DATA|test-2000-deep|deep|2000|1000|8|"100, 50"|
+|19|2|TRAINING.TRAINING_DATA|TRAINING.TESTING_DATA|test-3000-deep|deep|3000|1000|8|"100, 50"|
+|20|2|TRAINING.TRAINING_DATA|TRAINING.TESTING_DATA|test-2000-both|wide_n_deep|2000|1000|8|"100, 50"|
+|21|2|TRAINING.TRAINING_DATA|TRAINING.TESTING_DATA|test-3000-both|wide_n_deep|3000|1000|8|"100, 50"|
+
+## Table: MODEL_INPUTS
+
+This table will have the results of creating the model in tensorflow.  For one model you will have multiple entries.
+* **MODEL_RESULTS_ID**: A unique identifier for the model results record
+* **MODEL_ID**: Reference to the model id
+* **MODEL_INPUT_ID**: Reference to the model input id used when creating the model
+* **START_TIME**: The time the model building process began
+* **END_TIME**: The time the model building process completed
+* **STATUS**: The status of the model creation process
+* **ACCURACY**: 
+* **BASELINE_TARGET_MEAN**: The mean of the class labels in your data
+* **THRESHOLD_MEAN**: Examples for which the prediction is above the threshold of 0.5 are considered positive examples whereas those below 0.5 are negative
+* **AUC**: Area Under Curve
+* **GLOBAL_STEP**: 
+* **ACTUAL_TARGET_MEAN**: 
+* **PREDICTION_MEAN**: 
+* **LOSS**: 
+* **PRECISION_POSITIVE_THRESHOLD_MEAN**: 
+* **RECALL_POSITIVE_THRESHOLD_MEAN**: 
+* **TRAINING_DATA_RESULTS**: The results of validating the training data
+* **TEST_DATA_RESULTS**: The results of validating the test data
+* **CREATE_DATE**: Audit column that indicates the date the record was created 
+* **CREATE_USER**: Audit column that indicates the user / system that created the record
+* **UPDATE_DATE**: Audit column that indicates the date the record was last updated 
+* **UPDATE_USER**: Audit column that indicates the user / system that last updated the record
+
+### Sample Data
+
+|MODEL_RESULTS_ID|MODEL_ID|MODEL_INPUT_ID|START_TIME|END_TIME|STATUS|ACCURACY|BASELINE_TARGET_MEAN|THRESHOLD_MEAN|AUC|GLOBAL_STEP|ACTUAL_TARGET_MEAN|PREDICTION_MEAN|LOSS|PRECISION_POSITIVE_THRESHOLD_MEAN|RECALL_POSITIVE_THRESHOLD_MEAN|TRAINING_DATA_RESULTS|TEST_DATA_RESULTS|
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+|3|1|2|2017-03-15 13:50:13.388|2017-03-15 13:52:34.297|Success|0.851597011089325|0.23624099791049957|0.851597011089325|0.8810870051383972|2000|0.23624099791049957|0.21699200570583344|0.38453999161720276|0.746891975402832|0.5624020099639893|"[Counter({0: 23279| 1: 5082})]"|"[Counter({0: 13384| 1: 2896})]"|
+|4|1|2|2017-03-15 14:06:21.896|2017-03-15 14:08:32.588|Success|0.8525180220603943|0.23624099791049957|0.8525180220603943|0.9046810269355774|3000|0.23624099791049957|0.2504279911518097|0.3783150017261505|0.7087550163269043|0.6378059983253479|"[Counter({0: 22277| 1: 6084})]"|"[Counter({0: 12819| 1: 3461})]"|
+|5|1|3|2017-03-15 14:08:41.086|2017-03-15 14:12:21.804|Success|0.8466830253601074|0.23624099791049957|0.8466830253601074|0.8985949754714966|2000|0.23624099791049957|0.26568499207496643|0.48438701033592224|0.6834239959716797|0.6539260149002075|"[Counter({0: 21905| 1: 6456})]"|"[Counter({0: 12600| 1: 3680})]"|
+|6|1|4|2017-03-15 14:12:30.29|2017-03-15 14:17:35.481|Success|0.8552209734916687|0.23624099791049957|0.8552209734916687|0.909250020980835|3000|0.23624099791049957|0.24973100423812866|0.32095199823379517|0.7195519804954529|0.6344249844551086|"[Counter({0: 22395| 1: 5966})]"|"[Counter({0: 12889| 1: 3391})]"|
 
 # Code Structure
 
 ## Java
-com.splicemachine.tutorial.tensorflow.ModelDefinition.java - Contains the code for the two stored procedures: CREATE_MODEL and PREDICT_MODEL.  In either case, it builds a JSON object from the data in the tables and passes it into the python code.
+com.splicemachine.tutorial.tensorflow.ModelDefinition.java - Contains the code for the stored procedures.  All stored procedures builds a JSON object from the data in the tables and passes it into the python code.
 
 ## Python Scripts
 These are the python scripts used when building models.  They are located under /resources/python
@@ -118,8 +194,20 @@ These are the python scripts used when building models.  They are located under 
 ### Setup Files
 The ddl script for creating the tables and stored procedures can be found under /resources/splice/setup.
 
-* **/ddl/create-tables.sql**: Creates the tables MODEL, MODEL_FEATURES and MODEL_FEATURE_CROSS
-* **/ddl/create-procedures.sql**: Creates the stored procedures CREATE_MODEL and PREDICT_MODEL
+* **/ddl/create-tables.sql**: Creates the tables MODEL, MODEL_FEATURES, MODEL_FEATURE_CROSS, MODEL_INPUTS and MODEL_CREATION_RESULTS
+* **/ddl/create-procedures.sql**: Creates the stored procedures 
+
+#### Stored Procedure: CREATE_MODEL_FOR_ALL_INPUT_SETS
+Used for creating the models for all the defined input sets
+* **scriptPathAndName**: Full path and name to the python script
+* **modelOutputPath**: Full path to the output directory for the model
+* **modelId**: The id of the model to generate.  Corresponds to the MODEL_ID in the MODEL table
+
+#### Stored Procedure: CREATE_MODEL_FOR_INPUT_SET
+Used for creating the models for all the defined input sets
+* **scriptPathAndName**: Full path and name to the python script
+* **modelOutputPath**: Full path to the output directory for the model
+* **modelInputId**: The id of the model input set that you want to generate.  Corresponds to the MODEL_INPUT_ID in the MODEL_INPUTS table
 
 #### Stored Procedure: CREATE_MODEL
 Used for creating a model
@@ -129,23 +217,24 @@ Used for creating a model
 * **trainingDataTable**: The table containing the training data
 * **testDataTable**: The table containing the test data
 * **modelOutputDirectory**: Base directory for output models
-* **hashBucketSize**: Hash Buket Size - An example of a valid value is 100
-* **dimension**: The higher the dimension of the embedding is, the more degrees of freedom the model will have to learn the representations of the features An example of a valid value is 8
+* **trainingSteps**: Number of training steps for tensorflow model creation process
+* **hashBucketSize**: Bucket size for tensorflow model creation process
+* **dimension**: Dimensions for tensorflow model creation process
 * **hiddenUnits**: List of hidden units per DNN layer. An example of a valid value is '100, 50'
-* **trainSteps**: Number of training steps
+* **modelId**: The model id.  If the modelId is not known set it to -1 and pass n the modelName
+* **modelInputId**: The model input id, set to -1 if not known
 
 
 #### Stored Procedure: PREDICT_MODEL
 Used for predicting the outcome of a particular record
 * **scriptPathAndName**: Full path and name to the python script
-* **type**: The type of model. Valid model types: {'wide', 'deep', 'wide_n_deep'}
-* **modelName**: Name of the model that is being created, it maps to an entry in the MODEL and the column NAME
+* **modelOutputDirectory**: Base directory for output models
+* **modelId**: The model id.  If the modelId is not known set it to -1 and pass n the modelName
+* **modelInputId**: The model input id, set to -1 if not known
 * **sourceTable**: The table containing the live data
+* **recordId**: ID of the record to perform the prediction on
 * **comparisonColumn**: The column that is used for the binary comparison
 * **criteria**: The criteria that the comparison column will evaluated against
-* **recordId**: ID of the record to perform the prediction on
-* **modelDirectory**: The directory where the model was created
-
 
 ### Examples
 The examples folder has examples for dynamically creating models using different datasets.
@@ -206,6 +295,7 @@ Here are the high level steps for creating your own model
 * Insert a record to the MODEL table with the name of your model and a unique identifier, for example:  insert into MODEL (MODEL_ID,NAME,DESCRIPTION) values (2,'INSURANCE','Predict whether a customer has a caravan insurance policy');
 * Review the columns in your dataset and identify the column that is the label, identify if the column is CONTINUOUS or CATEGORICAL.  If the column is a numeric column, please mark it as CONTINUOUS.  
 * Create the insert statements MODEL_FEATURES table and if applicable the MODEL_FEATURE_CROSS table.
+* Create the insert statements for the entries in the MODEL_INPUTS table.
 * Call the stored procedure to create your model
 * Call the stored procedure to predict an outcome.
 
