@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -24,6 +26,8 @@ import com.google.gson.JsonObject;
 public class ModelDefinition {
     
     private static Logger LOG = Logger.getLogger(ModelDefinition.class);
+    
+    public static String CTLF = "\r\n";
     
     /**
      * This method is used to build the JSON object that is feed into the Tensorflow model.  This needs to be called
@@ -319,21 +323,57 @@ public class ModelDefinition {
             
             Process p = pb.start();
 
+            LinkedHashMap<String,String> results = new LinkedHashMap<String,String>();
              
             //Process the output and write it the the log file
             BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line = "";
             int exitCode = p.waitFor();
+            boolean collectResults = false;
             while ((line = bfr.readLine()) != null){
                 LOG.info("Python Output: " + line);
+                if(line.startsWith("Begin Results")) {
+                    collectResults = true;
+                } else if (line.indexOf("] End Results") > -1) {
+                    collectResults = false;
+                } else if (collectResults) {
+                    int colonPos = line.indexOf(":");
+                    if(colonPos > -1) 
+                        results.put(line.substring(0,colonPos), line.substring(colonPos+1));
+                } else if (line.startsWith("Testing data predictions")) {                    
+                    //Training data predictions=[Counter({0: 820, 1: 2})]
+                    int equalsPos = line.indexOf("=");
+                    if(equalsPos > -1)
+                        results.put("Test data results", line.substring(equalsPos+1));
+                } else if (line.startsWith("Training data predictions=")) {
+                    //Testing data predictions=[Counter({0: 820, 1: 2})]
+                    int equalsPos = line.indexOf("=");
+                    if(equalsPos > -1)
+                        results.put("Training data results", line.substring(equalsPos+1));                    
+                }
             }
+            
+
                
             if(exitCode != 0) {
                 returnResultset[0] = stmt.executeQuery("values(-1, 'Python Script Failed')");
                 return;
             }
+            //values (1,2),(3,4),(5,6)
+            StringBuilder valuesStmt = new StringBuilder();
+            valuesStmt.append("values('Model Generation', 'Success')");
+            
+            Iterator<String> itr = results.keySet().iterator();
+            while(itr.hasNext()) {
+                String key = itr.next();
+                valuesStmt.append(",('");
+                valuesStmt.append(key);
+                valuesStmt.append("','");
+                valuesStmt.append(results.get(key));
+                valuesStmt.append("')");
+            }
 
-            returnResultset[0] = stmt.executeQuery("values(1, 'Model Successfully Generated')");
+            returnResultset[0] = stmt.executeQuery(valuesStmt.toString());
 
         }catch(Exception e){
             try {returnResultset[0] = stmt.executeQuery("values(-1, 'Unexpected Exception')");} catch (Exception e1){}

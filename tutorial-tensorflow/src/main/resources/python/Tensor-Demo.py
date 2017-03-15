@@ -27,9 +27,11 @@ else:
 import json
 import tempfile
 from six.moves import urllib
+from collections import Counter
 
 import pandas as pd
 import tensorflow as tf
+
 
 
 # In[3]:
@@ -310,6 +312,9 @@ def input_fn(df):
   feature_cols.update(categorical_cols)
   # Converts the label column into a constant Tensor.
   label = tf.constant(df[LABEL_COLUMN].values)
+  
+  print('Labels: {}'.format(str(label)))
+  
   # Returns the feature columns and the label.
   return feature_cols, label
 
@@ -342,8 +347,16 @@ def train_and_eval():
   m = build_estimator(model_dir, FLAGS.model_type )
   m.fit(input_fn=lambda: input_fn(df_train), steps=FLAGS.train_steps)
   results = m.evaluate(input_fn=lambda: input_fn(df_test), steps=1)
+  print("Begin Results [")
   for key in sorted(results):
     print("%s: %s" % (key, results[key]))
+  print("] End Results")
+    
+  y=m.predict(input_fn=lambda: input_fn(df_train))
+  print("Training data predictions=[%s]" % Counter(y))
+  
+  y=m.predict(input_fn=lambda: input_fn(df_test))
+  print("Testing data predictions=[%s]" % Counter(y))
 
 def predict_outcome():
   model_dir = tempfile.mkdtemp() if not FLAGS.model_dir else FLAGS.model_dir
@@ -359,8 +372,8 @@ def predict_outcome():
       skiprows=0,
       engine="python")
 
-  prediction_set[LABEL_COLUMN] = (
-      prediction_set[FLAGS.comparison_column].apply(lambda x: FLAGS.criteria in x)).astype(int)
+#  prediction_set[LABEL_COLUMN] = (
+#      prediction_set[FLAGS.comparison_column].apply(lambda x: FLAGS.criteria in x)).astype(int)
 
 
   y=m.predict(input_fn=lambda: input_fn(prediction_set))
