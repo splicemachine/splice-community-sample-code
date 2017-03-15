@@ -38,7 +38,7 @@ import tensorflow as tf
 
 # This will error if you run more than once
 
-DEBUG=False
+DEBUG=True
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS

@@ -473,7 +473,7 @@ public class ModelDefinition {
             
             LOG.info("Python Script: " + fullModelPath);
             LOG.info("Model Type (model_type): " + modelType);
-            LOG.info("Model Output Directory (model_dir): " + modelOutputDirectory);
+            LOG.info("Model Output Directory (model_dir): " + fModelOutputDir.getAbsolutePath());
             LOG.info("Model Train Steps (train_steps): " + trainSteps);
             LOG.info("Training data File (train_data): " + trainingFilePath);
             LOG.info("Hash Bucket Size (hash_bucket_size): " + hashBucketSize);
@@ -485,7 +485,7 @@ public class ModelDefinition {
              //Call the python script
             ProcessBuilder pb = new ProcessBuilder("python",fullModelPath,
                     "--model_type=" + modelType,
-                    "--model_dir=" + modelOutputDirectory,
+                    "--model_dir=" + fModelOutputDir.getAbsolutePath(),
                     "--train_steps=" + trainSteps,
                     "--hash_bucket_size=" + hashBucketSize,
                     "--dimension=" + dimensions,
@@ -556,7 +556,7 @@ public class ModelDefinition {
             long endTime = System.currentTimeMillis();
             PreparedStatement pstmt = null;
             if(exitCode != 0) {
-                status = "Python Script Failed";
+                status = "Python Failed";
                 String insertStatement = "INSERT INTO MODEL_CREATION_RESULTS " + 
                         "(MODEL_ID,MODEL_INPUT_ID,START_TIME,END_TIME,STATUS)" +
                         "values (?,?,?,?,?)";

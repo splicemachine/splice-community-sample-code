@@ -143,7 +143,7 @@ This table will have the parameters that you want to send to the tensorflow mode
 |20|2|TRAINING.TRAINING_DATA|TRAINING.TESTING_DATA|test-2000-both|wide_n_deep|2000|1000|8|"100, 50"|
 |21|2|TRAINING.TRAINING_DATA|TRAINING.TESTING_DATA|test-3000-both|wide_n_deep|3000|1000|8|"100, 50"|
 
-## Table: MODEL_INPUTS
+## Table: MODEL_CREATION_RESULTS
 
 This table will have the results of creating the model in tensorflow.  For one model you will have multiple entries.
 * **MODEL_RESULTS_ID**: A unique identifier for the model results record
@@ -181,13 +181,12 @@ This table will have the results of creating the model in tensorflow.  For one m
 # Code Structure
 
 ## Java
-com.splicemachine.tutorial.tensorflow.ModelDefinition.java - Contains the code for the stored procedures.  All stored procedures builds a JSON object from the data in the tables and passes it into the python code.
+com.splicemachine.tutorial.tensorflow.ModelDefinition.java - Contains the code for the stored procedures.  All stored procedures build a JSON object from the data in the tables and passes it into the python code.  
 
 ## Python Scripts
 These are the python scripts used when building models.  They are located under /resources/python
 
 * **Tensor-Demo.py**: This is the python script that contains the logic for creating the model and predicting the outcome
-* **Tensor-Demo.ipynb**: This is the same as the 'Tensor-Demo.py' except it is the notebook version of the script.
 
 ## Splice Machine Objects
 

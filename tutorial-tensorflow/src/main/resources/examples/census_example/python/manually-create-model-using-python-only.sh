@@ -1,8 +1,8 @@
-MODEL_DIR="/Users/erindriggers/dev/workspace/tensorflow/splice-community-sample-code/tutorial-tensorflow/src/main/resources/census_out"
+MODEL_DIR="/Users/erindriggers/dev/workspace/tensorflow/splice-community-sample-code/tutorial-tensorflow/src/main/resources/census_out/test-1/model"
 MODEL_TYPE="wide_n_deep"
 TRAIN_STEPS=200
-TRAIN_DATA="/Users/erindriggers/dev/workspace/tensorflow/splice-community-sample-code/tutorial-tensorflow/src/main/resources/python/data/train/part-r-00000.csv"
-TEST_DATA="/Users/erindriggers/dev/workspace/tensorflow/splice-community-sample-code/tutorial-tensorflow/src/main/resources/python/data/test/part-r-00000.csv"
+TRAIN_DATA="/Users/erindriggers/dev/workspace/tensorflow/splice-community-sample-code/tutorial-tensorflow/src/main/resources/census_out/test-1/data/train/part-r-00000.csv"
+TEST_DATA="/Users/erindriggers/dev/workspace/tensorflow/splice-community-sample-code/tutorial-tensorflow/src/main/resources/census_out/test-1/data/test/part-r-00000.csv"
 HASH_BUCKET_SIZE=100
 DIMENSION=8
 DNN_HIDDEN_UNITS="100, 50"
