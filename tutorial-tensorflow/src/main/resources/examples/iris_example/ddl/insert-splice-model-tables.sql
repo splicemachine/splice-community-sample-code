@@ -1,0 +1,10 @@
+set schema SPLICE;
+
+call SPLICE.CREATE_INITIAL_PROJECT_STRUCTURE('IRIS','Predict the class of an iris based on the petal dimensions and the sepal dimensions','IRIS.TRAINING_DATA','IRIS.TEST_DATA','IRIS_CLASS_CODE');
+
+update DATASET_FEATURE_DEFINITION set FEATURE_TYPE=null
+where DATABASE_COLUMN_NAME = 'IRIS_CLASS_CODE';
+
+update DATASET_FEATURE_DEFINITION set FEATURE_TYPE=null
+where DATABASE_COLUMN_NAME = 'IRIS_CLASS';
+

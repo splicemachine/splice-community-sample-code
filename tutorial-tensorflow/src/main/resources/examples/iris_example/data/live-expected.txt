@@ -1,0 +1,10 @@
+1,Iris-virginica
+2,Iris-virginica
+3,Iris-virginica
+4,Iris-setosa
+5,Iris-setosa
+6,Iris-setosa
+7,Iris-versicolor
+8,Iris-versicolor
+9,Iris-versicolor
+10,Iris-versicolor
