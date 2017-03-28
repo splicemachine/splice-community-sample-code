@@ -165,11 +165,19 @@ public class MachineLearningSetup {
                         projectId = res.getInt(1);
                     }
                     
+                    int numLabels = 2;
+                    res = stmt.executeQuery("select max(" + labelColumn + ") from " + trainingTable);
+                    if(res.next()) {
+                        numLabels = res.getInt(1);
+                    }
+                    
+                    
                     //Insert data to the DATASET table
-                    pstmt = conn.prepareStatement("insert into SPLICE.DATASET (PROJECT_ID,TRAINING_TABLE,TEST_TABLE) values (?,?,?)");
+                    pstmt = conn.prepareStatement("insert into SPLICE.DATASET (PROJECT_ID,TRAINING_TABLE,TEST_TABLE,NUM_LABELS) values (?,?,?,?)");
                     pstmt.setInt(1, projectId);
                     pstmt.setString(2, trainingTable);
                     pstmt.setString(3, testTable);
+                    pstmt.setInt(4, numLabels);
                     pstmt.executeUpdate();
                     
                     //Get the DATASET_ID

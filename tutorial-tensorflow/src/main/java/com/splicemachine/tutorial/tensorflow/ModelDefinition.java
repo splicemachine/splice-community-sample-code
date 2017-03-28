@@ -17,6 +17,7 @@ package com.splicemachine.tutorial.tensorflow;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -45,6 +46,7 @@ import com.splicemachine.db.impl.ast.StringUtils;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -216,6 +218,19 @@ public class ModelDefinition {
                 parameterValues.put(rs.getString(2), rs.getString(3));
             }
             
+            LOG.info("Creation ProcessURL machineLearningId:" + machineLearningId);
+            String creationProcessURL = null;
+            pstmt = conn2.prepareStatement("select CREATION_PROCESS from MACHINE_LEARNING_METHOD where MACHINE_LEARNING_ID = ?");
+            pstmt.setInt(1, machineLearningId);
+            rs = pstmt.executeQuery();        
+            if(rs.next()) {       
+                creationProcessURL = rs.getString(1);
+            }
+            LOG.info("Creation ProcessURL:" + creationProcessURL);
+            
+            
+            
+            
             //Create the output directory for the model
             //There will be sub directories under this folder
             //For the data as well as the model output
@@ -296,6 +311,7 @@ public class ModelDefinition {
             }
             
             inputDict.addProperty("model_dir", fModelOutputDir.getAbsolutePath());
+            inputDict.addProperty("deployment", getDeploymentType(conn2));
             
             //Build JSON
             Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
@@ -305,7 +321,15 @@ public class ModelDefinition {
             
             //CloseableHttpClient client = HttpClients.createDefault();
             HttpClient client = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://localhost:8000/train_and_eval");
+            HttpPost httpPost = new HttpPost(creationProcessURL);
+            
+            //Timeout in seconds
+            int timeout = 3 * 60;
+            RequestConfig config = RequestConfig.custom()
+              .setConnectTimeout(timeout * 1000)
+              .setConnectionRequestTimeout(timeout * 1000)
+              .setSocketTimeout(timeout * 1000).build();            
+            httpPost.setConfig(config);
          
             StringEntity entity = new StringEntity(jsonData);
             httpPost.setEntity(entity);
@@ -469,25 +493,37 @@ public class ModelDefinition {
             File fModelOutputDir = new File(modelOutputPath + "/" + datasetId + "/" + parameterSetId + "/model");
             
             //Get the default parameters for the parameter set
+            int machineLearningId = -1;
             PreparedStatement pstmt = conn.prepareStatement("select b.MACHINE_LEARNING_ID, PARAMETER_NAME, DEFAULT_VALUE from PARAMETER_SET a, MACHINE_LEARNING_PARAMETERS b  where a.PARAMETER_SET_ID = ? and a.STATUS = ? and a.MACHINE_LEARNING_ID = b.MACHINE_LEARNING_ID");
             pstmt.setInt(1, parameterSetId);
             pstmt.setString(2, "A");
             rs = pstmt.executeQuery();     
             
             HashMap<String,String> parameterValues = new HashMap<String,String>();       
-            while(rs.next()) {       
+            while(rs.next()) {     
+                machineLearningId = rs.getInt(1);
                 parameterValues.put(rs.getString(2), rs.getString(3));
             }
             rs.close();
             
-            //Get the parameters for the parameter set
+            //Get the parameters for the parameter set            
             pstmt = conn.prepareStatement("select a.PARAMETER_NAME, b.PARAMETER_VALUE  from MACHINE_LEARNING_PARAMETERS a, PARAMETER_SET_VALUES b where a.MACHINE_LEARNING_PARAMETER_ID = b.MACHINE_LEARNING_PARAMETER_ID and b.PARAMETER_SET_ID = ?");
             pstmt.setInt(1, parameterSetId);
             rs = pstmt.executeQuery();        
             while(rs.next()) {            
-                parameterValues.put(rs.getString(1), rs.getString(2));
+                parameterValues.put(rs.getString(1), rs.getString(2));             
             }
             rs.close();
+            
+            LOG.info("Predict ProcessURL machineLearningId:" + machineLearningId);
+            String predictProcessURL = null;
+            pstmt = conn.prepareStatement("select PREDICT_PROCESS from MACHINE_LEARNING_METHOD where MACHINE_LEARNING_ID = ?");
+            pstmt.setInt(1, machineLearningId);
+            rs = pstmt.executeQuery();        
+            if(rs.next()) {       
+                predictProcessURL = rs.getString(1);
+            }
+            LOG.info("Predict ProcessURL:" + predictProcessURL);
 
             //A JSON Object is passed into the python script so that it
             //know the structure of the data and corresponding groupings
@@ -520,7 +556,8 @@ public class ModelDefinition {
                 String key = itr.next();
                 inputDict.addProperty(key, parameterValues.get(key));
             }
-            inputDict.addProperty("model_dir", fModelOutputDir.getAbsolutePath());               
+            inputDict.addProperty("model_dir", fModelOutputDir.getAbsolutePath()); 
+            inputDict.addProperty("deployment", getDeploymentType(conn));
                                 
             //Build JSON
             Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
@@ -529,12 +566,20 @@ public class ModelDefinition {
             LOG.error("JSON data being setnt to model:" + jsonData);
             
             HttpClient client = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://localhost:8000/predict_outcome");
+            HttpPost httpPost = new HttpPost(predictProcessURL);
          
             StringEntity entity = new StringEntity(jsonData);
             httpPost.setEntity(entity);
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
+            
+            //Timeout in seconds
+            int timeout = 3 * 60;
+            RequestConfig config = RequestConfig.custom()
+              .setConnectTimeout(timeout * 1000)
+              .setConnectionRequestTimeout(timeout * 1000)
+              .setSocketTimeout(timeout * 1000).build();            
+            httpPost.setConfig(config);
             
             HashMap<String,String> responseData = new HashMap<String,String>();
             HttpResponse response = client.execute(httpPost);
@@ -590,7 +635,7 @@ public class ModelDefinition {
                 returnResultset[0] = stmt.executeQuery("values(-1, 'Exception running the Python model.')");
             }
         } catch (Exception e) {
-            LOG.error("Exception calling pythong script.", e);
+            LOG.error("Exception calling python script.", e);
             try {returnResultset[0] = stmt.executeQuery("values(-1, 'Unexpected Exception')");} catch (Exception e1){}
         } finally {
             if(rs != null) { try {rs.close();} catch (Exception e){}}  
@@ -742,6 +787,17 @@ public class ModelDefinition {
             crossed_columns.add(group);
             inputDict.add("crossed_columns", crossed_columns);
         }   
+        
+        
+        int numLabels = 2;
+        pstmt = conn.prepareStatement("select NUM_LABELS from DATASET where DATASET_ID = ?");
+        pstmt.setInt(1, datasetId);
+        rs = pstmt.executeQuery();
+        if(rs.next()) {
+            numLabels = rs.getInt(1);
+        }
+        inputDict.addProperty("num_labels", numLabels);
+        
         return exportColumns;
     }
     
@@ -762,6 +818,35 @@ public class ModelDefinition {
         if(stmt != null) {
             stmt.close();
         }
+    }
+    
+    private static String getDeploymentType(Connection conn) {
+        String deployment = "standalone";
+        
+        CallableStatement cs = null;
+        ResultSet rs = null;
+        try {
+            cs = conn.prepareCall("{call SYSCS_UTIL.SYSCS_GET_VERSION_INFO()}");
+            rs = cs.executeQuery();
+            boolean allLocalhost = true;
+            while(rs.next()) {
+                String hostname = rs.getString(1);
+                if(!hostname.startsWith("localhost:")) {
+                    allLocalhost = false;
+                    break;
+                }
+            }
+            if(!allLocalhost) {
+                deployment = "cluster";
+            }
+        } catch (SQLException e) {
+            LOG.error("Exception calling the stored procedure: SYSCS_UTIL.SYSCS_GET_VERSION_INFO", e);
+        } finally {
+            if(rs != null) try {rs.close();} catch (Exception e){};
+            if(cs != null) try {cs.close();} catch (Exception e){};
+        }
+        
+        return deployment;
     }
 
 }

@@ -157,7 +157,7 @@ def prepare_crossed(cols,BUCKETIZED_TF_COLUMNS,SPARSE_TF_COLUMNS,REAL_TF_COLUMNS
 			new_cols.append(tf.contrib.layers.crossed_column(list_of_cols,hash_bucket_size=int(1e6)))
 	return new_cols
 
-def build_estimator(model_dir, model_type,wide_tf_columns,deep_tf_columns):
+def build_estimator(model_dir, model_type,num_classes, wide_tf_columns,deep_tf_columns):
 	"""Build an estimator."""
 	if model_type == "wide":
 		m = tf.contrib.learn.LinearClassifier(model_dir=model_dir,feature_columns=wide_tf_columns)
@@ -166,7 +166,7 @@ def build_estimator(model_dir, model_type,wide_tf_columns,deep_tf_columns):
 	else:
 		m = tf.contrib.learn.DNNLinearCombinedClassifier(
 			model_dir=model_dir,
-			n_classes=2,
+			n_classes=num_classes,
 			linear_feature_columns=wide_tf_columns,
 			dnn_feature_columns=deep_tf_columns,
 			dnn_hidden_units=DNN_HIDDEN_UNITS
@@ -231,7 +231,7 @@ def predict_outcome(body):
 	CROSSED_TF_COLS = prepare_crossed(CROSSED_COLUMNS,BUCKETIZED_TF_COLUMNS,SPARSE_TF_COLUMNS,REAL_TF_COLUMNS)
 	WIDE_TF_COLUMNS = list(SPARSE_TF_COLUMNS.values()) + list(BUCKETIZED_TF_COLUMNS.values()) + list(CROSSED_TF_COLS)
 
-	m = build_estimator(model_dir, body['model_type'], WIDE_TF_COLUMNS,DEEP_TF_COLUMNS )
+	m = build_estimator(model_dir, body['model_type'], body['num_labels'], WIDE_TF_COLUMNS,DEEP_TF_COLUMNS )
 	indata=StringIO(body['input_record'])
 
 	prediction_set = pd.read_csv(
@@ -299,7 +299,7 @@ def train_and_eval(body):
 	CROSSED_TF_COLS = prepare_crossed(CROSSED_COLUMNS,BUCKETIZED_TF_COLUMNS,SPARSE_TF_COLUMNS,REAL_TF_COLUMNS)
 	WIDE_TF_COLUMNS = list(SPARSE_TF_COLUMNS.values()) + list(BUCKETIZED_TF_COLUMNS.values()) + list(CROSSED_TF_COLS)
 
-	m = build_estimator(model_dir, body['model_type'], WIDE_TF_COLUMNS,DEEP_TF_COLUMNS )
+	m = build_estimator(model_dir, body['model_type'], body['num_labels'], WIDE_TF_COLUMNS,DEEP_TF_COLUMNS )
 	m.fit(input_fn=lambda: input_fn(df_train), steps=int(body['training_steps']))
 	results = m.evaluate(input_fn=lambda: input_fn(df_test), steps=1)
 
@@ -317,4 +317,6 @@ def train_and_eval(body):
 
 	return json.dumps(response,default=jdefault)
 
-
+@hug.get('/hello')
+def hello():
+	return 'Hello world!'

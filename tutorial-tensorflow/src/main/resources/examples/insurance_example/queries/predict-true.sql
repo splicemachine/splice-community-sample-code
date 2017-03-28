@@ -1,5 +1,5 @@
 call SPLICE.PREDICT_MODEL(
-'/Users/erindriggers/dev/workspace/tensorflow/splice-community-sample-code/tutorial-tensorflow/src/main/resources/census_out',
+'/tmp/splicemachine-tensorflow/insurance_out',
 2,
 1,
 'INSURANCE.TRAINING_DATA',
