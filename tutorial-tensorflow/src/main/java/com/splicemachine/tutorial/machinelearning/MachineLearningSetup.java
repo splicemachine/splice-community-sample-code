@@ -1,3 +1,16 @@
+/*
+ * Copyright (c) 2012 - 2017 Splice Machine, Inc.
+ *
+ * This file is part of Splice Machine.
+ * Splice Machine is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either
+ * version 3, or (at your option) any later version.
+ * Splice Machine is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with Splice Machine.
+ * If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.splicemachine.tutorial.machinelearning;
 
 import java.sql.Connection;
@@ -185,6 +198,25 @@ public class MachineLearningSetup {
                     pstmt.setString(3, labelColumn);
                     pstmt.setBoolean(4, true);
                     pstmt.executeUpdate();
+                    
+                    //Now insert a relationship for each ML Model
+                    //We may want to change this in the future
+                    //But for now since we only have 1 model it makes
+                    //It easier for setup
+                    ArrayList<Integer> machineLearningMethods = new ArrayList<Integer>();
+                    res = stmt.executeQuery("select MACHINE_LEARNING_ID from SPLICE.MACHINE_LEARNING_METHOD");
+                    while(res.next()) {
+                        machineLearningMethods.add(new Integer(res.getInt(1)));
+                        datasetId = res.getInt(1);
+                    }
+                    
+                    pstmt = conn.prepareStatement("insert into SPLICE.DATASET_MACHINE_LEARNING_METHODS (DATASET_ID,MACHINE_LEARNING_ID) values (?,?)");
+                    for(Integer col : machineLearningMethods) {
+                        pstmt.setInt(1, datasetId);
+                        pstmt.setInt(2, col.intValue());
+                        pstmt.addBatch();                        
+                    }
+                    pstmt.executeBatch();
                 }
 
             }

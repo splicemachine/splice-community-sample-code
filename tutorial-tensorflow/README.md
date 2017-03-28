@@ -36,9 +36,9 @@ Here is some sample data for the non audit columns
 
 |PROJECT_ID|NAME|DESCRIPTION|STATUS|
 |--------|--------|--------|--------|
-|4|CENSUS|Predict whether income is greater than 50,000|A|
-|5|INSURANCE|Predict whether a customer has a caravan insurance policy|A|
-|6|IRIS|Predict the class of an iris based on the petal dimensions and the sepal dimensions|A|
+|1|CENSUS|Predict whether income is greater than 50,000|A|
+|2|INSURANCE|Predict whether a customer has a caravan insurance policy|A|
+|3|IRIS|Predict the class of an iris based on the petal dimensions and the sepal dimensions|A|
 
 
 ## Table: DATASET
@@ -61,9 +61,10 @@ Here is some sample data for the non audit columns
 
 |DATASET_ID|PROJECT_ID|TYPE|TRAINING_TABLE|TEST_TABLE|TRAINING_QUERY|TEST_QUERY|
 |--------|--------|--------|--------|--------|--------|--------|
-|4|4|T|CENSUS.TRAINING_DATA|CENSUS.TESTING_DATA|null|null|
-|5|5|T|INSURANCE.TRAINING_DATA|INSURANCE.TESTING_DATA|null|null|
-|6|6|T|IRIS.TRAINING_DATA|IRIS.TEST_DATA|null|null|
+|1|1|T|CENSUS.TRAINING_DATA|CENSUS.TESTING_DATA|null|null|
+|2|2|T|INSURANCE.TRAINING_DATA|INSURANCE.TESTING_DATA|null|null|
+|3|3|T|IRIS.TRAINING_DATA|IRIS.TEST_DATA|null|null|
+
 
 
 ## Table: DATASET_FEATURE_DEFINITION
@@ -88,27 +89,24 @@ The table DATASET_FEATURE_DEFINITION represents a single feature / attribute in 
 Here is some sample data for the non audit columns
 
 |DATASET_FEATURE_ID|DATASET_ID|DATABASE_COLUMN_NAME|FEATURE_NAME|FEATURE_TYPE|FEATURE_KEYS|FEATURE_BUCKET_DATA_TYPE|FEATURE_BUCKETS|IS_LABEL|
+|DATASET_FEATURE_ID|DATASET_ID|DATABASE_COLUMN_NAME|FEATURE_NAME|FEATURE_TYPE|FEATURE_KEYS|FEATURE_BUCKET_DATA_TYPE|FEATURE_BUCKETS|IS_LABEL|
 |--------|--------|--------|--------|--------|--------|--------|--------|--------|
-|49|4|AGE|AGE|CONTINUOUS|null|INTEGER|18, 25, 30, 35, 40, 45, 50, 55, 60, 65|null|
-|50|4|WORKCLASS|WORKCLASS|CATEGORICAL|null|null|null|null|
-|51|4|FNLWGT|FNLWGT|null|null|null|null|null|
-|52|4|EDUCATION|EDUCATION|CATEGORICAL|null|null|null|null|
-|53|4|EDUCATION_NUM|EDUCATION_NUM|CONTINUOUS|null|null|null|null|
-|54|4|MARITAL_STATUS|MARITAL_STATUS|CATEGORICAL|null|null|null|null|
-|55|4|OCCUPATION|OCCUPATION|CATEGORICAL|null|null|null|null|
-|56|4|RELATIONSHIP|RELATIONSHIP|CATEGORICAL|null|null|null|null|
-|57|4|RACE|RACE|CATEGORICAL|Amer-Indian-Eskimo, Asian-Pac-Islander, Black, Other, White|null|null|null|
-|58|4|GENDER|GENDER|CATEGORICAL|Female, Male|null|null|null|
-|59|4|CAPITAL_GAIN|CAPITAL_GAIN|CONTINUOUS|null|null|null|null|
-|60|4|CAPITAL_LOSS|CAPITAL_LOSS|CONTINUOUS|null|null|null|null|
-|61|4|HOURS_PER_WEEK|HOURS_PER_WEEK|CONTINUOUS|null|null|null|null|
-|62|4|NATIVE_COUNTRY|NATIVE_COUNTRY|CATEGORICAL|null|null|null|null|
-|63|4|INCOME_BRACKET|INCOME_BRACKET|null|null|null|null|null|
-|64|4|LABEL|LABEL|null|null|null|null|true|
-|65|5|ID|ID|CONTINUOUS|null|null|null|null|
-|66|5|CUSTOMER_SUBTYPE|CUSTOMER_SUBTYPE|CONTINUOUS|null|null|null|null|
-|67|5|NUM_HOUSES|NUM_HOUSES|CONTINUOUS|null|null|null|null|
-|68|5|AVG_SIZE_HOUSEHOLD|AVG_SIZE_HOUSEHOLD|CONTINUOUS|null|null|null|null|
+|1|1|AGE|AGE|CONTINUOUS|null|INTEGER|18, 25, 30, 35, 40, 45, 50, 55, 60, 65|null|
+|2|1|WORKCLASS|WORKCLASS|CATEGORICAL|null|null|null|null|
+|3|1|FNLWGT|FNLWGT|null|null|null|null|null|
+|4|1|EDUCATION|EDUCATION|CATEGORICAL|null|null|null|null|
+|5|1|EDUCATION_NUM|EDUCATION_NUM|CONTINUOUS|null|null|null|null|
+|6|1|MARITAL_STATUS|MARITAL_STATUS|CATEGORICAL|null|null|null|null|
+|7|1|OCCUPATION|OCCUPATION|CATEGORICAL|null|null|null|null|
+|8|1|RELATIONSHIP|RELATIONSHIP|CATEGORICAL|null|null|null|null|
+|9|1|RACE|RACE|CATEGORICAL|Amer-Indian-Eskimo, Asian-Pac-Islander, Black, Other, White|null|null|null|
+|10|1|GENDER|GENDER|CATEGORICAL|Female, Male|null|null|null|
+|11|1|CAPITAL_GAIN|CAPITAL_GAIN|CONTINUOUS|null|null|null|null|
+|12|1|CAPITAL_LOSS|CAPITAL_LOSS|CONTINUOUS|null|null|null|null|
+|13|1|HOURS_PER_WEEK|HOURS_PER_WEEK|CONTINUOUS|null|null|null|null|
+|14|1|NATIVE_COUNTRY|NATIVE_COUNTRY|CATEGORICAL|null|null|null|null|
+|15|1|INCOME_BRACKET|INCOME_BRACKET|null|null|null|null|null|
+|16|1|LABEL|LABEL|null|null|null|null|true|
 
 ## Table: DATASET_FEATURE_CROSS
 The table DATASET_FEATURE_CROSS is used when you need to combine a combination of features together in order for it to have more meaning.  The value of this feature for a given record is just the concatenation of the values of the two source features
@@ -128,13 +126,13 @@ Here is some sample data for the non audit columns
 
 |DATASET_FEATURE_CROSS_ID|DATASET_ID|FEATURE_CROSS_NAME|FEATURE_NAME|
 |--------|--------|--------|--------|
-|1|4|EDUCATION_OCCUPATION|EDUCATION|
-|2|4|EDUCATION_OCCUPATION|OCCUPATION|
-|3|4|AGE_EDUCATION_OCCUPATION|AGE_BUCKETS|
-|4|4|AGE_EDUCATION_OCCUPATION|EDUCATION|
-|5|4|AGE_EDUCATION_OCCUPATION|OCCUPATION|
-|6|4|COUNTRY_OCCUPATION|NATIVE_COUNTRY|
-|7|4|COUNTRY_OCCUPATION|OCCUPATION|
+|1|1|EDUCATION_OCCUPATION|EDUCATION|
+|2|1|EDUCATION_OCCUPATION|OCCUPATION|
+|3|1|AGE_EDUCATION_OCCUPATION|AGE_BUCKETS|
+|4|1|AGE_EDUCATION_OCCUPATION|EDUCATION|
+|5|1|AGE_EDUCATION_OCCUPATION|OCCUPATION|
+|6|1|COUNTRY_OCCUPATION|NATIVE_COUNTRY|
+|7|1|COUNTRY_OCCUPATION|OCCUPATION|
 
 
 ## Table: DATASET_COLUMN_STATISTICS
@@ -171,8 +169,8 @@ Here is some sample data for the non audit columns
 |--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
 
 
-## Table: MACHINE_LEARNING_PROCESS
-The table MACHINE_LEARNING_PROCESS defines the available machine learning processes
+## Table: MACHINE_LEARNING_METHOD
+The table MACHINE_LEARNING_METHOD defines the available machine learning processes
 
 * **MACHINE_LEARNING_ID**: A unique identifier for the model input record
 * **NAME**: The name of the machine learning process
@@ -195,14 +193,14 @@ Here is some sample data for the non audit columns
 
 |MACHINE_LEARNING_ID|NAME|DESCRIPTION|PLATFORM|ALGORITHM|ALGORITHM_TYPE|STATUS|INTEGRATION_TYPE|URL|CREATION_PROCESS|PREDICT_PROCESS|
 |--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
-|1|Wide-n-Deep|Jointly train a wide linear model and a deep feed-forward neural network|TENSORFLOW|DNNLinearCombinedClassifier|S|A|HTTP|/tensorflow/widendeep.py|null|null|
+|1|Wide-n-Deep|Jointly train a wide linear model and a deep feed-forward neural network|TENSORFLOW|DNNLinearCombinedClassifier|S|A|HTTP|null|http://localhost:8000/train_and_eval|http://localhost:8000/predict_outcome|
 
 
 ## Table: MACHINE_LEARNING_PARAMETERS
 The table MACHINE_LEARNING_PARAMETERS contains the parameters that need to be passed into the model creation process.  This table contains the default values as well. 
 
 * **MACHINE_LEARNING_PARAMETER_ID**: A unique identifier for the model input record
-* **MACHINE_LEARNING_ID**: The machine learning process.  Links to the MACHINE_LEARNING_PROCESS table.
+* **MACHINE_LEARNING_ID**: The machine learning process.  Links to the MACHINE_LEARNING_METHOD table.
 * **PARAMETER_NAME**: The name of the parameter as it would be referenced in code
 * **DISPLAY_NAME**: The display name of the parameter for the user interface
 * **DEFAULT_VALUE**: The default value for the parameter in case it is not provided in the group details
@@ -216,11 +214,79 @@ Here is some sample data for the non audit columns
 
 |MACHINE_LEARNING_PARAMETER_ID|MACHINE_LEARNING_ID|PARAMETER_NAME|DISPLAY_NAME|DEFAULT_VALUE|
 |--------|--------|--------|--------|--------|
-|1|1|TRAINING_STEPS|Training Steps|5000|
-|2|1|HASH_BUCKET_SIZE|Hash Bucket Size|1000|
-|3|1|DIMENSIONS|Dimensions|8|
-|4|1|HIDDEN_UNITS|Hidden Units|100, 50|
-|5|1|MODEL_TYPE|Model Type|wide_n_deep|
+|1|1|training_steps|Training Steps|5000|
+|2|1|hash_bucket_size|Hash Bucket Size|1000|
+|3|1|dimensions|Dimensions|8|
+|4|1|dnn_hidden_units|Hidden Units|100, 50|
+|5|1|model_type|Model Type|wide_n_deep|
+
+
+## Table: DATASET_MACHINE_LEARNING_METHODS
+The table DATASET_MACHINE_LEARNING_METHODS xxx
+
+* **DATASET_MACHINE_LEARNING_ID**: A unique identifier for the record
+* **DATASET_ID**: The data set id
+* **MACHINE_LEARNING_ID**: The machine learning process.  Links to the MACHINE_LEARNING_METHOD table. 
+* **CREATE_DATE**: Audit column that indicates the date the record was created 
+* **CREATE_USER**: Audit column that indicates the user / system that created the record
+* **UPDATE_DATE**: Audit column that indicates the date the record was last updated 
+* **UPDATE_USER**: Audit column that indicates the user / system that last updated the record
+
+### Sample Data
+Here is some sample data for the non audit columns
+
+|DATASET_MACHINE_LEARNING_ID|DATASET_ID|MACHINE_LEARNING_ID|
+|--------|--------|--------|
+|1|1|1|
+|2|1|1|
+|3|1|1|
+
+## Table: PARAMETER_SET
+The table PARAMETER_SET
+
+* **PARAMETER_SET_ID**
+* **MACHINE_LEARNING_ID**: The machine learning process.  Links to the MACHINE_LEARNING_METHOD table. 
+* **NAME**
+* **STATUS**
+* **IS_DEFAULT**
+* **CREATE_DATE**: Audit column that indicates the date the record was created 
+* **CREATE_USER**: Audit column that indicates the user / system that created the record
+* **UPDATE_DATE**: Audit column that indicates the date the record was last updated 
+* **UPDATE_USER**: Audit column that indicates the user / system that last updated the record
+
+### Sample Data
+Here is some sample data for the non audit columns
+
+|PARAMETER_SET_ID|MACHINE_LEARNING_ID|NAME|STATUS|IS_DEFAULT|
+|--------|--------|--------|--------|--------|
+|1|1|Default Tensorflow Group|A|true|
+|2|1|Step 3000 / Dimension 6|A|false|
+|3|1|Step 2000 / Dimension 6|A|false|
+
+
+## Table: PARAMETER_SET_VALUES
+The table PARAMETER_SET_VALUES
+
+* **PARAMETER_SET_VALUE_ID**
+* **PARAMETER_SET_ID**
+* **MACHINE_LEARNING_PARAMETER_ID**
+* **MACHINE_LEARNING_ID**: The machine learning process.  Links to the MACHINE_LEARNING_METHOD table. 
+* **PARAMETER_VALUE**
+* **CREATE_DATE**: Audit column that indicates the date the record was created 
+* **CREATE_USER**: Audit column that indicates the user / system that created the record
+* **UPDATE_DATE**: Audit column that indicates the date the record was last updated 
+* **UPDATE_USER**: Audit column that indicates the user / system that last updated the record
+
+### Sample Data
+Here is some sample data for the non audit columns
+
+|PARAMETER_SET_VALUE_ID|PARAMETER_SET_ID|MACHINE_LEARNING_PARAMETER_ID|MACHINE_LEARNING_ID|PARAMETER_VALUE|
+|--------|--------|--------|--------|--------|
+|1|2|1|1|3000|
+|2|2|2|1|1000|
+|3|3|1|1|2000|
+|4|3|3|1|6|
+
 
 
 ## Table: MODEL_CREATION_GROUP
@@ -248,9 +314,7 @@ The table MODEL_CREATION_GROUP_DETAILS associates the group of input parameters 
 
 * **MODEL_CREATION_GROUP_DETAIL_ID**: A unique identifier for the model input record
 * **MODEL_CREATION_GROUP_ID**: The model creation group that this group detail is associated with
-* **MACHINE_LEARNING_ID**: The machine learning model associated with the group details
-* **STATUS**: The status of the model creation group detail either A for active or I for inactive
-* **IS_DEFAULT**:  Indicates if this group is the default for a machine learning process.
+* **PARAMETER_SET_ID**: 
 * **CREATE_DATE**: Audit column that indicates the date the record was created 
 * **CREATE_USER**: Audit column that indicates the user / system that created the record
 * **UPDATE_DATE**: Audit column that indicates the date the record was last updated 
@@ -259,94 +323,65 @@ The table MODEL_CREATION_GROUP_DETAILS associates the group of input parameters 
 ### Sample Data
 Here is some sample data for the non audit columns
 
-|MODEL_CREATION_GROUP_DETAIL_ID|MODEL_CREATION_GROUP_ID|MACHINE_LEARNING_ID|STATUS|IS_DEFAULT|
-|--------|--------|--------|--------|--------|
-|1|1|1|A|true|
-|2|1|1|A|false|
-|3|1|1|A|false|
-
-
-## Table: MODEL_CREATION_PARAMETER_VALUES
-The table MODEL_CREATION_PARAMETER_VALUES you can choose to override the default values for the parameters in a model.  If an entry is not included, the default value from the MACHINE_LEARNING_PARAMETERS table will be used
-
-* **MODEL_CREATION_PARAMETER_VALUE_ID**: A unique identifier for the model input record
-* **MODEL_CREATION_GROUP_DETAIL_ID**: The model creation group detail this entry is associated with.  Links to the MODEL_CREATION_GROUP_DETAILS table
-* **MACHINE_LEARNING_PARAMETER_ID**: The id of the machine learning parameter that this overrides
-* **PARAMETER_VALUE**: The value for the parameter
-* **CREATE_DATE**: Audit column that indicates the date the record was created 
-* **CREATE_USER**: Audit column that indicates the user / system that created the record
-* **UPDATE_DATE**: Audit column that indicates the date the record was last updated 
-* **UPDATE_USER**: Audit column that indicates the user / system that last updated the record
-
-### Sample Data
-Here is some sample data for the non audit columns
-
-|MODEL_CREATION_PARAMETER_VALUE_ID|MODEL_CREATION_GROUP_DETAIL_ID|MACHINE_LEARNING_PARAMETER_ID|PARAMETER_VALUE|
-|--------|--------|--------|--------|
-|1|1|1|3000|
-|2|1|2|1000|
-|3|2|1|3000|
-|4|2|3|6|
-|5|3|3|6|
-
-
-## Table: MODEL_CREATION_RUN
-The table MODEL_CREATION_RUN contains the actual execution of the group and provides the flexibility to use a different table / query than the original data set definition
-
-* **MODEL_CREATION_RUN_ID**: A unique identifier for the model input record
-* **MODEL_CREATION_GROUP_ID**: The model creation group for this run.  Either this column will have a value or the MODEL_CREATION_GROUP_DETAIL_ID will have a value.
-* **MODEL_CREATION_GROUP_DETAIL_ID**: The model creation group detail for this run.
-* **TYPE**: The type of data set: 'T' for table, 'Q' for query or 'D' for data set.  If the type is 'T' then the fields TRAINING_TABLE and TEST_TABLE should be populated.  If the type is 'Q' the TRAINING_QUERY and TEST_QUERY columns should be populated.  If the type is 'D' then the data set details will be used. 
-* **DATASET_ID**: The data set id associated with this run
-* **TRAINING_TABLE**: The override of the training table from the data set definition.
-* **TEST_TABLE**: The override of the test table from the data set definition.
-* **TRAINING_QUERY**: The override of the training query from the data set definition.
-* **TEST_QUERY**: The override of the test query from the data set definition
-* **CREATE_DATE**: Audit column that indicates the date the record was created 
-* **CREATE_USER**: Audit column that indicates the user / system that created the record
-* **UPDATE_DATE**: Audit column that indicates the date the record was last updated 
-* **UPDATE_USER**: Audit column that indicates the user / system that last updated the record
-
-
-
-### Sample Data
-Here is some sample data for the non audit columns
-
-|MODEL_CREATION_RUN_ID|MODEL_CREATION_GROUP_ID|TYPE|DATASET_ID|TRAINING_TABLE|TEST_TABLE|TRAINING_QUERY|TEST_QUERY|
-|--------|--------|--------|--------|--------|--------|--------|--------|
+|MODEL_CREATION_GROUP_DETAIL_ID|MODEL_CREATION_GROUP_ID|PARAMETER_SET_ID|
+|--------|--------|--------|
+|1|1|2|
+|2|1|3|
 
 
 ## Table: MODEL_CREATION_RESULTS
-The table MODEL_CREATION_RESULTS contains the results of creating the model.
+The table MODEL_CREATION_RESULTS contains the actual execution of the parameter set
 
-* **MODEL_RESULTS_ID**: A unique identifier for the model input record
-* **MODEL_CREATION_RUN_ID**: Reference to the Model Creation Run.  Links to the MODEL_CREATION_RUN table
-* **START_TIME**: The time the model building process began
-* **END_TIME**: The time the model building process completed
-* **STATUS**: The status of the model creation process
-* **ACCURACY**
-* **BASELINE_TARGET_MEAN**: The mean of the class labels in your data
-* **THRESHOLD_MEAN**: Examples for which the prediction is above the threshold of 0.5 are considered positive examples whereas those below 0.5 are negative
-* **AUC**: Area Under Curve
-* **GLOBAL_STEP**
-* **ACTUAL_TARGET_MEAN**
-* **PREDICTION_MEAN**
-* **LOSS**: Represents how far off our model is from our desired outcome
-* **PRECISION_POSITIVE_THRESHOLD_MEAN**
-* **RECALL_POSITIVE_THRESHOLD_MEAN**
-* **TRAINING_DATA_RESULTS**: The results of validating the training data
-* **TEST_DATA_RESULTS**: The results of validating the test data
+* **MODEL_RESULTS_ID**
+* **DATASET_ID**
+* **MACHINE_LEARNING_ID**
+* **PARAMETER_SET_ID**
+* **MODEL_PATH**
+* **START_TIME**
+* **END_TIME**
+* **STATUS**
 * **CREATE_DATE**: Audit column that indicates the date the record was created 
 * **CREATE_USER**: Audit column that indicates the user / system that created the record
 * **UPDATE_DATE**: Audit column that indicates the date the record was last updated 
 * **UPDATE_USER**: Audit column that indicates the user / system that last updated the record
 
+### Sample Data
+Here is some sample data for the non audit columns
+
+|MODEL_RESULTS_ID|DATASET_ID|MACHINE_LEARNING_ID|PARAMETER_SET_ID|MODEL_PATH|START_TIME|END_TIME|STATUS|
+|--------|--------|--------|--------|--------|--------|--------|--------|
+|1|1|1|1|null|2017-03-27 17:22:49.24|2017-03-27 17:29:30.321|Success|
+
+
+## Table: MODEL_CREATION_RESULTS_DETAILS
+The table MODEL_CREATION_RESULTS_DETAILS contains the details of the returned response
+
+* **MODEL_RESULTS_DETAIL_ID**
+* **MODEL_RESULTS_ID**
+* **FIELD**
+* **FIELD_VALUE**
+* **CREATE_DATE**: Audit column that indicates the date the record was created 
+* **CREATE_USER**: Audit column that indicates the user / system that created the record
+* **UPDATE_DATE**: Audit column that indicates the date the record was last updated 
+* **UPDATE_USER**: Audit column that indicates the user / system that last updated the record
 
 ### Sample Data
 Here is some sample data for the non audit columns
 
-|MODEL_RESULTS_ID|MODEL_CREATION_RUN_ID|START_TIME|END_TIME|STATUS|ACCURACY|BASELINE_TARGET_MEAN|THRESHOLD_MEAN|AUC|GLOBAL_STEP|ACTUAL_TARGET_MEAN|PREDICTION_MEAN|LOSS|PRECISION_POSITIVE_THRESHOLD_MEAN|RECALL_POSITIVE_THRESHOLD_MEAN|TRAINING_DATA_RESULTS|TEST_DATA_RESULTS|
-|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+|MODEL_RESULTS_DETAIL_ID|MODEL_RESULTS_ID|FIELD|FIELD_VALUE|
+|--------|--------|--------|--------|
+|1|1|loss|0.313589|
+|2|1|precision/positive_threshold_0.500000_mean|0.748857|
+|3|1|recall/positive_threshold_0.500000_mean|0.596204|
+|4|1|success|true|
+|5|1|accuracy/baseline_label_mean|0.236226|
+|6|1|labels/actual_label_mean|0.236226|
+|7|1|accuracy|0.85738|
+|8|1|labels/prediction_mean|0.231706|
+|9|1|accuracy/threshold_0.500000_mean|0.85738|
+|10|1|auc|0.908026|
+|11|1|global_step|5002|
+
 
 
 # Code Structure
@@ -368,7 +403,7 @@ The ddl script for creating the tables and stored procedures can be found under 
 * **/ddl/create-tables.sql**: Creates the tables MODEL, MODEL_FEATURES, MODEL_FEATURE_CROSS, MODEL_INPUTS and MODEL_CREATION_RESULTS
 * **/ddl/create-procedures.sql**: Creates the stored procedures 
 
-The data script for populating the MACHINE_LEARNING_PROCESS, MACHINE_LEARNING_PARAMETERS, MODEL_CREATION_GROUP, MODEL_CREATION_GROUP_DETAILS and MODEL_CREATION_PARAMETER_VALUES tables.
+The data script for populating the MACHINE_LEARNING_METHOD, MACHINE_LEARNING_PARAMETERS, MODEL_CREATION_GROUP, MODEL_CREATION_GROUP_DETAILS and MODEL_CREATION_PARAMETER_VALUES tables.
 
 * **/data/create-data.sql**: Inserts the initial data for running the machine learning process
 

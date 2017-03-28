@@ -32,13 +32,18 @@ from collections import Counter
 import pandas as pd
 import tensorflow as tf
 
-
+print("******************* BEGIN ***********************")
 
 # In[3]:
 
 # This will error if you run more than once
 
 DEBUG=True
+
+#Set the logging to display error messages only
+tf.logging.set_verbosity(tf.logging.INFO)
+#if DEBUG:
+#	tf.logging.set_verbosity(tf.logging.INFO)
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS
@@ -152,7 +157,7 @@ def prepare_sparse_columns(cols):
 
 SPARSE_TF_COLUMNS = prepare_sparse_columns(CATEGORICAL_COLUMNS)
 if DEBUG:
-	print(SPARSE_TF_COLUMNS)
+	print("Sparse columns %s" % SPARSE_TF_COLUMNS)
 
 
 # In[8]:
@@ -171,7 +176,7 @@ def prepare_continuous_columns(cols):
 
 REAL_TF_COLUMNS = prepare_continuous_columns(CONTINUOUS_COLUMNS)
 if DEBUG:
-	print(REAL_TF_COLUMNS)
+	print("continuous columns %s" %REAL_TF_COLUMNS)
 
 
 # In[10]:
@@ -191,7 +196,7 @@ def prepare_buckets(cols):
 
 # In[11]:
 if DEBUG:
-	print(BUCKETIZED_COLUMNS)
+	print("bucketized columns %s" %BUCKETIZED_COLUMNS)
 BUCKETIZED_TF_COLUMNS = prepare_buckets(BUCKETIZED_COLUMNS)
 
 
@@ -208,7 +213,7 @@ def prepare_embedded_columns(cols):
 
 # In[13]:
 if DEBUG:
-	print(list(SPARSE_TF_COLUMNS.keys()))
+	print("Sparce tf columns %s" %list(SPARSE_TF_COLUMNS.keys()))
 
 
 # In[14]:
@@ -218,14 +223,14 @@ EMBEDDED_TF_COLUMNS = prepare_embedded_columns(list(SPARSE_TF_COLUMNS.values()))
 
 # In[15]:
 if DEBUG:
-	print(EMBEDDED_TF_COLUMNS)
+	print("Embedded columns %s" % EMBEDDED_TF_COLUMNS)
 
 
 # In[16]:
 
 DEEP_TF_COLUMNS =  list(EMBEDDED_TF_COLUMNS.values()) + list(REAL_TF_COLUMNS.values())
 if DEBUG:
-	print(DEEP_TF_COLUMNS)
+	print("Deep columns %s" %DEEP_TF_COLUMNS)
 
 
 # In[18]:
@@ -245,7 +250,6 @@ def prepare_crossed(cols):
 	                if s : tf_var = s
 	                else :
 	                    if r : tf_var = r
-	            print(tf_var)
 	            list_of_cols.append(tf_var)
 	        new_cols.append(tf.contrib.layers.crossed_column(list_of_cols,
 	                      hash_bucket_size=int(1e6)))
@@ -259,7 +263,7 @@ CROSSED_TF_COLS = prepare_crossed(CROSSED_COLUMNS)
 
 # In[20]:
 if DEBUG:
-	print(CROSSED_TF_COLS)
+	print("Crossed columns %s" % CROSSED_TF_COLS)
 if(len(CROSSED_TF_COLS) > 0):
 	CROSSED_TF_COLS[1]
 
@@ -284,6 +288,7 @@ def build_estimator(model_dir, model_type):
   else:
 	  m = tf.contrib.learn.DNNLinearCombinedClassifier(
 	    model_dir=model_dir,
+	    n_classes=4,
 	    linear_feature_columns=WIDE_TF_COLUMNS,
 	    dnn_feature_columns=DEEP_TF_COLUMNS,
 	    dnn_hidden_units=DNN_HIDDEN_UNITS
@@ -297,7 +302,7 @@ def input_fn(df):
   """Input builder function."""
   # Creates a dictionary mapping from each continuous feature column name (k) to
   # the values of that column stored in a constant Tensor.
-  continuous_cols = {k: tf.constant(df[k].values) for k in CONTINUOUS_COLUMNS}
+  continuous_cols = {k: tf.constant(df[k].values, shape=[df[k].size, 1]) for k in CONTINUOUS_COLUMNS}
   # Creates a dictionary mapping from each categorical feature column name (k)
   # to the values of that column stored in a tf.SparseTensor.
   categorical_cols = {}
@@ -311,9 +316,10 @@ def input_fn(df):
   feature_cols = dict(continuous_cols)
   feature_cols.update(categorical_cols)
   # Converts the label column into a constant Tensor.
-  label = tf.constant(df[LABEL_COLUMN].values)
+  label = tf.constant(df[LABEL_COLUMN].values, shape=[df[LABEL_COLUMN].size, 1])
   
-  print('Labels: {}'.format(str(label)))
+  if DEBUG:
+     print('Labels: {}'.format(str(label)))
   
   # Returns the feature columns and the label.
   return feature_cols, label
@@ -336,16 +342,23 @@ def train_and_eval():
       tf.gfile.Open(test_file_name),
       names=COLUMNS,
       skipinitialspace=True,
-      skiprows=1,
       engine="python")
       
+# remove NaN elements
+  df_train = df_train.dropna(how='any', axis=0)
+  df_test = df_test.dropna(how='any', axis=0)
+
+  if DEBUG:  
+    print("Training model label column values: %s:" %df_train[LABEL_COLUMN])
+    print("Test model label column values: %s:" %df_test[LABEL_COLUMN])
   
   model_dir = tempfile.mkdtemp() if not FLAGS.model_dir else FLAGS.model_dir
   if DEBUG:
   	print("model directory = %s" % model_dir)
 
   m = build_estimator(model_dir, FLAGS.model_type )
-  m.fit(input_fn=lambda: input_fn(df_train), steps=FLAGS.train_steps)
+  #m.fit(input_fn=lambda: input_fn(df_train), steps=1)
+  m.fit(input_fn=lambda: input_fn(df_train), steps=10000)
   results = m.evaluate(input_fn=lambda: input_fn(df_test), steps=1)
   print("Begin Results [")
   for key in sorted(results):
@@ -387,6 +400,8 @@ def main(_):
     predict_outcome()
   else:
     train_and_eval()
+    
+  print("******************* END ***********************")
 
 if __name__ == "__main__":
   tf.app.run()
