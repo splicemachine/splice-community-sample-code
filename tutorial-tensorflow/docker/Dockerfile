@@ -11,4 +11,4 @@ ADD $app app
 
 EXPOSE 8000
 
-CMD ["uwsgi", "--http","0.0.0.0:8000", "--wsgi-file", "/app/handlers/TensorFlowWideNDeepHug.py", "--callable", "__hug_wsgi__"]
+CMD ["uwsgi", "--http","0.0.0.0:8000", "--wsgi-file", "/app/handlers/TensorFlowWideNDeepHug.py", "--callable", "__hug_wsgi__", "--worker-reload-mercy", "300", "--http-timeout","600", "--enable-threads"]

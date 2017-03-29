@@ -168,7 +168,7 @@ public class MachineLearningSetup {
                     int numLabels = 2;
                     res = stmt.executeQuery("select max(" + labelColumn + ") from " + trainingTable);
                     if(res.next()) {
-                        numLabels = res.getInt(1);
+                        numLabels = res.getInt(1) + 1;
                     }
                     
                     
@@ -215,7 +215,6 @@ public class MachineLearningSetup {
                     res = stmt.executeQuery("select MACHINE_LEARNING_ID from SPLICE.MACHINE_LEARNING_METHOD");
                     while(res.next()) {
                         machineLearningMethods.add(new Integer(res.getInt(1)));
-                        datasetId = res.getInt(1);
                     }
                     
                     pstmt = conn.prepareStatement("insert into SPLICE.DATASET_MACHINE_LEARNING_METHODS (DATASET_ID,MACHINE_LEARNING_ID) values (?,?)");

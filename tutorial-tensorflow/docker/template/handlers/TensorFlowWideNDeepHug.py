@@ -16,7 +16,7 @@ from __future__ import division
 from __future__ import print_function
 
 import hug
-import sys
+import os,sys
 if sys.version_info[0] < 3:
     from StringIO import StringIO
 else:
@@ -58,9 +58,9 @@ def setVariableValues(body):
 	if 'continuous_columns' in body:
 		CONTINUOUS_COLUMNS = body['continuous_columns']
 	if 'crossed_columns' in body:
-		CROSSED_COLUMNS = body['crossed_columns'];
+		CROSSED_COLUMNS = body['crossed_columns']
 	if 'bucketized_columns' in body:
-		BUCKETIZED_COLUMNS = body['bucketized_columns'];
+		BUCKETIZED_COLUMNS = body['bucketized_columns']
 	DNN_HIDDEN_UNITS=[int(s) for s in body['dnn_hidden_units'].split(',')] 
 
 
@@ -140,7 +140,7 @@ def prepare_embedded_columns(cols,body):
 
 def prepare_crossed(cols,BUCKETIZED_TF_COLUMNS,SPARSE_TF_COLUMNS,REAL_TF_COLUMNS):
 	"""Creates tf crossed columns"""
-	new_cols = [];
+	new_cols = []
 	if(cols != None):
 		for tuple in cols:
 			list_of_cols = []
@@ -193,10 +193,7 @@ def input_fn(df):
 	feature_cols.update(categorical_cols)
 	# Converts the label column into a constant Tensor.
 	label = tf.constant(df[LABEL_COLUMN].values, shape=[df[LABEL_COLUMN].size, 1])
-  
-	if DEBUG:
-		print('Labels: {}'.format(str(label)))
-  
+    
 	# Returns the feature columns and the label.
 	return feature_cols, label
 
@@ -212,7 +209,7 @@ def predict_outcome(body):
 	printVariables()
 
 	model_dir = tempfile.mkdtemp() if not body['model_dir'] else body['model_dir']
-	print('model_dir = %s' % model_dir);
+	print('model_dir = %s' % model_dir)
 	
 	SPARSE_TF_COLUMNS = prepare_sparse_columns(CATEGORICAL_COLUMNS,body)
 
@@ -223,7 +220,7 @@ def predict_outcome(body):
 
 
 	if DEBUG:
-		print("real_tf_columns: %s" % REAL_TF_COLUMNS);
+		print("real_tf_columns: %s" % REAL_TF_COLUMNS)
 
 	BUCKETIZED_TF_COLUMNS = prepare_buckets(BUCKETIZED_COLUMNS,REAL_TF_COLUMNS)
 	EMBEDDED_TF_COLUMNS = prepare_embedded_columns(list(SPARSE_TF_COLUMNS.values()),body)
@@ -277,10 +274,10 @@ def train_and_eval(body):
 	if DEBUG:  
 		print("Training model label column values: %s:" %df_train[LABEL_COLUMN])
 		print("Test model label column values: %s:" %df_test[LABEL_COLUMN])
-  
-	model_dir = tempfile.mkdtemp() if not body['model_dir'] else body['model_dir']
+
+	model_dir = body['model_dir']
 	if DEBUG:
-		print("model directory = %s" % model_dir)
+		print("model directory = %s" %  body['model_dir'])
 
 	SPARSE_TF_COLUMNS = prepare_sparse_columns(CATEGORICAL_COLUMNS,body)
 
@@ -291,7 +288,7 @@ def train_and_eval(body):
 
 
 	if DEBUG:
-		print("real_tf_columns: %s" % REAL_TF_COLUMNS);
+		print("real_tf_columns: %s" % REAL_TF_COLUMNS)
 
 	BUCKETIZED_TF_COLUMNS = prepare_buckets(BUCKETIZED_COLUMNS,REAL_TF_COLUMNS)
 	EMBEDDED_TF_COLUMNS = prepare_embedded_columns(list(SPARSE_TF_COLUMNS.values()),body)

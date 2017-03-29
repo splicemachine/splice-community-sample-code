@@ -42,14 +42,19 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import com.splicemachine.db.impl.ast.StringUtils;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 
 public class ModelDefinition {
@@ -58,7 +63,16 @@ public class ModelDefinition {
     
     public static String CTLF = "\r\n";
     
-    
+    /**
+     * This will generate the model for the default parameter set for the
+     * machine learning model associated with the dataset
+     * 
+     * 
+     * @param dataOutputPath - Path where the exported data should be placed
+     * @param modelOutputPath - Path where the model should be placed
+     * @param datasetId - The id of the dataset to be generated
+     * @param returnResultset
+     */
     public static void createModelForDataSet(
             String dataOutputPath,
             String modelOutputPath,
@@ -113,11 +127,13 @@ public class ModelDefinition {
     }
 
     /**
+     * This will generate the models for the specified model group id set for the
+     * machine learning model associated with the dataset
      * 
-     * @param dataOutputPath
-     * @param modelOutputPath
-     * @param datasetId
-     * @param groupId
+     * @param dataOutputPath - Path where the exported data should be placed
+     * @param modelOutputPath - Path where the model should be placed
+     * @param datasetId - The id of the dataset to be generated
+     * @param groupId - The group id to generate a model for
      * @param returnResultset
      */
     public static void createModelForGroupId(
@@ -172,10 +188,12 @@ public class ModelDefinition {
     }
     
     /**
+     * This will generate the models for the specified parameter set id set for the
+     * machine learning model associated with the dataset
      * 
-     * @param dataOutputPath
-     * @param modelOutputPath
-     * @param datasetId
+     * @param dataOutputPath - Path where the exported data should be placed
+     * @param modelOutputPath - Path where the model should be placed
+     * @param datasetId - The id of the dataset to be generated
      * @param parameterSetId
      * @param returnResultset
      */
@@ -248,6 +266,12 @@ public class ModelDefinition {
                 fModelOutputDir.mkdirs();
             }
             
+            File fEvalDir = new File (fModelOutputDir, "eval");
+            if(!fEvalDir.exists()) {
+                fEvalDir.mkdirs();
+            }
+            
+            
             //TODO: Needs to be either HDFS or S3
             //Create the data directory
             File fRootDataOutputDir = new File(dataOutputPath);
@@ -313,69 +337,77 @@ public class ModelDefinition {
             inputDict.addProperty("model_dir", fModelOutputDir.getAbsolutePath());
             inputDict.addProperty("deployment", getDeploymentType(conn2));
             
+
+            
+            
+            
             //Build JSON
             Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
             String jsonData = gson.toJson(inputDict);
             
-            LOG.error("JSON data being setnt to model:" + jsonData);
-            
-            //CloseableHttpClient client = HttpClients.createDefault();
-            HttpClient client = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(creationProcessURL);
-            
-            //Timeout in seconds
-            int timeout = 3 * 60;
-            RequestConfig config = RequestConfig.custom()
-              .setConnectTimeout(timeout * 1000)
-              .setConnectionRequestTimeout(timeout * 1000)
-              .setSocketTimeout(timeout * 1000).build();            
-            httpPost.setConfig(config);
-         
-            StringEntity entity = new StringEntity(jsonData);
-            httpPost.setEntity(entity);
-            httpPost.setHeader("Accept", "application/json");
-            httpPost.setHeader("Content-type", "application/json");
-         
-            
+            LOG.error("JSON data being sent to model:" + jsonData);
+                       
+            int exitCode = -1;
             HashMap<String,String> responseData = new HashMap<String,String>();
-            HttpResponse response = client.execute(httpPost);
-            int exitCode = response.getStatusLine().getStatusCode();
-            if(exitCode == 200) {
-                BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
-                StringBuffer result = new StringBuffer();
-                String line = "";
-                while ((line = rd.readLine()) != null) {
-                    result.append(line);
+            HttpPost httpPost = null;
+            try {
+                
+                httpPost = new HttpPost(creationProcessURL);
+                StringEntity entity = new StringEntity(jsonData);
+                httpPost.setEntity(entity);
+                httpPost.setHeader("Accept", "application/json");
+                httpPost.setHeader("Content-type", "application/json");                
+                
+                org.apache.http.client.HttpClient httpClient = new DefaultHttpClient();              
+    
+                HttpParams params = httpClient.getParams();
+                org.apache.http.params.HttpConnectionParams.setConnectionTimeout(params, 10000);
+                org.apache.http.params.HttpConnectionParams.setSoTimeout(params, 0);
+                HttpResponse httpResponse = httpClient.execute(httpPost);
+                exitCode = httpResponse.getStatusLine().getStatusCode();
+    
+                if (exitCode == HttpStatus.SC_OK) {
+                    BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+    
+                    StringBuffer result = new StringBuffer();
+                    String line = "";
+                    while ((line = rd.readLine()) != null) {
+                        result.append(line);
+                    }
+                    String jsonResponseData = result.toString();
+                    jsonResponseData = jsonResponseData.substring(1,jsonResponseData.length()-1);              
+                    jsonResponseData = StringUtils.replace(jsonResponseData, "\\\"", "\"");
+                    
+                    //We want to remove the leading and closing double quote
+                    LOG.error("Response JSON:" + jsonResponseData);
+                    
+                    JsonParser parser = new JsonParser();                
+                    JsonObject root = (JsonObject)parser.parse(jsonResponseData);  
+                    Set<Entry<String, JsonElement>> entrySet = root.entrySet();
+                    for(Map.Entry<String,JsonElement> entry : entrySet){
+                        String key = entry.getKey();
+                        String fieldValue = root.get(key).getAsString();
+                        responseData.put(key, fieldValue);
+                    }
+                } else {
+                    BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+    
+                    StringBuffer result = new StringBuffer();
+                    String line = "";
+                    while ((line = rd.readLine()) != null) {
+                        result.append(line);
+                    }
+                    
+                    LOG.error("Error calling web service - error code:" + exitCode);
+                    LOG.error("Error calling web service - response body:" + result.toString());
+    
                 }
-                String jsonResponseData = result.toString();
-                jsonResponseData = jsonResponseData.substring(1,jsonResponseData.length()-1);              
-                jsonResponseData = StringUtils.replace(jsonResponseData, "\\\"", "\"");
-                
-                //We want to remove the leading and closing double quote
-                LOG.error("Response JSON:" + jsonResponseData);
-                
-                JsonParser parser = new JsonParser();                
-                JsonObject root = (JsonObject)parser.parse(jsonResponseData);  
-                Set<Entry<String, JsonElement>> entrySet = root.entrySet();
-                for(Map.Entry<String,JsonElement> entry : entrySet){
-                    String key = entry.getKey();
-                    String fieldValue = root.get(key).getAsString();
-                    responseData.put(key, fieldValue);
-                }
-            } else {
-                //There was a problem
-                BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
-                StringBuffer result = new StringBuffer();
-                String line = "";
-                while ((line = rd.readLine()) != null) {
-                    result.append(line);
-                }
-                
-                LOG.error("Error calling web service - error code:" + exitCode);
-                LOG.error("Error calling web service - response body:" + result.toString());
-                
+            } catch (Exception e) {
+                LOG.error("Exception calling machine learning web service:", e);
+            } finally {
+                // Release the connection.
+                if(httpPost != null)
+                   httpPost.releaseConnection();
             }
             
             long endTime = System.currentTimeMillis();
@@ -396,8 +428,8 @@ public class ModelDefinition {
             } else {
                 status = "Success";
                 String insertStatement = "INSERT INTO MODEL_CREATION_RESULTS " + 
-                        "(DATASET_ID,PARAMETER_SET_ID,MACHINE_LEARNING_ID,START_TIME,END_TIME,STATUS) " +
-                        "values (?,?,?,?,?,?)";
+                        "(DATASET_ID,PARAMETER_SET_ID,MACHINE_LEARNING_ID,START_TIME,END_TIME,STATUS,MODEL_PATH) " +
+                        "values (?,?,?,?,?,?,?)";
                 pstmt = conn2.prepareStatement(insertStatement);
                 pstmt.setInt(1, datasetId);
                 pstmt.setInt(2, parameterSetId);
@@ -405,11 +437,12 @@ public class ModelDefinition {
                 pstmt.setTimestamp(4, new Timestamp(startTime));
                 pstmt.setTimestamp(5, new Timestamp(endTime));
                 pstmt.setString(6, status);
+                pstmt.setString(7, fModelOutputDir.getAbsolutePath());
                 pstmt.executeUpdate();
                 
                 int modelResultsId = -1;
                 
-                pstmt = conn2.prepareStatement("Select IDENTITY_VAL_LOCAL() from MODEL_CREATION_RESULTS");
+                pstmt = conn2.prepareStatement("Select max(MODEL_RESULTS_ID) from MODEL_CREATION_RESULTS");
                 rs = pstmt.executeQuery();
                 if(rs.next()) {
                     modelResultsId = rs.getInt(1);
@@ -453,7 +486,10 @@ public class ModelDefinition {
      */
     public static void purgeDirectory(File dir) {
         for (File file: dir.listFiles()) {
-            if (file.isDirectory()) purgeDirectory(file);
+            if (file.isDirectory()) {
+                purgeDirectory(file);
+                file.delete();
+            }
             file.delete();
         }
     }
@@ -565,7 +601,14 @@ public class ModelDefinition {
             
             LOG.error("JSON data being setnt to model:" + jsonData);
             
-            HttpClient client = new DefaultHttpClient();
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            int timeout = 5 * 60; // minutes
+            HttpParams httpParams = httpClient.getParams();
+            HttpConnectionParams.setConnectionTimeout(
+              httpParams, timeout * 1000); // http.connection.timeout
+            HttpConnectionParams.setSoTimeout(
+              httpParams, timeout * 1000); // http.socket.timeout
+
             HttpPost httpPost = new HttpPost(predictProcessURL);
          
             StringEntity entity = new StringEntity(jsonData);
@@ -573,16 +616,8 @@ public class ModelDefinition {
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
             
-            //Timeout in seconds
-            int timeout = 3 * 60;
-            RequestConfig config = RequestConfig.custom()
-              .setConnectTimeout(timeout * 1000)
-              .setConnectionRequestTimeout(timeout * 1000)
-              .setSocketTimeout(timeout * 1000).build();            
-            httpPost.setConfig(config);
-            
             HashMap<String,String> responseData = new HashMap<String,String>();
-            HttpResponse response = client.execute(httpPost);
+            HttpResponse response = httpClient.execute(httpPost);
             int exitCode = response.getStatusLine().getStatusCode();
             if(exitCode == 200) {
                 BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
@@ -672,8 +707,7 @@ public class ModelDefinition {
             
             if(numColumns > 0) { exportColumns.append(",");}
             exportColumns.append(name);
-            
-            jsonArr.add(name.toLowerCase());
+            jsonArr.add(new JsonPrimitive(name.toLowerCase()));
             numColumns++;
         }
         if(numColumns > 0) {
@@ -689,7 +723,7 @@ public class ModelDefinition {
         jsonArr = new JsonArray();
         numColumns = 0;
         while(rs.next()) {            
-            jsonArr.add(rs.getString(1).toLowerCase());
+            jsonArr.add(new JsonPrimitive(rs.getString(1).toLowerCase()));
             numColumns++;
         }
         if(numColumns > 0) {
@@ -704,7 +738,7 @@ public class ModelDefinition {
         jsonArr = new JsonArray();
         numColumns = 0;
         while(rs.next()) {            
-            jsonArr.add(rs.getString(1).toLowerCase());
+            jsonArr.add(new JsonPrimitive(rs.getString(1).toLowerCase()));
             numColumns++;
         }
         if(numColumns > 0) {
@@ -743,9 +777,9 @@ public class ModelDefinition {
             String[] groupVals = groupingDetails.split(",");
             for(String val: groupVals) {               
                 if(groupingDetailsType.equals("INTEGER")) {
-                    bucketDetailsValues.add(Integer.parseInt(val.trim()));
+                    bucketDetailsValues.add(new JsonPrimitive(Integer.parseInt(val.trim())));
                 } else {
-                    bucketDetailsValues.add(val);
+                    bucketDetailsValues.add(new JsonPrimitive(val));
                 }
             }    
             //Add the bucket groups
@@ -776,10 +810,10 @@ public class ModelDefinition {
                     crossed_columns.add(group);
                 }
                 group = new JsonArray();
-                group.add(rs.getString(2).toLowerCase());
+                group.add(new JsonPrimitive(rs.getString(2).toLowerCase()));
                 currentGrouping = grouping;
             } else {
-                group.add(rs.getString(2).toLowerCase());
+                group.add(new JsonPrimitive(rs.getString(2).toLowerCase()));
             }               
             numColumns++;
         }

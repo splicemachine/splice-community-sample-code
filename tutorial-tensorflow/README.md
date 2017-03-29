@@ -1,15 +1,15 @@
 # Overview
 This is a framework where we can create multiple machine learning models using different machine learning platforms (Tensorflow, Spark MLib, R, etc) and algorithms where the complexity of machine learning is hidden from from the end user.  We are in the beginning phase and have developed the process for using a classifier for TensorFlow Linear and DNN joined training models.  At a high level, you use SQL statements (for now) to specify the database table that contains the training data set, the test data set and some other parameters and then you call a stored procedure to either generate the model or to predict an outcome.  
 
-The first machine learning setup was done for TensorFlow.  The tensorflow (www.tensorflow.org) framework is an open source software library for machine learning across a range of tasks.  It is a framework for building Deep Learning Neural Networks.  We took the 'TensorFlow Wide & Deep Learning Tutorial' (https://www.tensorflow.org/tutorials/wide_and_deep) which trains a model to predict the probability that an individual has an annual income over 50,000 dollars using Census Income data set and created a method to generically create a model using any data set.
+The first machine learning setup was done for TensorFlow.  The [tensorflow](http://www.tensorflow.org) framework is an open source software library for machine learning across a range of tasks.  It is a framework for building Deep Learning Neural Networks.  We took the '[TensorFlow Wide & Deep Learning Tutorial](https://www.tensorflow.org/tutorials/wide_and_deep)'  which trains a model to predict the probability that an individual has an annual income over 50,000 dollars using Census Income data set and created a method to generically create a model using any data set.
 
-We use docker to run the machine learning process.  Docker is a tool that automates the deployment of applications inside software containers.  Dockerfiles enable you to create images that contain the software that is needed to run an application.  A Dockerfile describes the software that makes up an image and contains the set of instructions that specify what environment to use and which commands to run.  For more information goto Docker's website: https://www.docker.com/
+We use docker to run the machine learning process.  Docker is a tool that automates the deployment of applications inside software containers.  Dockerfiles enable you to create images that contain the software that is needed to run an application.  A Dockerfile describes the software that makes up an image and contains the set of instructions that specify what environment to use and which commands to run.  For more information goto [Docker's website](https://www.docker.com/)
 
 
 # Setup
 
 # 1.  Install Splice Machine
-These instructions assume you have access to a running instance of Splice Machine.  If you don't goto https://www.splicemachine.com/get-started/ and install the standalone edition.
+These instructions assume you have access to a running instance of Splice Machine 2.5.  If you don't goto [Splice Machine's website](https://www.splicemachine.com/get-started/) and install the standalone edition.
 
 # 2.  Pull the Splice Machine Tensorflow Example
 
@@ -19,14 +19,14 @@ All of the community code for Splice Machine resides in the Splice Machine Commu
 
 # 3.  Compile the code
 
-We use maven as our build process.  You must have maven installed in order to compile the code.  If you don't currently have it installed, please go to https://maven.apache.org/index.html and follow the instructions on their site.  Next, navigate to the tutorial-tensorflow folder and compile the code:
+We use maven as our build process.  You must have maven installed in order to compile the code.  If you don't currently have it installed, please go to [maven's website](https://maven.apache.org/index.html) and follow the instructions on their site for installing and configuring maven.  Next, navigate to the tutorial-tensorflow folder and compile the code:
 
-	mvn clean compile package
+	mvn clean compile package -Pcdh5.8.3
 
 # 4.  Copy the generated JAR file to your install
 If you are running in standalone mode, copy the jar file to your <SPLICEMACHINE_HOME>/lib directory.  The command will look something like the following assuming you installed Splice Machine to your ~/Downloads directory:
 
-	cp ./target/splice-tutorial-tensorflow-2.0.1.1703-SNAPSHOT.jar ~/Downloads/splicemachine/lib
+	cp ./target/splice-tutorial-tensorflow-2.5.0.1708-SNAPSHOT.jar ~/Downloads/splicemachine/lib
 	
 # 5. Update paths in SQL files
 The Splice Machine SQL scripts for importing data contain path references.  These paths need to be updated.  Modify the paths in the following files to to match the location where you cloned the git repository. 
@@ -54,11 +54,7 @@ In the splice command prompt, run the /resources/splice/load-all.sql script.  Yo
 
 # 9.  Install Docker
 
-Install Docker on the environment where you plan on running the code.  The installation is straight forward and well documented on Docker's web site:
-
-	[Install Docker](http://docs.docker.com/engine/installation/)
-
-Check your installation by running:
+Install Docker on the environment where you plan on running the code.  The installation is straight forward and well documented on [Docker's web site](http://docs.docker.com/engine/installation/).  Check your installation by running:
 
 	docker run hello-world
 
@@ -110,9 +106,9 @@ Once the model is created we can use it to predict an outcome.  In a splice comm
 # Additional Resources
 Here are some additional resources to help understand the contents of this solution:
 
-* **DATABASE_TABLES.md**:  This file contains an overview of the database tables that are a part of this solution
-* **CODE_OVERVIEW.md**:  This file contains an overview of the code used in this solution
-* **NEW_MODEL_SETUP.md**: Provides instructions on setting up your own dataset
+* **[DATABASE_TABLES.md](DATABASE_TABLES.md)**:  This file contains an overview of the database tables that are a part of this solution
+* **[CODE_OVERVIEW.md](CODE_OVERVIEW.md)**:  This file contains an overview of the code used in this solution
+* **[NEW_MODEL_SETUP.md](NEW_MODEL_SETUP.md)**: Provides instructions on setting up your own dataset
 
 # Docker Tips
 
@@ -142,7 +138,7 @@ We will interact with this image using http and connect on port 8000.  To tell t
 
 Finally we are going to tell the container to start uwsgi
 
-	CMD ["uwsgi", "--http","0.0.0.0:8000", "--wsgi-file", "/app/handlers/TensorFlowWideNDeepHug.py", "--callable", "__hug_wsgi__"]
+	CMD ["uwsgi", "--http","0.0.0.0:8000", "--wsgi-file", "/app/handlers/TensorFlowWideNDeepHug.py", "--callable", "__hug_wsgi__", "--worker-reload-mercy", "300", "--http-timeout","600"]
 	
 
 ## Display a list of containers
@@ -175,5 +171,8 @@ If you want to delete an image, run the command above to get the list of contain
 
 	docker rmi hello-world 
 
+# Using Hug
+If you want to run the python script on your local environment - assuming you have all the tensorflow libraries installed you can run it with the hug library as follows:
 
+	hug -f first_step_1.py
 

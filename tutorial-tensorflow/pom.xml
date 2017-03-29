@@ -18,7 +18,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.splicemachine</groupId>
     <artifactId>splice-tutorial-tensorflow</artifactId>
-    <version>2.0.1.1703-SNAPSHOT</version>
+    <version>2.5.0.1708-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     <description>Demo project for using using Tensorflow with Splice Machine</description>
@@ -40,6 +40,7 @@
             <id>hortonworks-hadoop</id>
             <url>http://repo.hortonworks.com/content/repositories/jetty-hadoop/</url>
         </repository>
+    
         <repository>
             <id>apache-repo</id>
             <url>https://repository.apache.org/content/repositories/releases</url>
@@ -53,92 +54,27 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.useIncrementalCompilation>false</maven.compiler.useIncrementalCompilation>
     </properties>
 
     <profiles>
         <profile>
-            <id>cdh5.4.10</id>
+            <id>cdh5.8.3</id>
             <properties>
-                <envClassifier>cdh5.4.10</envClassifier>
+                <cdh.parcel.version>5.8.3</cdh.parcel.version>
+                <envClassifier>cdh5.8.3</envClassifier>
+                <envHbase>hbase1.2.0</envHbase>
+                <hadoop.version>2.6.0-cdh5.8.3</hadoop.version>
+                <hbase.version>1.2.0-cdh5.8.3</hbase.version>
+                <hive.version>1.1.0-cdh5.8.3</hive.version>
+                <zookeeper.version>3.4.5-cdh5.8.3</zookeeper.version>
+                <spark.version>2.1.0</spark.version>
+                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.8.3</spark-assembly-id>
                 <kafka.version>0.9.0-kafka-2.0.2</kafka.version>
-                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.4.10</spark-assembly-id>
-                <spark.version>1.6.2</spark.version>
-                <storm.version>0.10.1</storm.version>
             </properties>
         </profile>
-        <profile>
-            <id>cdh5.5.2</id>
-            <properties>
-                <envClassifier>cdh5.5.2</envClassifier>
-                <kafka.version>0.9.0-kafka-2.0.2</kafka.version>
-                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.5.2</spark-assembly-id>
-                <spark.version>1.6.2</spark.version>
-                <storm.version>0.10.1</storm.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>cdh5.6.0</id>
-            <properties>
-                <envClassifier>cdh5.6.0</envClassifier>
-                <kafka.version>0.9.0-kafka-2.0.2</kafka.version>
-                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.6.0</spark-assembly-id>
-                <spark.version>1.6.2</spark.version>
-                <storm.version>0.10.1</storm.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>cdh5.7.2</id>
-            <properties>
-                <envClassifier>cdh5.7.2</envClassifier>
-                <kafka.version>0.9.0-kafka-2.0.2</kafka.version>
-                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.7.2</spark-assembly-id>
-                <spark.version>1.6.2</spark.version>
-                <storm.version>0.10.1</storm.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>cdh5.8.0</id>
-            <properties>
-                <spark.version>1.6.2</spark.version>
-                <kafka.version>0.9.0-kafka-2.0.2</kafka.version>
-                <envClassifier>cdh5.8.0</envClassifier>
-                <spark-assembly-id>spark-assembly-hadoop2.6.0-cdh5.8.0</spark-assembly-id>
-                <storm.version>0.10.1</storm.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>mapr5.1.0</id>
-            <properties>
-                <envClassifier>mapr5.1.0</envClassifier>
-                <kafka.version>0.9.0.0-mapr-1607</kafka.version>
-                <spark-assembly-id>spark-assembly-hadoop2.7.0-mapr-1602</spark-assembly-id>
-                <spark.version>1.6.2</spark.version>
-                <storm.version>0.10.0-mapr-1607</storm.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>hdp2.3.6</id>
-            <properties>
-                <envClassifier>hdp2.3.6</envClassifier>
-                <kafka.version>0.9.0.2.3.6.0-3796</kafka.version>
-                <spark-assembly-id>spark-assembly-hadoop2.7.1.2.3.6.0-3796</spark-assembly-id>
-                <spark.version>1.6.2</spark.version>
-                <storm.version>0.10.0.2.3.6.0-3796</storm.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>hdp2.4.2</id>
-            <properties>
-                <envClassifier>hdp2.4.2</envClassifier>
-                <kafka.version>0.9.0.2.4.2.0-258</kafka.version>
-                <spark-assembly-id>spark-assembly-hadoop2.7.1.2.4.2.0-258</spark-assembly-id>
-                <spark.version>1.6.2</spark.version>
-                <storm.version>0.10.0.2.4.2.0-258</storm.version>
-            </properties>
-        </profile>
-
     </profiles>
 
     <prerequisites>
@@ -150,7 +86,8 @@
 		<dependency>
 		    <groupId>com.google.code.gson</groupId>
 		    <artifactId>gson</artifactId>
-		    <version>2.7</version>
+		    <version>2.2.4</version>
+		    <scope>provided</scope>
 		</dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -165,22 +102,29 @@
         </dependency>
         <dependency>
             <groupId>com.splicemachine</groupId>
-            <artifactId>db-engine</artifactId>
+            <artifactId>hbase_sql-${envClassifier}</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>com.splicemachine</groupId>
+            <artifactId>db-engine</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
 		<dependency>
 		    <groupId>commons-io</groupId>
 		    <artifactId>commons-io</artifactId>
 		    <version>2.5</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+		<!-- 
 		<dependency>
 		    <groupId>org.apache.httpcomponents</groupId>
 		    <artifactId>httpclient</artifactId>
 		    <version>4.5.3</version>
 		</dependency>
+		 -->
 		
     </dependencies>
     	<build>
