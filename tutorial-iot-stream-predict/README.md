@@ -6,10 +6,16 @@ make realtime predictions.  The code for each of these is separated into its own
 module because there is a high probability that the all three will run on different servers.  For example, your kafka server
 may be separate from your spark servers, and your spark job may run outside of Splice Machine's environment.
 
+## Software Version
+* SpliceMachine : 2.5.0 
+* Spark : 2.0.2
+* Kafka : 2.11-0.10.2.0
+
+```Note: It is very important that Kafka and Spark versions are same as mentioned, since the kafka queue and spark streaming are version sensitive, any mismatch will mean the spark stream will not read the messages from kafka queue.```
 
 ## Kafka Install Instructions
 * Connect to server
-* ```cd /opt```
+* cd /opt
 * sudo su
 * mkdir kafka
 * cd kafka
@@ -80,7 +86,7 @@ may be separate from your spark servers, and your spark job may run outside of S
 
 
 
-* Get the file train_FD001.txt to read for the kafka producer and place it on the server where kafka is installed
+* Get the file train_FD001.txt to read for the kafka producer and place it on the server where kafka is installed in folder /tmp
 
 ## Zeppelin Setup
 * Create Splice interpreter in Zeppelin
@@ -109,9 +115,9 @@ may be separate from your spark servers, and your spark job may run outside of S
     * sudo ./bin/kafka-server-start.sh ./config/server.properties
 * Create a topic with multiple partitions - the partitions increase parallelism
     * cd /opt/kafka/default
-    * ./bin/kafka-topics.sh --create --zookeeper stl-colo-srv54.splicemachine.local:2181 --replication-factor 1 --partitions 10 --topic spliceload
-* Update the file /tmp/exampleRunKakfaProducerForFlatFileVTI.sh to have your kafka server name, the topic name and the file you want to read from
-* Update the paths in the /tmp/runKafkaProducer.sh file
+    * ./bin/kafka-topics.sh --create --zookeeper stl-colo-srvXX.splicemachine.local:5181 --replication-factor 1 --partitions 10 --topic spliceload
+* Update the file /tmp/exampleRunIoTKakfaProducerForFile.sh to have your kafka server name, the topic name and the file you want to read from, and adjust the volume and the duration of the data to be placed on Queue
+* Update the paths in the /tmp/runIoTKafkaProducer.sh file
 * Make sure the /tmp/*.sh are executable
     * chmod +x /tmp/*.sh
 
@@ -121,7 +127,7 @@ may be separate from your spark servers, and your spark job may run outside of S
 * Start the spark master server:
     * sudo /opt/spark/default/sbin/start-master.sh
 * On the other servers in your cluster start the spark slave servers
-    * sudo /opt/spark/default/sbin/start-slave.sh spark://stl-colo-srv055.splicemachine.colo:7077
+    * sudo /opt/spark/default/sbin/start-slave.sh spark://stl-colo-srvYY.splicemachine.colo:7077
 
 
 ## Start the Spark Streaming Job
