@@ -90,7 +90,7 @@ may be separate from your spark servers, and your spark job may run outside of S
 
 ## Zeppelin Setup
 * Create Splice interpreter in Zeppelin
-    * Name = Splice Machine
+    * Name = splice
     * Interpreter group = jdbc
     * default.url = jdbc:splice://srv054:1527/splicedb
     * default.user = splice
