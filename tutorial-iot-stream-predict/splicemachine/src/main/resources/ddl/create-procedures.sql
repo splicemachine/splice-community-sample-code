@@ -1,0 +1,24 @@
+SET SCHEMA IOT;
+
+DROP PROCEDURE IOT.BuildRULModel;
+
+
+
+CREATE PROCEDURE IOT.BuildRULModel(IN trainTable VARCHAR(255), IN testTable VARCHAR(255), IN saveModelPath VARCHAR(255))
+LANGUAGE JAVA
+EXTERNAL NAME 'com.splicemachine.tutorials.model.RULPredictiveModel.buildRULModel'
+PARAMETER STYLE JAVA
+READS SQL DATA;
+
+
+DROP PROCEDURE IOT.PredictRUL;
+CREATE PROCEDURE IOT.PredictRUL(IN inputTable VARCHAR(255), IN resultsTable VARCHAR(255), IN saveModelPath VARCHAR(255), IN loopcnt INT)
+LANGUAGE JAVA
+EXTERNAL NAME 'com.splicemachine.tutorials.model.RULPredictiveModel.predictRUL'
+PARAMETER STYLE JAVA
+READS SQL DATA;
+
+
+
+-- call iot.BUILDRULMODEL('IOT.TRAIN_AGG_1_VIEW', 'IOT.TEST_AGG_1_VIEW', '/tmp/');
+-- call iot.PredictRUL('IOT.SENSOR_AGG_1_VIEW', 'IOT.PREDICTION_RESULTS', '/tmp/', 1);
