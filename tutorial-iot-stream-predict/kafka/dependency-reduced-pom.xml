@@ -49,8 +49,8 @@
   </build>
   <repositories>
     <repository>
-      <id>splicemachine</id>
-      <url>http://nexus.splicemachine.com/nexus/content/groups/developers</url>
+      <id>splicemachine-public</id>
+      <url>http://repository.splicemachine.com/nexus/content/groups/public</url>
     </repository>
   </repositories>
   <properties>

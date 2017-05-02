@@ -31,7 +31,7 @@
 	
 	<!-- Properties that can easily and quickly be updated on a per project basis instead of updating the values below -->
     <repositories>
-    	<!-- 
+    	<!--  
         <repository>
             <id>cloudera</id>
             <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
@@ -50,16 +50,17 @@
             <id>hortonworks-hadoop</id>
             <url>http://repo.hortonworks.com/content/repositories/jetty-hadoop/</url>
         </repository>
-        
+        -->
         <repository>
             <id>splicemachine-public</id>
             <url>http://repository.splicemachine.com/nexus/content/groups/public</url>
         </repository>
-         -->
+         <!--
         <repository>
             <id>splicemachine</id>
             <url>http://nexus.splicemachine.com/nexus/content/groups/developers</url>
         </repository>
+        -->
     </repositories>
     
 

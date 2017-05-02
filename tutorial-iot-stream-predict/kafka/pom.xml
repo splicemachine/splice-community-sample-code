@@ -27,10 +27,16 @@
 	
 	<!-- Properties that can easily and quickly be updated on a per project basis instead of updating the values below -->
     <repositories>
+     <repository>
+            <id>splicemachine-public</id>
+            <url>http://repository.splicemachine.com/nexus/content/groups/public</url>
+        </repository>
+        <!--  
         <repository>
             <id>splicemachine</id>
             <url>http://nexus.splicemachine.com/nexus/content/groups/developers</url>
         </repository>
+        -->
     </repositories>
     <dependencies>
     	<!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka_2.11 -->
