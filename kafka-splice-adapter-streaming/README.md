@@ -16,7 +16,7 @@ $ bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic test-k --parti
 
 7. If running on kerberized cluster, copy the hbase user keytab file to some dir so the app can reference that. Currently, it will require to use hbase/<masterNode> principal and its keytab. It can cab be found from master node  /var/run/cloudera-scm-agent/process/, searching for latest hbase-MASTER dir, hbase.keytab should be present in that dir. (This step will require sudo privilege)
 
-8. Main.java in src foler contains the sample streaming app that would take the data from kafka stream to the spark stream and then insert the data to splice engine using splice-spark adapter. You will need to get the build artifacts jars and keep it at the common location say /tmp/dependency on all nodes.
+8. Main.java in src folder contains the sample streaming app that would take the data from kafka stream to the spark stream and then insert the data to splice engine using splice-spark adapter. You will need to get the build artifacts jars and keep it at the common location say /tmp/dependency on all nodes.
 
 To compile the app:
 $ mvn clean install
