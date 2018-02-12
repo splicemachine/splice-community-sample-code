@@ -141,7 +141,6 @@ public class Main {
         SparkSession spark = SparkSession.builder().appName("Reader").config(conf).getOrCreate();
 
         // Create Splice's Spark Session
-        SpliceClient.isClient = true;
         SpliceSpark.setContext(spark.sparkContext());
 
         SparkConf sparkConf = spark.sparkContext().getConf();
