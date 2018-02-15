@@ -1,0 +1,268 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.example</groupId>
+	<artifactId>Example</artifactId>
+	<version>0.2</version>
+	<name>Example</name>
+
+	<repositories>
+		<repository>
+			<id>cloudera</id>
+			<url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+			<name>Cloudera Repositories</name>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+
+		<repository>
+			<id>splicemachine-public</id>
+			<url>http://repository.splicemachine.com/nexus/content/groups/public</url>
+		</repository>
+
+		<repository>
+			<id>central</id>
+			<url>http://repo1.maven.org/maven2/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<encoding>UTF-8</encoding>
+		<scala.tools.version>2.11</scala.tools.version>
+		<scala.version>2.11.8</scala.version>
+		<!-- <spark.version>2.2.0</spark.version> -->
+		<spark.version>2.2.0.cloudera2</spark.version>
+		<hbase.version>1.2.0-cdh5.8.3</hbase.version>
+		<envClassifier>cdh5.8.3</envClassifier>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-core_${scala.tools.version}</artifactId>
+			<version>${spark.version}</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.typesafe</groupId>
+					<artifactId>config</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-sql_${scala.tools.version}</artifactId>
+			<version>${spark.version}</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.typesafe</groupId>
+					<artifactId>config</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-hive_${scala.tools.version}</artifactId>
+			<version>${spark.version}</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.typesafe</groupId>
+					<artifactId>config</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-catalyst_${scala.tools.version}</artifactId>
+			<version>${spark.version}</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.typesafe</groupId>
+					<artifactId>config</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-network-common_${scala.tools.version}</artifactId>
+			<version>${spark.version}</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.typesafe</groupId>
+					<artifactId>config</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-network-shuffle_${scala.tools.version}</artifactId>
+			<version>${spark.version}</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.typesafe</groupId>
+					<artifactId>config</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<scope>provided</scope>
+			<groupId>com.splicemachine</groupId>
+			<artifactId>db-client</artifactId>
+			<version>2.5.0.1806S-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<scope>provided</scope>
+			<groupId>com.splicemachine</groupId>
+			<artifactId>db-engine</artifactId>
+			<version>2.5.0.1806S-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<scope>provided</scope>
+			<groupId>com.splicemachine</groupId>
+			<artifactId>splice_machine</artifactId>
+			<version>2.5.0.1806S-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<scope>provided</scope>
+			<groupId>com.splicemachine</groupId>
+			<artifactId>hbase_sql-cdh5.8.3</artifactId>
+			<version>2.5.0.1806S-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<scope>provided</scope>
+			<groupId>com.splicemachine</groupId>
+			<artifactId>splice_si_api</artifactId>
+			<version>2.5.0.1806S-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<scope>provided</scope>
+			<groupId>com.splicemachine</groupId>
+			<artifactId>splice_access_api</artifactId>
+			<version>2.5.0.1806S-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<scope>provided</scope>
+			<groupId>com.splicemachine</groupId>
+			<artifactId>hbase_storage-cdh5.8.3</artifactId>
+			<version>2.5.0.1806S-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<scope>provided</scope>
+			<groupId>com.splicemachine</groupId>
+			<artifactId>splicemachine-cdh5.8.3-2.2.0.cloudera2_2.11</artifactId>
+			<version>2.5.0.1806S-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.httpcomponents</groupId>
+					<artifactId>httpclient</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<scope>provided</scope>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.2</version>
+		</dependency>
+
+		<dependency>
+			<scope>provided</scope>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.10</version>
+		</dependency>
+
+		<dependency>
+			<scope>provided</scope>
+			<groupId>org.xerial.snappy</groupId>
+			<artifactId>snappy-java</artifactId>
+			<version>1.1.4</version>
+		</dependency>
+
+		<dependency>
+			<scope>provided</scope>
+			<groupId>org.apache.hbase</groupId>
+			<artifactId>hbase-server</artifactId>
+			<version>1.2.0-cdh5.8.3</version>
+		</dependency>
+
+		<dependency>
+			<scope>provided</scope>
+			<groupId>org.apache.hbase</groupId>
+			<artifactId>hbase-common</artifactId>
+			<version>1.2.0-cdh5.8.3</version>
+		</dependency>
+
+		<dependency>
+			<scope>provided</scope>
+			<groupId>org.apache.hbase</groupId>
+			<artifactId>hbase-client</artifactId>
+			<version>1.2.0-cdh5.8.3</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>src/main/scala</sourceDirectory>
+
+		<plugins>
+			<plugin>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>scala-maven-plugin</artifactId>
+				<version>3.2.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>testCompile</goal>
+						</goals>
+						<configuration>
+							<args>
+								<arg>-dependencyfile</arg>
+								<arg>${project.build.directory}/.scala_dependencies</arg>
+							</args>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.5.0</version>
+				<configuration>
+					<mainClass>com.example.SpliceDriver</mainClass>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>
