@@ -1,4 +1,4 @@
-Native Spark DataSource API Example:
+## Native Spark DataSource API Example:
 
 Here are the steps to make a simple streaming app that will produce rows from a kafka producer, and consumed using kafka spark streaming and then inserted in batches into the splice engine using Native Spark DataSource APIs:
 
@@ -35,8 +35,8 @@ CREATE TABLE TEST_TABLE (COL1 CHAR(30), COL2 INTEGER, COL3 BOOLEAN);
 
 
 
-Native Spark DataSource API reference in scala:
-
+## Native Spark DataSource API reference in scala:
+```
   /**
     * Get the current connection 
     *
@@ -210,4 +210,4 @@ Native Spark DataSource API reference in scala:
     * @return A Catalyst schema corresponding to columns in the given order.
     */
   def pruneSchema(schema: StructType, columns: Array[String]): StructType 
-
+```
