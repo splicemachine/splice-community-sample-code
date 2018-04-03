@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+export SPARK_SUBMIT_LIBRARY_PATH="$SPARK_SUBMIT_LIBRARY_PATH:/native"
+export SPARK_SUBMIT_CLASSPATH="$SPARK_CLASSPATH:$SPARK_SUBMIT_CLASSPATH"
+export SPARK_LOCAL_DIRS="/spark/tmp0,/spark/tmp1"
+export HADOOP_HOME="/hadoop"

@@ -1,0 +1,69 @@
+{
+  "id": "/spark-streaming",
+  "cmd": null,
+  "cpus": 2,
+  "mem": 4096,
+  "disk": 0,
+  "instances": 1,
+  "acceptedResourceRoles": [
+    "*"
+  ],
+  "container": {
+    "type": "DOCKER",
+    "volumes": [
+      {   
+        "containerPath": "/spark/tmp0",
+        "hostPath": "/spark/tmp0",
+        "mode": "RW"
+      },  
+      {   
+        "containerPath": "/spark/tmp1",
+        "hostPath": "/spark/tmp1",
+        "mode": "RW"
+      }
+    ],
+    "docker": {
+      "image": "splicemachine/tutorial-spark-kafka-consumer:2.0.3",
+      "network": "HOST",
+      "portMappings": [],
+      "privileged": false,
+      "parameters": [],
+      "forcePullImage": true
+    }
+  },
+  "env": {
+    "FRAMEWORK": "erinsaccount-mojix3-89c1cefe8f",
+    "KAFKA_BROKER": "broker.kafka.l4lb.thisdcos.directory:9092",
+    "KAFKA_CONSUMER_GROUP": "sparkstream",
+    "KAFKA_TOPIC_LIST": "streaming-demo-wide-2",
+    "MAX_RATE": "5000",
+    "SPARK_BATCH_INTERVAL": "5",
+    "SPLICE_JDBC_URL": "jdbc:splice://erinsaccount-mojix3-89c1cefe8f-proxy.marathon.mesos:1527/splicedb;user=splice;password=admin",
+    "TARGET_SPLICE_SCHEMA": "SPLICE",
+    "TARGET_SPLICE_TABLE": "HOUSING_AFFORDABILITY",
+    "SPLICE_CHAR_DELIM": "'",
+    "SPLICE_COLUMN_DELIM": "null",
+    "SPLICE_DATE_FORMAT": "null",
+    "SPLICE_TIME_FORMAT": "null",
+    "SPLICE_TIMESTAMP_FORMAT": "null"
+  },
+  "constraints": [
+    [   
+      "tasktype",
+      "CLUSTER",
+      "sparkexecutor"
+    ]   
+  ],
+  "labels": {
+    "HAPROXY_GROUP": "external"
+  },
+  "portDefinitions": [
+    {   
+      "port": 4042,
+      "protocol": "tcp",
+      "name": "spark-streaming",
+      "labels": {}
+    }
+  ],
+  "requirePorts" : true
+}
