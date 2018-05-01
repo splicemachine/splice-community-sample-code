@@ -23,39 +23,52 @@
     </repositories>
     <dependencies>
         <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_2.11</artifactId>
+            <version>2.2.0.cloudera2</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_2.11</artifactId>
+            <version>2.2.0.cloudera2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.splicemachine</groupId>
-            <artifactId>splicemachine-cdh5.12.0-2.1.0_2.11</artifactId>
-            <version>2.5.0.1748</version>
+            <artifactId>splicemachine-cdh5.12.2-2.2.0.cloudera2_2.11</artifactId>
+            <version>2.5.0.1817a</version>
         </dependency>
 
         <dependency>
             <groupId>com.splicemachine</groupId>
-            <artifactId>hbase_sql-cdh5.12.0</artifactId>
-            <version>2.5.0.1748</version>
+            <artifactId>hbase_sql-cdh5.12.2</artifactId>
+            <version>2.5.0.1817a</version>
         </dependency>
 
         <dependency>
             <groupId>com.splicemachine</groupId>
             <artifactId>splice_machine</artifactId>
-            <version>2.5.0.1748</version>
+            <version>2.5.0.1817a</version>
         </dependency>
      
         <dependency>
             <groupId>com.splicemachine</groupId>
             <artifactId>db-engine</artifactId>
-            <version>2.5.0.1748</version>
+            <version>2.5.0.1817a</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>
-            <version>1.2.0-cdh5.12.0</version>
+            <version>1.2.0-cdh5.12.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.splicemachine</groupId>
-            <artifactId>hbase_storage-cdh5.12.0</artifactId>
-            <version>2.5.0.1748</version>
+            <artifactId>hbase_storage-cdh5.12.2</artifactId>
+            <version>2.5.0.1817a</version>
         </dependency>
        <dependency>
            <groupId>org.apache.kafka</groupId>
