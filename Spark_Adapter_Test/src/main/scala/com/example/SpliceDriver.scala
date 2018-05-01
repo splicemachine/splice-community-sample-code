@@ -15,9 +15,9 @@ object SpliceDriver {
     conf.set("spark.kryo.registrator", "com.splicemachine.derby.impl.SpliceSparkKryoRegistrator")
     val spark = SparkSession.builder().appName("Reader").config(conf).getOrCreate()
     SpliceSpark.setContext(spark.sparkContext)
-    val dbUrl = "jdbc:splice://stl-colo-srv137:1527/splicedb;user=splice;password=admin"
+    val dbUrl = "jdbc:splice://stl-colo-srv137:1527/splicedb;user=resource;password=resource"
     val splicemachineContext = new SplicemachineContext(dbUrl)
-    splicemachineContext.df("SELECT * FROM sys.systables").show()
+    splicemachineContext.df("SELECT * FROM splice.test_table").show()
 
 
   }

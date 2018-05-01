@@ -41,8 +41,8 @@
 		<scala.version>2.11.8</scala.version>
 		<!-- <spark.version>2.2.0</spark.version> -->
 		<spark.version>2.2.0.cloudera2</spark.version>
-		<hbase.version>1.2.0-cdh5.8.3</hbase.version>
-		<envClassifier>cdh5.8.3</envClassifier>
+		<hbase.version>1.2.0-cdh5.12.2</hbase.version>
+		<envClassifier>cdh5.12.2</envClassifier>
 	</properties>
 
 	<dependencies>
@@ -129,56 +129,56 @@
 			<scope>provided</scope>
 			<groupId>com.splicemachine</groupId>
 			<artifactId>db-client</artifactId>
-			<version>2.5.0.1806S-SNAPSHOT</version>
+			<version>2.5.0.1817a</version>
 		</dependency>
 
 		<dependency>
 			<scope>provided</scope>
 			<groupId>com.splicemachine</groupId>
 			<artifactId>db-engine</artifactId>
-			<version>2.5.0.1806S-SNAPSHOT</version>
+			<version>2.5.0.1817a</version>
 		</dependency>
 
 		<dependency>
 			<scope>provided</scope>
 			<groupId>com.splicemachine</groupId>
 			<artifactId>splice_machine</artifactId>
-			<version>2.5.0.1806S-SNAPSHOT</version>
+			<version>2.5.0.1817a</version>
 		</dependency>
 
 		<dependency>
 			<scope>provided</scope>
 			<groupId>com.splicemachine</groupId>
-			<artifactId>hbase_sql-cdh5.8.3</artifactId>
-			<version>2.5.0.1806S-SNAPSHOT</version>
+			<artifactId>hbase_sql-cdh5.12.2</artifactId>
+			<version>2.5.0.1817a</version>
 		</dependency>
 
 		<dependency>
 			<scope>provided</scope>
 			<groupId>com.splicemachine</groupId>
 			<artifactId>splice_si_api</artifactId>
-			<version>2.5.0.1806S-SNAPSHOT</version>
+			<version>2.5.0.1817a</version>
 		</dependency>
 
 		<dependency>
 			<scope>provided</scope>
 			<groupId>com.splicemachine</groupId>
 			<artifactId>splice_access_api</artifactId>
-			<version>2.5.0.1806S-SNAPSHOT</version>
+			<version>2.5.0.1817a</version>
 		</dependency>
 
 		<dependency>
 			<scope>provided</scope>
 			<groupId>com.splicemachine</groupId>
-			<artifactId>hbase_storage-cdh5.8.3</artifactId>
-			<version>2.5.0.1806S-SNAPSHOT</version>
+			<artifactId>hbase_storage-cdh5.12.2</artifactId>
+			<version>2.5.0.1817a</version>
 		</dependency>
 
 		<dependency>
 			<scope>provided</scope>
 			<groupId>com.splicemachine</groupId>
-			<artifactId>splicemachine-cdh5.8.3-2.2.0.cloudera2_2.11</artifactId>
-			<version>2.5.0.1806S-SNAPSHOT</version>
+			<artifactId>splicemachine-cdh5.12.2-2.2.0.cloudera2_2.11</artifactId>
+			<version>2.5.0.1817a</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.httpcomponents</groupId>
@@ -212,21 +212,21 @@
 			<scope>provided</scope>
 			<groupId>org.apache.hbase</groupId>
 			<artifactId>hbase-server</artifactId>
-			<version>1.2.0-cdh5.8.3</version>
+			<version>1.2.0-cdh5.12.2</version>
 		</dependency>
 
 		<dependency>
 			<scope>provided</scope>
 			<groupId>org.apache.hbase</groupId>
 			<artifactId>hbase-common</artifactId>
-			<version>1.2.0-cdh5.8.3</version>
+			<version>1.2.0-cdh5.12.2</version>
 		</dependency>
 
 		<dependency>
 			<scope>provided</scope>
 			<groupId>org.apache.hbase</groupId>
 			<artifactId>hbase-client</artifactId>
-			<version>1.2.0-cdh5.8.3</version>
+			<version>1.2.0-cdh5.12.2</version>
 		</dependency>
 	</dependencies>
 
