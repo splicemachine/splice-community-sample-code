@@ -87,8 +87,8 @@ public class Main {
         final String kafkaBroker = args[6];
         final String kafkaTopicName = args[7];
 
-	String inKbrPrincipal = System.getProperty("spark.yarn.principal");
-	String inKbrKeytab = System.getProperty("spark.yarn.keytab");
+	//String inKbrPrincipal = System.getProperty("spark.yarn.principal");
+	//String inKbrKeytab = System.getProperty("spark.yarn.keytab");
 
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         URL[] urls = ((URLClassLoader)cl).getURLs();
@@ -97,14 +97,14 @@ public class Main {
         }
         UserGroupInformation ugi = UserGroupInformation.getCurrentUser();
 
-        System.out.println("Logged in as: " + ugi);
-        System.out.println("Has credentials: " + ugi.hasKerberosCredentials());
-        System.out.println("credentials: " + ugi.getCredentials());
-        System.out.println("Kafka Broker: " + kafkaBroker);
-        System.out.println("Kafka TopicName: " + kafkaTopicName);
+        //System.out.println("Logged in as: " + ugi);
+        //System.out.println("Has credentials: " + ugi.hasKerberosCredentials());
+        //System.out.println("credentials: " + ugi.getCredentials());
+        //System.out.println("Kafka Broker: " + kafkaBroker);
+        //System.out.println("Kafka TopicName: " + kafkaTopicName);
 
-        System.out.println(inKbrPrincipal);
-        System.out.println(inKbrKeytab);
+        //System.out.println(inKbrPrincipal);
+        //System.out.println(inKbrKeytab);
 
         // Initalize Kafka config settings
         Properties props = new Properties();
@@ -130,12 +130,14 @@ public class Main {
         JavaPairDStream<String, String> resultRDD = stream.mapToPair(record -> new Tuple2<>(record.key(), record.value()));
 
 
-        doWork(inTargetTable, inTargetSchema, inHostName, inHostPort, inUserName, inUserPassword, inKbrPrincipal, inKbrKeytab, resultRDD, jssc);
+        doWork(inTargetTable, inTargetSchema, inHostName, inHostPort, inUserName, inUserPassword,resultRDD, jssc);
 
 
     }
 
-    private static void doWork(String inTargetTable, String inTargetSchema, String inHostName, String inHostPort, String inUserName, String inUserPassword, String inKbrPrincipal, String inKbrKeytab, JavaPairDStream<String, String> resultRDD, JavaStreamingContext jssc) throws IOException, InterruptedException {
+    private static void doWork(String inTargetTable, String inTargetSchema, String inHostName, String inHostPort, String inUserName, String inUserPassword,JavaPairDStream<String, String> resultRDD, JavaStreamingContext jssc) throws IOException, InterruptedException {
+
+        System.setProperty("HADOOP_USER_NAME","hbase");
 
         SparkConf conf = new SparkConf();
         SparkSession spark = SparkSession.builder().appName("Reader").config(conf).getOrCreate();
@@ -143,13 +145,15 @@ public class Main {
         // Create Splice's Spark Session
         SpliceSpark.setContext(spark.sparkContext());
 
-        SparkConf sparkConf = spark.sparkContext().getConf();
-        String principal = sparkConf.get("spark.yarn.principal");
-        String keytab = sparkConf.get("spark.yarn.keytab");
-        System.out.println("spark.yarn.principal = " + sparkConf.get("spark.yarn.principal"));
-        System.out.println("spark.yarn.keytab = " + sparkConf.get("spark.yarn.keytab"));
-        System.out.print("principal: " + inKbrPrincipal);
-        System.out.print("keytab: " + inKbrKeytab);
+        System.out.println(spark.sparkContext().sparkUser());
+
+        //SparkConf sparkConf = spark.sparkContext().getConf();
+        //String principal = sparkConf.get("spark.yarn.principal");
+        //String keytab = sparkConf.get("spark.yarn.keytab");
+        //System.out.println("spark.yarn.principal = " + sparkConf.get("spark.yarn.principal"));
+        //System.out.println("spark.yarn.keytab = " + sparkConf.get("spark.yarn.keytab"));
+        //System.out.print("principal: " + inKbrPrincipal);
+        //System.out.print("keytab: " + inKbrKeytab);
 
         String dbUrl = "jdbc:splice://" + inHostName + ":" + inHostPort + "/splicedb;user=" + inUserName + ";" + "password=" + inUserPassword;
         
