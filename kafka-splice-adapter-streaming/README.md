@@ -23,7 +23,7 @@ $ bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic test-k --parti
 To compile the app:
 $ mvn clean install
 
-To start the app, launch the spark-submit command with the example mentioned in spark-submit.sh script. You may need to update some config parameters such as kerberos principal, keytab filename, table and schema to insert the data etc. 
+To start the app, launch the spark-submit command with the example mentioned in [spark-submit.sh](./spark_submit.sh) script. You may need to update some config parameters such as kerberos principal, keytab filename, table and schema to insert the data etc. 
 To match the schema of the sample app, do create following table the region server  with following schema:
 CREATE TABLE TEST_TABLE (COL1 CHAR(30), COL2 INTEGER, COL3 BOOLEAN);
 
