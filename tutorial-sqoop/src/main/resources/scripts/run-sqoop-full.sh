@@ -31,6 +31,8 @@ SPLICE_BIN=$8
 SQLSERVER_DBO="dbo"
 COLON=":"
 DEFAULT_MAPPERS="1"
+LOCAL="false"
+TUTORIAL_HOME="/tmp"
 
 # check for correct number of parameters
 if [ $# -eq 8 ]; then
@@ -89,119 +91,127 @@ if [ $# -eq 8 ]; then
 				echo Column: $COLUMN
 				echo Mappers: $MAPPERS
 			else
-                                #COLON_INDEX=$(expr index $table $COLON)
+				#COLON_INDEX=$(expr index $table $COLON)
 				COLON_INDEX=$(echo $table | sed -n "s/[$COLON].*//p" | wc -c)
-                                echo Colon Index: $COLON_INDEX
-                                if [ $COLON_INDEX -gt 0 ]; then
-                                        COLUMN_END_POS=$(($COLON_INDEX-1))
-                                        START_MAPPER_POS=$(($COLON_INDEX+1))
-                                        END_MAPPER_POS=$((${#table}-$COLON_INDEX))
-                                        echo Full column length: ${#column}
-                                        echo Start Mapper Pos: $START_MAPPER_POS
-                                        echo End Mapper Pos: $END_MAPPER_POS
-                                        #TABLE=$(expr substr $table 1 $COLUMN_END_POS)
-                                        #MAPPERS=$(expr substr $table $START_MAPPER_POS $END_MAPPER_POS)
+				echo Colon Index: $COLON_INDEX
+				if [ $COLON_INDEX -gt 0 ]; then
+					COLUMN_END_POS=$(($COLON_INDEX-1))
+					START_MAPPER_POS=$(($COLON_INDEX+1))
+					END_MAPPER_POS=$((${#table}-$COLON_INDEX))
+					echo Full column length: ${#column}
+					echo Start Mapper Pos: $START_MAPPER_POS
+					echo End Mapper Pos: $END_MAPPER_POS
+					#TABLE=$(expr substr $table 1 $COLUMN_END_POS)
+					#MAPPERS=$(expr substr $table $START_MAPPER_POS $END_MAPPER_POS)
 					TABLE=$(echo $table | cut -c 1-$COLUMN_END_POS-1)
 					MAPPERS=$(echo $table | cut -c $START_MAPPER_POS-($END_MAPPER_POS-1))
 					table=$TABLE
-                                else
+				else
 					MAPPERS=$DEFAULT_MAPPERS
-                                fi
+				fi
 				# comment out as this code block only applies to sqlserver/oracle
 				#if [ "$schema" != "$SQLSERVER_DBO" ]; then
 				#	TABLE=$schema.$table
 				#fi
-                                echo Table: $TABLE
-                                echo Mappers: $MAPPERS
+				echo Table: $TABLE
+				echo Mappers: $MAPPERS
 
 			fi
 
-                        # check if there is a query file for this table
-                        queryFile=$QUERY_PATH/query-$SPLICE_SCHEMA-$table.sql
-                        echo The query file is: $queryFile
-                        if [ -f "$queryFile" ]; then
-                                query=$(cat $queryFile)
-                                echo $query
-                        else
-                                query=""
-                                echo Query file not found. $query
-                        fi
+			# check if there is a query file for this table
+			queryFile=$QUERY_PATH/query-$SPLICE_SCHEMA-$table.sql
+			echo The query file is: $queryFile
+			if [ -f "$queryFile" ]; then
+				query=$(cat $queryFile)
+				echo $query
+			else
+				query=""
+				echo Query file not found. $query
+			fi
 			
 			# This code is only required for this standalone example.
 			# In a cluster setup this would not be needed as hadoop would already be running along with Splice
-			echo "Starting Hadoop (sqoop)"
-			$HADOOP_SBIN/start-dfs.sh
-			$HADOOP_SBIN/start-yarn.sh
-			echo Sleeping...
-			sleep 15s
-			echo Continuing...
+			if ["$LOCAL" == "true"]
+				echo "Starting Hadoop (sqoop)"
+				$HADOOP_SBIN/start-dfs.sh
+				$HADOOP_SBIN/start-yarn.sh
+				echo Sleeping...
+				sleep 15s
+				echo Continuing...
+			fi
 
-                        # Make sure the directories exist in hdfs, clear the directory, and set permissions
-                        hadoop fs -mkdir -p /data/$SPLICE_SCHEMA/$table
-                        hadoop fs -chmod 777 /data/$SPLICE_SCHEMA/$table
-                        hadoop fs -rm -skipTrash /data/$SPLICE_SCHEMA/$table/*
-                        hadoop fs -mkdir -p /status/$SPLICE_SCHEMA/$table
-                        hadoop fs -chmod 777 /status/$SPLICE_SCHEMA/$table
+
+			# Make sure the directories exist in hdfs, clear the directory, and set permissions
+			hadoop fs -mkdir -p /data/$SPLICE_SCHEMA/$table
+			hadoop fs -chmod 777 /data/$SPLICE_SCHEMA/$table
+			hadoop fs -rm -skipTrash /data/$SPLICE_SCHEMA/$table/*
+			hadoop fs -mkdir -p /status/$SPLICE_SCHEMA/$table
+			hadoop fs -chmod 777 /status/$SPLICE_SCHEMA/$table
 
 			# add a section to create local directories
-			mkdir -p $TUTORIAL_HOME/data/$SPLICE_SCHEMA/$table
-			mkdir -p $TUTORIAL_HOME/status/$SPLICE_SCHEMA/$table
-			chmod 777 $TUTORIAL_HOME/data/$SPLICE_SCHEMA/$table
-			chmod 777 $TUTORIAL_HOME/status/$SPLICE_SCHEMA/$table
-			rm $TUTORIAL_HOME/data/$SPLICE_SCHEMA/$table/*
+			if ["$LOCAL" == "true"]
+				mkdir -p $TUTORIAL_HOME/data/$SPLICE_SCHEMA/$table
+				mkdir -p $TUTORIAL_HOME/status/$SPLICE_SCHEMA/$table
+				chmod 777 $TUTORIAL_HOME/data/$SPLICE_SCHEMA/$table
+				chmod 777 $TUTORIAL_HOME/status/$SPLICE_SCHEMA/$table
+				rm $TUTORIAL_HOME/data/$SPLICE_SCHEMA/$table/*
+			fi
 
 			# exit script if an error is encountered
-                        set -e
+			set -e
 
 			echo The query param is: $query!
 			echo The column param is: $column!
  
 			if [ -z "$query" ]; then
-                                if [ $column ]; then
-                                        echo Execute sqoop with split-by
-                                        sqoop import --options-file $SQOOP_CONFIG_FILE --append --table $TABLE --split-by $COLUMN --target-dir /data/$SPLICE_SCHEMA/$table --m $MAPPERS
-                                else
-                                        echo Execute sqoop without split-by
-                                        sqoop import --options-file $SQOOP_CONFIG_FILE --append --table $TABLE --target-dir /data/$SPLICE_SCHEMA/$table --m $MAPPERS
-                                fi
+				if [ $column ]; then
+					echo Execute sqoop with split-by
+					sqoop import --options-file $SQOOP_CONFIG_FILE --append --table $TABLE --split-by $COLUMN --target-dir /data/$SPLICE_SCHEMA/$table --m $MAPPERS
+				else
+					echo Execute sqoop without split-by
+					sqoop import --options-file $SQOOP_CONFIG_FILE --append --table $TABLE --target-dir /data/$SPLICE_SCHEMA/$table --m $MAPPERS
+				fi
 			else 
-                                if [ $column ]; then
-                                        echo Execute sqoop with split-by
-                                        sqoop import --options-file $SQOOP_CONFIG_FILE --append --query "$query" --split-by $COLUMN --target-dir /data/$SPLICE_SCHEMA/$table --m $MAPPERS
-                                else
-                                        echo Sqoop extract for $SCHEMA.$TABLE failed because a query file is present but no column specified for the split-by.
-                                        exit 1
-                                fi
+				if [ $column ]; then
+					echo Execute sqoop with split-by
+					sqoop import --options-file $SQOOP_CONFIG_FILE --append --query "$query" --split-by $COLUMN --target-dir /data/$SPLICE_SCHEMA/$table --m $MAPPERS
+				else
+					echo Sqoop extract for $SCHEMA.$TABLE failed because a query file is present but no column specified for the split-by.
+					exit 1
+				fi
 			fi
 			
 			if [ $? -gt 0 ]; then
 				echo Sqoop extract failed
 				exit 1
 			else
-				# add command to copy the files from hdfs to local fs
-				hadoop fs -copyToLocal /data/$SPLICE_SCHEMA/$table/* $TUTORIAL_HOME/data/$SPLICE_SCHEMA/$table/
-
-				echo Export of $schema.$table successful 
+				if ["$LOCAL" == "true"]
+					# add command to copy the files from hdfs to local fs
+					hadoop fs -copyToLocal /data/$SPLICE_SCHEMA/$table/* $TUTORIAL_HOME/data/$SPLICE_SCHEMA/$table/
+					echo Export of $schema.$table successful
+				fi
 			fi
 
 			# Kill hadoop so Splice import will work
 			# This is just a workaround for standalone environments
 			# In a cluster environment this would not be necessary
-			echo "Stopping Hadoop (sqoop)"
-			$HADOOP_SBIN/stop-yarn.sh
-			$HADOOP_SBIN/stop-dfs.sh
-			# Make sure Splice is stopped then start Splice
-			echo Stopping Splice
-			echo Starting Splice
-			$SPLICE_BIN/stop-splice.sh
-			$SPLICE_BIN/start-splice.sh
+			if ["$LOCAL" == "true"]
+				echo "Stopping Hadoop (sqoop)"
+				$HADOOP_SBIN/stop-yarn.sh
+				$HADOOP_SBIN/stop-dfs.sh
+				# Make sure Splice is stopped then start Splice
+				echo Stopping Splice
+				echo Starting Splice
+				$SPLICE_BIN/stop-splice.sh
+				$SPLICE_BIN/start-splice.sh
+			fi
 
 			echo Importing $SPLICE_SCHEMA.$table to Splice Machine	
 			
 			# Import data from HDFS to Splice
 			IMPORT_FILE=$IMPORT_PATH/import-$SPLICE_SCHEMA-$table.sql
 			if [ -f $IMPORT_FILE ]; then
-                       		$SPLICE_HOME/bin/sqlshell.sh -f $IMPORT_FILE
+				$SPLICE_HOME/bin/sqlshell.sh -f $IMPORT_FILE
 				STATUS=$(grep "ERROR SE\|ERROR 08006\|ClosedChannelException" $LOG_FILE | wc -l)
 				if [ $STATUS -gt 0 ]; then
 					echo Splice import failed
