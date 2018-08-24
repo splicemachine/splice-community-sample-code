@@ -131,13 +131,13 @@ if [ $# -eq 8 ]; then
 			
 			# This code is only required for this standalone example.
 			# In a cluster setup this would not be needed as hadoop would already be running along with Splice
-			if ["$LOCAL" == "true"]
+			if [ "$LOCAL" == "true" ]; then
 				echo "Starting Hadoop (sqoop)"
 				$HADOOP_SBIN/start-dfs.sh
 				$HADOOP_SBIN/start-yarn.sh
-				echo Sleeping...
+				echo "Sleeping..."
 				sleep 15s
-				echo Continuing...
+				echo "Continuing..."
 			fi
 
 
@@ -149,7 +149,7 @@ if [ $# -eq 8 ]; then
 			hadoop fs -chmod 777 /status/$SPLICE_SCHEMA/$table
 
 			# add a section to create local directories
-			if ["$LOCAL" == "true"]
+			if [ "$LOCAL" == "true" ]; then
 				mkdir -p $TUTORIAL_HOME/data/$SPLICE_SCHEMA/$table
 				mkdir -p $TUTORIAL_HOME/status/$SPLICE_SCHEMA/$table
 				chmod 777 $TUTORIAL_HOME/data/$SPLICE_SCHEMA/$table
@@ -185,7 +185,7 @@ if [ $# -eq 8 ]; then
 				echo Sqoop extract failed
 				exit 1
 			else
-				if ["$LOCAL" == "true"]
+				if [ "$LOCAL" == "true" ]; then
 					# add command to copy the files from hdfs to local fs
 					hadoop fs -copyToLocal /data/$SPLICE_SCHEMA/$table/* $TUTORIAL_HOME/data/$SPLICE_SCHEMA/$table/
 					echo Export of $schema.$table successful
@@ -195,7 +195,7 @@ if [ $# -eq 8 ]; then
 			# Kill hadoop so Splice import will work
 			# This is just a workaround for standalone environments
 			# In a cluster environment this would not be necessary
-			if ["$LOCAL" == "true"]
+			if [ "$LOCAL" == "true" ]; then
 				echo "Stopping Hadoop (sqoop)"
 				$HADOOP_SBIN/stop-yarn.sh
 				$HADOOP_SBIN/stop-dfs.sh
