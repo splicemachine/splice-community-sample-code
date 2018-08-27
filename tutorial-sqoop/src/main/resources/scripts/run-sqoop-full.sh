@@ -176,8 +176,10 @@ if [ $# -eq 8 ]; then
 					echo Execute sqoop with split-by
 					sqoop import --options-file $SQOOP_CONFIG_FILE --append --query "$query" --split-by $COLUMN --target-dir /data/$SPLICE_SCHEMA/$table --m $MAPPERS
 				else
-					echo Sqoop extract for $SCHEMA.$TABLE failed because a query file is present but no column specified for the split-by.
-					exit 1
+					echo Execute sqoop with query and without split-by
+					sqoop import --options-file $SQOOP_CONFIG_FILE --append --query "$query" --target-dir /data/$SPLICE_SCHEMA/$table --m $MAPPERS
+					#echo Sqoop extract for $SCHEMA.$TABLE failed because a query file is present but no column specified for the split-by.
+					#exit 1
 				fi
 			fi
 			
