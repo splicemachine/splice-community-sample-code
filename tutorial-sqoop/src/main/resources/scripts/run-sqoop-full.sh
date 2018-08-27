@@ -166,10 +166,10 @@ if [ $# -eq 8 ]; then
 			if [ -z "$query" ]; then
 				if [ $column ]; then
 					echo Execute sqoop with split-by
-					sqoop import --options-file $SQOOP_CONFIG_FILE --append --table $TABLE --split-by $COLUMN --target-dir /data/$SPLICE_SCHEMA/$table --m $MAPPERS
+					sqoop import --options-file $SQOOP_CONFIG_FILE --append --table $schema.$TABLE --split-by $COLUMN --target-dir /data/$SPLICE_SCHEMA/$table --m $MAPPERS
 				else
 					echo Execute sqoop without split-by
-					sqoop import --options-file $SQOOP_CONFIG_FILE --append --table $TABLE --target-dir /data/$SPLICE_SCHEMA/$table --m $MAPPERS
+					sqoop import --options-file $SQOOP_CONFIG_FILE --append --table $schema.$TABLE --target-dir /data/$SPLICE_SCHEMA/$table --m $MAPPERS
 				fi
 			else 
 				if [ $column ]; then
