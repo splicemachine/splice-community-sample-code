@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <properties>
+      <maven.compiler.source>1.8</maven.compiler.source>
+      <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    <groupId>groupId</groupId>
+    <artifactId>kafka-to-tables</artifactId>
+    <version>1.0-1</version>
+
+    <repositories>
+        <repository>
+            <id>cloudera</id>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+        </repository>
+        <repository>
+            <id>splicemachine-public</id>
+            <url>http://repository.splicemachine.com/nexus/content/groups/public</url>
+        </repository>
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>com.splicemachine</groupId>
+            <artifactId>splicemachine-cdh5.14.0-2.2.0.cloudera2_2.11</artifactId>
+            <version>2.7.0.1845</version>
+        </dependency>
+<!--
+        splicemachine-cdh5.14.0-2.2.0.cloudera2_2.11-2.7.0.1845.jar
+-->
+        <dependency>
+            <groupId>com.splicemachine</groupId>
+            <artifactId>hbase_sql-cdh5.14.0</artifactId>
+            <version>2.7.0.1845</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.splicemachine</groupId>
+            <artifactId>splice_machine</artifactId>
+            <version>2.7.0.1845</version>
+        </dependency>
+     
+        <dependency>
+            <groupId>com.splicemachine</groupId>
+            <artifactId>db-engine</artifactId>
+            <version>2.7.0.1845</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-client</artifactId>
+            <version>1.2.0-cdh5.14.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.splicemachine</groupId>
+            <artifactId>hbase_storage-cdh5.14.0</artifactId>
+            <version>2.7.0.1845</version>
+        </dependency>
+       <dependency>
+           <groupId>org.apache.kafka</groupId>
+           <artifactId>kafka-clients</artifactId>
+           <version>2.0.0</version>
+       </dependency>
+       <dependency>
+           <groupId>org.apache.spark</groupId>
+           <artifactId>spark-streaming-kafka-0-10_2.11</artifactId>
+           <version>2.2.2</version>
+       </dependency>
+       <dependency>
+           <groupId>org.apache.spark</groupId>
+           <artifactId>spark-streaming_2.11</artifactId>
+           <version>2.2.2</version>
+           <scope>provided</scope>
+       </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-sql -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_2.11</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+
+    </dependencies>
+</project>
