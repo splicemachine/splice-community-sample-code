@@ -16,6 +16,7 @@ To start the streaming application on Spark:
 1. Build kafka-to-tables jar and copy it into a work folder.
 2. Copy jar and scripts from src/main/resources/scripts/* into work folder.
 3. Edit copy of setenv.sh in work
+
 3.1. Change environment variables according to cluster configuration:
   ```
   export SPARK_HOME="/opt/cloudera/parcels/SPARK2/lib/spark2"
