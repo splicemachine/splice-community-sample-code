@@ -1,8 +1,8 @@
-#Overview
+# Overview
 This tutorial contains code for a custom Virtual table Interface (VTI) which reads data from a properties file and
 returns it as a table.
 
-#How to run the code
+# How to run the code
 1.  Pull the source code from github
 2.  Run: mvn clean compile package
 3.  Copy the ./target/splice-tutorial-vti-2.0.jar to each of your servers' /opt/splice/default/lib/ directory
